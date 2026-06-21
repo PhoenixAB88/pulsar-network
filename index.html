@@ -66,6 +66,8 @@
   .mark .core{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0%,#ffe6bd 26%,#f7a93b 58%,rgba(217,124,12,0) 100%);box-shadow:0 0 20px 4px rgba(247,169,59,.5)}
   .mark .beam{position:absolute;left:50%;top:50%;width:13%;border-radius:40%;background:linear-gradient(180deg,rgba(63,231,239,0),rgba(63,231,239,.9),rgba(63,231,239,0));transform:translate(-50%,-50%) rotate(34deg)}
   .mark .beam.b2{transform:translate(-50%,-50%) rotate(-146deg)}
+  .logo{border-radius:50%;display:block;flex:0 0 auto}
+  .hero-logo{width:88px;height:88px;margin:0 auto 18px;box-shadow:0 0 0 1px var(--card-bd),0 0 46px rgba(247,140,59,.40)}
 
   #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
   .hero{position:relative;padding:78px 0 36px;text-align:center;z-index:1}
@@ -163,7 +165,7 @@
 <header>
   <div class="wrap nav">
     <a class="brand" href="#top">
-      <span class="mark" style="width:34px;height:34px"><span class="core"></span><span class="beam" style="height:54px"></span><span class="beam b2" style="height:54px"></span></span>
+      <img class="logo" src="logo.png" alt="Pulsar Nodes" width="36" height="36">
       <span class="name"><b>PULSAR</b><span>NODES</span></span>
     </a>
     <nav class="links">
@@ -183,6 +185,7 @@
 <a id="top"></a>
 <div class="hero">
   <div class="wrap">
+    <img class="logo hero-logo" src="logo.png" alt="Pulsar Nodes" width="88" height="88">
     <span class="eyebrow"><span class="dotpulse"></span> Live community monitor</span>
     <h1>The Xandeum pNode network, <span class="grad">at a glance</span>.</h1>
     <p class="lead">A fast, real-time view of every pNode in the gossip network — online status, software versions and health. Built and operated by Pulsar Nodes.</p>
@@ -269,7 +272,7 @@
     <div class="fgrid">
       <div>
         <a class="brand" href="#top">
-          <span class="mark" style="width:30px;height:30px"><span class="core"></span><span class="beam" style="height:48px"></span><span class="beam b2" style="height:48px"></span></span>
+          <img class="logo" src="logo.png" alt="Pulsar Nodes" width="34" height="34">
           <span class="name"><b>PULSAR NODES</b><span>STORAGE FOR SOLANA</span></span>
         </a>
         <p class="disclaim">An independent, community-built monitor of the Xandeum pNode network. Not affiliated with or endorsed by Xandeum. Data comes from the public pRPC gossip roster.</p>
