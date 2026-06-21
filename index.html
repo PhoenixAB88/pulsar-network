@@ -18,6 +18,8 @@
 <meta name="twitter:title" content="Pulsar Nodes — Live Xandeum pNode Network Monitor">
 <meta name="twitter:description" content="A fast, real-time monitor of the Xandeum pNode network — by Pulsar Nodes.">
 <meta name="twitter:image" content="https://phoenixab88.github.io/pulsar-network/og-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root{
     --bg:#060d1c; --bg2:#091630; --grad1:#16365f; --panel:rgba(17,37,74,.55); --panel2:rgba(13,30,60,.5);
@@ -104,6 +106,11 @@
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
+  #map{height:380px;border-radius:18px;overflow:hidden;border:1px solid var(--card-bd);margin-top:16px;background:var(--panel2);z-index:1}
+  .leaflet-container{background:var(--panel2);font:13px inherit}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--bg2);color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  .leaflet-popup-content{font:12.5px/1.45 inherit}
+  .leaflet-bar a{background:var(--panel);color:var(--ink);border-color:var(--card-bd)}
   .box{background:var(--panel);border:1px solid var(--card-bd);border-radius:18px;padding:20px;backdrop-filter:blur(10px)}
   .box h3{margin:0 0 16px;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--mut)}
   .vrow{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:12.5px}
@@ -205,6 +212,7 @@
       </div>
     </div>
     <div class="cards reveal" id="statCards"></div>
+    <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="box"><h3>Version distribution</h3><div id="vdist"></div></div>
       <div class="box">
@@ -215,7 +223,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th>Address</th><th>Pubkey</th><th>Version</th><th>Last seen</th><th>Status</th></tr></thead>
+            <thead><tr><th>#</th><th>Address</th><th>Pubkey</th><th>Location</th><th>Version</th><th>Last seen</th><th>Status</th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -297,7 +305,7 @@
   const root=document.documentElement, tb=document.getElementById('themeBtn');
   const setTheme=t=>{root.setAttribute('data-theme',t);tb.textContent=t==='dark'?'🌙':'☀️';try{localStorage.setItem('pulsar-theme',t)}catch(e){}};
   setTheme((()=>{try{return localStorage.getItem('pulsar-theme')||'dark'}catch(e){return 'dark'}})());
-  tb.onclick=()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');
+  tb.onclick=()=>{setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'); if(window.__tile)window.__tile.setUrl(tileUrl());};
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
   if(mb){mb.onclick=()=>mm.classList.toggle('open');mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));}
 
@@ -305,6 +313,7 @@
   const ts=p=>p.last_seen_timestamp??p.lastSeenTimestamp??0;
   const shortver=v=>(v||'?').replace(/\.\d{8,}.*$/,'');
   const shortpk=pk=>pk?pk.slice(0,6)+'…'+pk.slice(-4):'—';
+  const flag=cc=>cc?cc.toUpperCase().replace(/[A-Z]/g,c=>String.fromCodePoint(127397+c.charCodeAt(0))):'';
   const nowSec=()=>Math.floor(Date.now()/1000);
 
   function mkSet(N,genTs,updated){
@@ -328,16 +337,17 @@
     const rows=pods.slice().sort((a,b)=>ts(b)-ts(a)).filter(p=>{
       if(vf&&shortver(p.version)!==vf)return false;
       if(!q)return true;
-      return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q);
+      return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q)||(p.cc||'').toLowerCase().includes(q);
     });
     meta.textContent=rows.length+' of '+pods.length;
     body.innerHTML=rows.map((p,i)=>`<tr>
       <td>${i+1}</td><td class="addr">${p.address||'—'}</td>
       <td class="addr" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
+      <td>${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
       <td><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
       <td>${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
-      ||`<tr><td colspan="6" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':(active==='mainnet'?"No mainnet roster yet — pRPC (the gossip API) isn't exposed on mainnet (1.3.3) pods.":'No data.')}</td></tr>`;
+      ||`<tr><td colspan="7" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
   function renderNetwork(){
@@ -373,6 +383,30 @@
     sel.value=[...sel.options].some(o=>o.value===cur)?cur:'';
 
     renderRoster();
+    plotMap();
+  }
+
+  function tileUrl(){return root.getAttribute('data-theme')==='light'
+    ?'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+    :'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';}
+  function initMap(){
+    if(typeof L==='undefined'||!document.getElementById('map'))return;
+    window.__map=L.map('map',{worldCopyJump:true,attributionControl:false,scrollWheelZoom:false}).setView([28,5],2);
+    window.__tile=L.tileLayer(tileUrl(),{maxZoom:8,subdomains:'abcd'}).addTo(window.__map);
+    window.__markers=L.layerGroup().addTo(window.__map);
+    setTimeout(()=>window.__map&&window.__map.invalidateSize(),400);
+  }
+  function plotMap(){
+    if(!window.__map||!window.__markers)return;
+    window.__markers.clearLayers();
+    const S=SETS[active],ref=S.ref;
+    S.pods.forEach(p=>{
+      if(p.lat==null||p.lon==null)return;
+      const on=(ref-ts(p))<=900;
+      L.circleMarker([p.lat,p.lon],{radius:5,weight:1,color:'#0a1320',fillColor:on?'#34e0a8':'#ff5d6c',fillOpacity:.85})
+        .bindPopup(`<b>${shortpk(p.pubkey)}</b><br>${flag(p.cc)} ${p.city||''}<br>${shortver(p.version)} · ${on?'online':'stale'}`)
+        .addTo(window.__markers);
+    });
   }
 
   document.getElementById('search').addEventListener('input',renderRoster);
@@ -382,6 +416,7 @@
     document.querySelectorAll('.netseg button').forEach(x=>x.classList.toggle('on',x===b));
     renderNetwork();
   }));
+  initMap();
   renderNetwork();
 
   // scroll reveal
