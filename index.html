@@ -87,6 +87,10 @@
   .sec-head{text-align:center;margin-bottom:28px}
   .sec-head h2{font-size:clamp(25px,3.6vw,34px);margin:0 0 8px;font-weight:850;letter-spacing:-.6px}
   .sec-head p{color:var(--mut);margin:0;font-size:15px}
+  .netseg{display:inline-flex;margin-top:16px;background:var(--panel2);border:1px solid var(--card-bd);border-radius:13px;padding:4px;gap:4px;backdrop-filter:blur(8px)}
+  .netseg button{border:none;background:transparent;color:var(--mut);font-weight:700;font-size:13px;letter-spacing:.3px;padding:8px 20px;border-radius:9px;cursor:pointer;transition:.15s;font-family:inherit}
+  .netseg button:hover{color:var(--ink)}
+  .netseg button.on{background:linear-gradient(95deg,var(--teal),var(--orange));color:#08111f;box-shadow:0 3px 12px rgba(247,140,59,.25)}
 
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -195,6 +199,10 @@
     <div class="sec-head reveal">
       <h2>Live Network</h2>
       <p>Straight from the Herrenberg gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
+      <div class="netseg" role="tablist">
+        <button data-net="devnet" class="on">Devnet</button>
+        <button data-net="mainnet">Mainnet</button>
+      </div>
     </div>
     <div class="cards reveal" id="statCards"></div>
     <div class="net-grid reveal">
@@ -284,6 +292,7 @@
 </footer>
 
 <script src="network_data.js" onerror="window.__noData=1"></script>
+<script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
 <script>
   const root=document.documentElement, tb=document.getElementById('themeBtn');
   const setTheme=t=>{root.setAttribute('data-theme',t);tb.textContent=t==='dark'?'🌙':'☀️';try{localStorage.setItem('pulsar-theme',t)}catch(e){}};
@@ -292,48 +301,31 @@
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
   if(mb){mb.onclick=()=>mm.classList.toggle('open');mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));}
 
-  const N=window.NETWORK;
-  const pods=(N&&N.result&&N.result.pods)?N.result.pods:[];
   const fmt=n=>n==null?'—':n.toLocaleString('en-US');
   const ts=p=>p.last_seen_timestamp??p.lastSeenTimestamp??0;
-  const now=Math.floor(Date.now()/1000);
-  const ref=pods.length?Math.max(window.NETWORK_GENERATED_TS||0,...pods.map(ts)):now;
-  const isOn=p=>(ref-ts(p))<=900;
   const shortver=v=>(v||'?').replace(/\.\d{8,}.*$/,'');
   const shortpk=pk=>pk?pk.slice(0,6)+'…'+pk.slice(-4):'—';
-  const rel=t=>{if(!t)return '—';const d=ref-t;return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';};
+  const nowSec=()=>Math.floor(Date.now()/1000);
 
-  const online=pods.filter(isOn).length;
-  const versions={};pods.forEach(p=>{const v=shortver(p.version);versions[v]=(versions[v]||0)+1;});
-  const vEntries=Object.entries(versions).sort((a,b)=>b[1]-a[1]);
-  const vMax=Math.max(...vEntries.map(e=>e[1]),1);
-
-  document.getElementById('updatedAt').innerHTML=window.NETWORK_UPDATED?'updated '+window.NETWORK_UPDATED:'no data yet';
-
-  document.getElementById('heroChips').innerHTML=pods.length?`
-    <div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>
-    <div class="chip"><div><b style="color:var(--good)">${fmt(online)}</b><small>online now</small></div></div>
-    <div class="chip"><div><b>${vEntries.length}</b><small>software versions</small></div></div>`:'';
-
-  document.getElementById('statCards').innerHTML=`
-    <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
-    <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
-    <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
-    <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>`;
-
-  document.getElementById('vdist').innerHTML=vEntries.map(([v,c])=>`
-    <div class="vrow"><span class="lab" title="${v}">${v}</span>
-      <span class="track"><span class="bar" data-w="${Math.round(c/vMax*100)}"></span></span>
-      <span class="ct">${c}</span></div>`).join('')||'<div style="color:var(--mut)">No data yet. Run pull_network.sh.</div>';
-
+  function mkSet(N,genTs,updated){
+    const pods=(N&&N.result&&N.result.pods)?N.result.pods:[];
+    const ref=pods.length?Math.max(genTs||0,...pods.map(ts)):nowSec();
+    return {pods,ref,updated};
+  }
+  const SETS={
+    devnet:  mkSet(window.NETWORK,         window.NETWORK_GENERATED_TS,         window.NETWORK_UPDATED),
+    mainnet: mkSet(window.NETWORK_MAINNET, window.NETWORK_MAINNET_GENERATED_TS, window.NETWORK_MAINNET_UPDATED)
+  };
+  let active='devnet';
   const sel=document.getElementById('verFilter');
-  vEntries.forEach(([v])=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+  const body=document.getElementById('rosterBody'), meta=document.getElementById('rosterMeta');
 
-  const body=document.getElementById('rosterBody'),meta=document.getElementById('rosterMeta');
-  const sorted=pods.slice().sort((a,b)=>ts(b)-ts(a));
-  function render(){
-    const q=(document.getElementById('search').value||'').toLowerCase(),vf=sel.value;
-    const rows=sorted.filter(p=>{
+  function renderRoster(){
+    const S=SETS[active], pods=S.pods, ref=S.ref;
+    const isOn=p=>(ref-ts(p))<=900;
+    const rel=t=>{if(!t)return '—';const d=ref-t;return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';};
+    const q=(document.getElementById('search').value||'').toLowerCase(), vf=sel.value;
+    const rows=pods.slice().sort((a,b)=>ts(b)-ts(a)).filter(p=>{
       if(vf&&shortver(p.version)!==vf)return false;
       if(!q)return true;
       return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q);
@@ -345,19 +337,56 @@
       <td><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
       <td>${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
-      ||'<tr><td colspan="6" style="color:var(--mut);text-align:center;padding:24px">No matches.</td></tr>';
+      ||`<tr><td colspan="6" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':(active==='mainnet'?"No mainnet roster yet — pRPC (the gossip API) isn't exposed on mainnet (1.3.3) pods.":'No data.')}</td></tr>`;
   }
-  document.getElementById('search').addEventListener('input',render);
-  sel.addEventListener('change',render);
-  render();
 
-  // scroll reveal + version-bar grow when visible
-  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
-    e.target.querySelectorAll('.bar').forEach(b=>{b.style.width=b.dataset.w+'%';});
-    io.unobserve(e.target);}});},{threshold:.15});
+  function renderNetwork(){
+    const S=SETS[active], pods=S.pods, ref=S.ref;
+    const isOn=p=>(ref-ts(p))<=900;
+    const online=pods.filter(isOn).length;
+    const versions={}; pods.forEach(p=>{const v=shortver(p.version);versions[v]=(versions[v]||0)+1;});
+    const vEntries=Object.entries(versions).sort((a,b)=>b[1]-a[1]);
+    const vMax=Math.max(...vEntries.map(e=>e[1]),1);
+
+    document.getElementById('updatedAt').innerHTML = pods.length ? ('updated '+(S.updated||'—'))
+      : (active==='mainnet' ? 'mainnet roster not available yet' : 'no data yet');
+
+    document.getElementById('heroChips').innerHTML=pods.length?`
+      <div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>
+      <div class="chip"><div><b style="color:var(--good)">${fmt(online)}</b><small>online now</small></div></div>
+      <div class="chip"><div><b>${vEntries.length}</b><small>software versions</small></div></div>`:'';
+
+    document.getElementById('statCards').innerHTML=`
+      <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
+      <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
+      <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
+      <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>`;
+
+    document.getElementById('vdist').innerHTML=vEntries.map(([v,c])=>`
+      <div class="vrow"><span class="lab" title="${v}">${v}</span>
+        <span class="track"><span class="bar" style="width:${Math.round(c/vMax*100)}%"></span></span>
+        <span class="ct">${c}</span></div>`).join('')
+      ||`<div style="color:var(--mut)">${active==='mainnet'?"Mainnet pods (1.3.3) don't expose the pRPC gossip roster yet.":'No data yet.'}</div>`;
+
+    const cur=sel.value;
+    sel.innerHTML='<option value="">All versions</option>'+vEntries.map(([v])=>`<option value="${v}">${v}</option>`).join('');
+    sel.value=[...sel.options].some(o=>o.value===cur)?cur:'';
+
+    renderRoster();
+  }
+
+  document.getElementById('search').addEventListener('input',renderRoster);
+  sel.addEventListener('change',renderRoster);
+  document.querySelectorAll('.netseg button').forEach(b=>b.addEventListener('click',()=>{
+    active=b.dataset.net;
+    document.querySelectorAll('.netseg button').forEach(x=>x.classList.toggle('on',x===b));
+    renderNetwork();
+  }));
+  renderNetwork();
+
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.15});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  // grow any bars already in view on load
-  setTimeout(()=>document.querySelectorAll('.bar').forEach(b=>{if(!b.style.width)b.style.width=b.dataset.w+'%';}),300);
 
   // full-page constellation — spans the whole page, denser at the top, brighter in dark
   const cv=document.getElementById('bgfx'),cx=cv.getContext('2d');
