@@ -286,15 +286,15 @@
   document.getElementById('updatedAt').innerHTML=window.NETWORK_UPDATED?'updated '+window.NETWORK_UPDATED:'no data yet';
 
   document.getElementById('heroChips').innerHTML=pods.length?`
-    <div class="chip"><span class="dotpulse"></span><div><b class="cu" data-v="${pods.length}">0</b><small>pNodes in gossip</small></div></div>
-    <div class="chip"><div><b class="cu" data-v="${online}" style="color:var(--good)">0</b><small>online now</small></div></div>
-    <div class="chip"><div><b class="cu" data-v="${vEntries.length}">0</b><small>software versions</small></div></div>`:'';
+    <div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>
+    <div class="chip"><div><b style="color:var(--good)">${fmt(online)}</b><small>online now</small></div></div>
+    <div class="chip"><div><b>${vEntries.length}</b><small>software versions</small></div></div>`:'';
 
   document.getElementById('statCards').innerHTML=`
-    <div class="stat"><div class="k">pNodes in gossip</div><div class="v cu" data-v="${pods.length}">0</div></div>
-    <div class="stat"><div class="k">Online</div><div class="v cu" data-v="${online}" style="color:var(--good)">0</div></div>
-    <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v cu" data-v="${pods.length-online}" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">0</div></div>
-    <div class="stat"><div class="k">Versions</div><div class="v cu" data-v="${vEntries.length}">0</div></div>`;
+    <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
+    <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
+    <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
+    <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>`;
 
   document.getElementById('vdist').innerHTML=vEntries.map(([v,c])=>`
     <div class="vrow"><span class="lab" title="${v}">${v}</span>
@@ -326,15 +326,13 @@
   sel.addEventListener('change',render);
   render();
 
-  // count-up + bar grow when visible
-  function countUp(el){const v=+el.dataset.v||0;const dur=900,t0=performance.now();
-    (function step(t){const k=Math.min(1,(t-t0)/dur);el.textContent=Math.round(v*(1-Math.pow(1-k,3))).toLocaleString('en-US');if(k<1)requestAnimationFrame(step);})(t0);}
+  // scroll reveal + version-bar grow when visible
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
-    e.target.querySelectorAll?.('.cu').forEach(countUp);
-    e.target.querySelectorAll?.('.bar').forEach(b=>b.style.width=b.dataset.w+'%');
-    if(e.target.classList.contains('cu'))countUp(e.target);
-    io.unobserve(e.target);}});},{threshold:.2});
-  document.querySelectorAll('.reveal,.cu').forEach(el=>io.observe(el));
+    e.target.querySelectorAll('.bar').forEach(b=>{b.style.width=b.dataset.w+'%';});
+    io.unobserve(e.target);}});},{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  // grow any bars already in view on load
+  setTimeout(()=>document.querySelectorAll('.bar').forEach(b=>{if(!b.style.width)b.style.width=b.dataset.w+'%';}),300);
 
   // hero constellation (lightweight)
   const cv=document.getElementById('constellation'),cx=cv.getContext('2d');
