@@ -27,12 +27,6 @@
     --teal:#3fe7ef; --orange:#f7a93b; --pink:#f2683a; --good:#34e0a8; --warn:#ffb44d; --bad:#ff5d6c;
     --card-bd:rgba(120,160,220,.16); --header:rgba(8,16,34,.6); --glow:rgba(63,231,239,.5);
   }
-  [data-theme="light"]{
-    --bg:#d6deec; --bg2:#e3e9f4; --grad1:#c3d2ea; --panel:rgba(255,255,255,.94); --panel2:rgba(236,241,249,.85);
-    --line:rgba(22,48,92,.18); --ink:#0b1830; --mut:#42546f; --mut2:#6a7c98;
-    --teal:#067e8c; --orange:#c06f08; --pink:#c4471f; --good:#0a8c63; --warn:#9e6712; --bad:#c5333f;
-    --card-bd:rgba(22,48,92,.16); --header:rgba(227,233,244,.82); --glow:rgba(6,126,140,.25);
-  }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;color:var(--ink);background:
@@ -132,7 +126,6 @@
   tbody tr{transition:background .12s}tbody tr:hover{background:var(--panel2)}
   .addr{font-family:ui-monospace,Menlo,monospace}
   .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(63,231,239,.14);color:var(--teal)}
-  [data-theme="light"] .pill{background:rgba(10,154,166,.14)}
   .on{color:var(--good);font-weight:700}.off{color:var(--bad);font-weight:700}
 
   .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -176,7 +169,6 @@
       <a href="#network">Network</a><a href="#why">Why storage</a><a href="#operate">Operate</a><a href="#community">Community</a>
     </nav>
     <div class="right">
-      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">🌙</button>
       <a class="btn primary" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
@@ -302,10 +294,7 @@
 <script src="network_data.js" onerror="window.__noData=1"></script>
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
 <script>
-  const root=document.documentElement, tb=document.getElementById('themeBtn');
-  const setTheme=t=>{root.setAttribute('data-theme',t);tb.textContent=t==='dark'?'🌙':'☀️';try{localStorage.setItem('pulsar-theme',t)}catch(e){}};
-  setTheme((()=>{try{return localStorage.getItem('pulsar-theme')||'dark'}catch(e){return 'dark'}})());
-  tb.onclick=()=>{setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'); if(window.__tile)window.__tile.setUrl(tileUrl());};
+  const root=document.documentElement; root.setAttribute('data-theme','dark');
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
   if(mb){mb.onclick=()=>mm.classList.toggle('open');mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));}
 
@@ -386,14 +375,23 @@
     plotMap();
   }
 
-  function tileUrl(){return root.getAttribute('data-theme')==='light'
-    ?'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-    :'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';}
+  function baseUrl(){return 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';}
+  function labelUrl(){return 'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png';}
+  const LABEL_ZOOM=4;  // country/city names only once zoomed in
+  function syncLabels(){
+    if(!window.__map||!window.__labels)return;
+    const show=window.__map.getZoom()>=LABEL_ZOOM, has=window.__map.hasLayer(window.__labels);
+    if(show&&!has)window.__labels.addTo(window.__map); else if(!show&&has)window.__map.removeLayer(window.__labels);
+  }
   function initMap(){
     if(typeof L==='undefined'||!document.getElementById('map'))return;
-    window.__map=L.map('map',{worldCopyJump:true,attributionControl:false,scrollWheelZoom:false}).setView([28,5],2);
-    window.__tile=L.tileLayer(tileUrl(),{maxZoom:8,subdomains:'abcd'}).addTo(window.__map);
+    const B=[[-85,-180],[85,180]];
+    window.__map=L.map('map',{attributionControl:false,scrollWheelZoom:false,worldCopyJump:false,
+      minZoom:2,maxZoom:8,maxBounds:B,maxBoundsViscosity:1}).setView([30,5],2);
+    window.__tile=L.tileLayer(baseUrl(),{noWrap:true,bounds:B,subdomains:'abcd'}).addTo(window.__map);
+    window.__labels=L.tileLayer(labelUrl(),{noWrap:true,bounds:B,subdomains:'abcd'});
     window.__markers=L.layerGroup().addTo(window.__map);
+    window.__map.on('zoomend',syncLabels); syncLabels();
     setTimeout(()=>window.__map&&window.__map.invalidateSize(),400);
   }
   function plotMap(){
