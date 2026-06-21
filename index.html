@@ -71,7 +71,10 @@
   } else {
     const now = Math.floor(Date.now()/1000);
     const ts = p => p.last_seen_timestamp ?? p.lastSeenTimestamp ?? 0;
-    const isOn = p => (now - ts(p)) <= 900;            // seen within 15 min
+    // Judge freshness against the snapshot's own capture time, not the viewer's clock,
+    // so online/stale stays accurate however long after the pull you view it.
+    const ref = Math.max(window.NETWORK_GENERATED_TS||0, ...pods.map(ts)) || now;
+    const isOn = p => (ref - ts(p)) <= 900;            // seen within 15 min of capture
     const online = pods.filter(isOn).length;
     const versions = {};
     pods.forEach(p => { const v=p.version||"?"; versions[v]=(versions[v]||0)+1; });
@@ -81,7 +84,7 @@
     document.getElementById("updated").innerHTML = "Updated<br><b>"+(window.NETWORK_UPDATED||"—")+"</b>";
 
     const shortver = v => (v||"?").replace(/\.\d{8,}.*$/,"");
-    const rel = t => { if(!t) return "—"; const d=now-t;
+    const rel = t => { if(!t) return "—"; const d=ref-t;
       if(d<60) return d+"s ago"; if(d<3600) return Math.floor(d/60)+"m ago";
       if(d<86400) return Math.floor(d/3600)+"h ago"; return Math.floor(d/86400)+"d ago"; };
 
