@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulsar Network — Xandeum pNode Monitor</title>
+<style>
+  :root{
+    --bg:#0a1830; --panel:#0e2348; --line:#1d3a66; --ink:#eaf1fb; --mut:#93a7c7;
+    --teal:#41e0e8; --orange:#f59e2e; --good:#35d6a4; --warn:#ffb44d; --bad:#ff5d6c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#13315f 0%,var(--bg) 55%,#040a1a 100%);color:var(--ink);font:14px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:26px;min-height:100vh}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+  .mark{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0%,#ffe3b8 28%,#f59e2e 60%,rgba(217,124,12,0) 100%);box-shadow:0 0 0 2px #102a52,0 0 22px 4px rgba(245,158,46,.35);position:relative;flex:0 0 auto}
+  .mark::before,.mark::after{content:"";position:absolute;left:50%;top:50%;width:6px;height:78px;transform:translate(-50%,-50%) rotate(34deg);background:linear-gradient(180deg,rgba(65,224,232,0),rgba(65,224,232,.7),rgba(65,224,232,0));border-radius:6px}
+  .mark::after{transform:translate(-50%,-50%) rotate(-146deg)}
+  h1{font-size:22px;margin:0;letter-spacing:2px;font-weight:800}
+  .sub{color:var(--mut);font-size:12.5px;margin-top:2px}
+  .updated{margin-left:auto;text-align:right;color:var(--mut);font-size:12px}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+  .card{background:linear-gradient(180deg,var(--panel),#0b1d3b);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .card .k{color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
+  .card .v{font-size:26px;font-weight:800;margin-top:4px}
+  .grid{display:grid;grid-template-columns:1.1fr 2fr;gap:16px;align-items:start}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .box h3{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}
+  .vrow{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px}
+  .vrow .lab{width:120px;color:var(--ink);font-family:ui-monospace,Menlo,monospace}
+  .bar{height:14px;border-radius:7px;background:linear-gradient(90deg,var(--teal),var(--orange));min-width:3px}
+  .vrow .ct{color:var(--mut);width:42px;text-align:right}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap;font-size:12.5px}
+  th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px;background:#0c2044;position:sticky;top:0}
+  .scroll{max-height:60vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+  .addr{font-family:ui-monospace,Menlo,monospace}
+  .on{color:var(--good);font-weight:700}.off{color:var(--bad);font-weight:700}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(65,224,232,.14);color:var(--teal)}
+  .empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:30px;text-align:center;color:var(--mut)}
+  .empty code{background:#0c2044;padding:2px 7px;border-radius:6px;color:var(--teal)}
+  .foot{margin-top:18px;color:var(--mut);font-size:11.5px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="mark"></div>
+    <div>
+      <h1>PULSAR&nbsp;NETWORK</h1>
+      <div class="sub">Live Xandeum pNode monitor · community tool by Pulsar Nodes</div>
+    </div>
+    <div class="updated" id="updated"></div>
+  </div>
+  <div id="app"></div>
+  <div class="foot">
+    Data pulled from the Herrenberg gossip roster via pRPC <code style="font-family:ui-monospace">get_pods</code>. Community project, not affiliated with Xandeum.
+    Refresh by re-running <code style="font-family:ui-monospace">pull_network.sh</code>.
+  </div>
+
+<script src="network_data.js" onerror="window.__noData=1"></script>
+<script>
+  const app = document.getElementById("app");
+  const N = window.NETWORK;
+  const pods = (N && N.result && N.result.pods) ? N.result.pods : null;
+
+  if(!pods){
+    document.getElementById("updated").textContent = "";
+    app.innerHTML = `<div class="empty">
+      <div style="font-size:16px;color:var(--ink);margin-bottom:8px">No network data yet</div>
+      Run <code>bash pull_network.sh</code> on your Mac to pull the live gossip roster,<br>then reload this page.
+    </div>`;
+  } else {
+    const now = Math.floor(Date.now()/1000);
+    const ts = p => p.last_seen_timestamp ?? p.lastSeenTimestamp ?? 0;
+    const isOn = p => (now - ts(p)) <= 900;            // seen within 15 min
+    const online = pods.filter(isOn).length;
+    const versions = {};
+    pods.forEach(p => { const v=p.version||"?"; versions[v]=(versions[v]||0)+1; });
+    const vEntries = Object.entries(versions).sort((a,b)=>b[1]-a[1]);
+    const vMax = Math.max(...vEntries.map(e=>e[1]),1);
+
+    document.getElementById("updated").innerHTML = "Updated<br><b>"+(window.NETWORK_UPDATED||"—")+"</b>";
+
+    const shortver = v => (v||"?").replace(/\.\d{8,}.*$/,"");
+    const rel = t => { if(!t) return "—"; const d=now-t;
+      if(d<60) return d+"s ago"; if(d<3600) return Math.floor(d/60)+"m ago";
+      if(d<86400) return Math.floor(d/3600)+"h ago"; return Math.floor(d/86400)+"d ago"; };
+
+    app.innerHTML = `
+      <div class="cards">
+        <div class="card"><div class="k">pNodes in gossip</div><div class="v">${pods.length}</div></div>
+        <div class="card"><div class="k">Online</div><div class="v" style="color:var(--good)">${online}</div></div>
+        <div class="card"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${pods.length-online}</div></div>
+        <div class="card"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>
+      </div>
+      <div class="grid">
+        <div class="box"><h3>Version distribution</h3>
+          ${vEntries.map(([v,c])=>`<div class="vrow"><span class="lab">${v}</span>
+            <span class="bar" style="width:${Math.round(c/vMax*180)}px"></span><span class="ct">${c}</span></div>`).join("")}
+        </div>
+        <div class="box"><h3>Node roster (${pods.length})</h3>
+          <div class="scroll"><table>
+            <thead><tr><th>#</th><th>Address</th><th>Pubkey</th><th>Version</th><th>Last seen</th><th>Status</th></tr></thead>
+            <tbody>${pods.slice().sort((a,b)=>ts(b)-ts(a)).map((p,i)=>`<tr>
+              <td>${i+1}</td>
+              <td class="addr">${p.address||"—"}</td>
+              <td class="addr" title="${p.pubkey||''}">${p.pubkey?p.pubkey.slice(0,6)+"…"+p.pubkey.slice(-4):"—"}</td>
+              <td><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
+              <td>${rel(ts(p))}</td>
+              <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td>
+            </tr>`).join("")}</tbody>
+          </table></div>
+        </div>
+      </div>`;
+  }
+</script>
+</body>
+</html>
