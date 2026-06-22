@@ -126,7 +126,16 @@
   .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network .wrap{display:flex;flex-direction:column}
-  #network .sec-head{order:1}#network .cards{order:2}#network .net-grid{order:3}#network #map{order:4}
+  #network .sec-head{order:1}#network #storageCard{order:2}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}
+  .storagecard{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px}
+  .sc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .sc-pct{color:var(--teal);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+  .sc-fig{margin-top:8px;font-size:13px;color:var(--mut)}
+  .sc-fig b{font-size:26px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .sc-fig span b{font-size:13px}
+  .sc-bar{margin-top:12px;height:10px;border-radius:var(--pill);background:var(--surface-3);overflow:hidden}
+  .sc-fill{display:block;height:100%;border-radius:var(--pill);background:linear-gradient(90deg,var(--teal),var(--orange));background-size:200% 100%;width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1);animation:scshift 6s ease-in-out infinite}
+  @keyframes scshift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   .star{cursor:pointer;color:var(--mut2);font-size:14px;transition:color .15s;user-select:none}
   .star.on,.star:hover{color:var(--orange)}
   #mynodes h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
@@ -373,6 +382,7 @@
       <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
     </div>
     <div class="cards reveal" id="statCards"></div>
+    <div class="storagecard reveal" id="storageCard"></div>
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
@@ -500,6 +510,8 @@
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script src="network_history.js" onerror="window.__noHist=1"></script>
 <script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
+<script src="node_stats_p1main.js" onerror="window.__noStM=1"></script>
+<script src="node_stats_p1dev.js" onerror="window.__noStD=1"></script>
 <script src="https://plugin.jup.ag/plugin-v1.js" data-preload></script>
 <script>
   const root=document.documentElement; root.setAttribute('data-theme','dark');
@@ -612,6 +624,19 @@
     animateYuga();
     renderNetSpark();
     renderProof();
+    renderStorage();
+  }
+  function fmtBytes(b){if(b==null)return '…';const u=['B','KB','MB','GB','TB','PB'];let i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
+  function countUp(el,target,fmt){if(!el)return;target=target||0;const red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;if(red){el.textContent=fmt?fmt(target):Math.round(target);return;}const t0=performance.now(),dur=1100;(function s(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3),v=target*e;el.textContent=fmt?fmt(v):Math.round(v);if(p<1)requestAnimationFrame(s);})(t0);}
+  function renderStorage(){
+    const el=document.getElementById('storageCard');if(!el)return;
+    const S=window.NET_STORAGE;
+    if(!S||!S.committed){el.innerHTML='<div class="sc-top"><div class="k">Network storage</div></div><div class="sc-fig"><b>…</b> <span>committed</span></div><div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';return;}
+    const pct=Math.min(100,Math.round((S.used||0)/S.committed*100));
+    el.innerHTML='<div class="sc-top"><div class="k">Network storage</div><div class="sc-pct">'+pct+'% used</div></div>'
+      +'<div class="sc-fig"><b id="scUsed">0</b> <span>used of <b>'+fmtBytes(S.committed)+'</b> committed</span></div>'
+      +'<div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';
+    requestAnimationFrame(()=>{const f=el.querySelector('.sc-fill');if(f)f.style.width=pct+'%';countUp(el.querySelector('#scUsed'),S.used||0,fmtBytes);});
   }
   function renderProof(){
     const el=document.getElementById('pulsarProof');if(!el)return;
@@ -831,6 +856,14 @@
         +row('Last settled yuga',st.settledYuga>0?st.settledYuga:'—');
     }else if(window.STAKE){h+='<div class="mnote">No on-chain stake record — staking is on mainnet; devnet &amp; unstaked nodes have none.</div>';}
     else{h+='<div class="mnote">Loading on-chain data…</div>';}
+    var stt=(window.NODE_STATS||{})[pk];
+    if(stt){h+='<div class="msec">Node telemetry · live</div>'
+      +row('Storage committed',stt.committed!=null?Math.round(stt.committed/1073741824)+' GiB':'—')
+      +row('Data stored',stt.stored!=null?(stt.stored/1073741824).toFixed(2)+' GiB':'—')
+      +row('CPU',stt.cpu!=null?stt.cpu.toFixed(1)+'%':'—')
+      +row('RAM',(stt.ramUsed!=null&&stt.ramTotal)?((stt.ramUsed/1073741824).toFixed(1)+' / '+(stt.ramTotal/1073741824).toFixed(1)+' GB'):'—')
+      +row('Active streams',stt.streams!=null?stt.streams:'—')
+      +row('Current index',stt.index!=null?fmt(stt.index):'—');}
     document.getElementById('modalBody').innerHTML=h;
     document.getElementById('modalOverlay').classList.add('open');
     if(location.hash!=='#node='+pk){try{history.replaceState(null,'','#node='+pk);}catch(e){}}
