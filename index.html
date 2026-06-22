@@ -126,7 +126,7 @@
   .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network .wrap{display:flex;flex-direction:column}
-  #network .sec-head{order:1}#network #storageCard{order:2}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}
+  #network .sec-head{order:1}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}#network:not(.has-storage) th[data-k="storage"],#network:not(.has-storage) td[data-label="Storage"]{display:none}
   .storagecard{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px}
   .sc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .sc-pct{color:var(--teal);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
@@ -382,7 +382,7 @@
       <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
     </div>
     <div class="cards reveal" id="statCards"></div>
-    <div class="storagecard reveal" id="storageCard"></div>
+    <!-- network storage now renders as a stat tile (#ssTile) -->
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
@@ -507,6 +507,8 @@
 
 <script src="network_data.js" onerror="window.__noData=1"></script>
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
+<script src="net_storage.js" onerror="window.__noNS=1"></script>
+<script src="node_storage.js" onerror="window.__noCX=1"></script>
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script src="network_history.js" onerror="window.__noHist=1"></script>
 <script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
@@ -568,6 +570,7 @@
     const CXN=(window.CX&&window.CX[active])||{};
     const stoOf=p=>{const c=CXN[p.pubkey];return c&&c.storage!=null?c.storage:-1;};
     const stoCell=p=>{const c=CXN[p.pubkey];return (c&&c.storage!=null)?'<b>'+fmtBytes(c.storage)+'</b>':'<span style="color:var(--mut2)">—</span>';};
+    try{document.getElementById('network').classList.toggle('has-storage',Object.keys(CXN).length>0);}catch(e){}
     const UP=window['NODE_UPTIME'+(active==='mainnet'?'_MAINNET':'')]||{};
     const upOf=p=>UP[p.pubkey]==null?-1:UP[p.pubkey];
     const upCell=p=>{const u=UP[p.pubkey];if(u==null)return '<span style="color:var(--mut2)">—</span>';const c=u>=99?'var(--good)':u>=95?'var(--teal)':u>=80?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'">'+u+'%</b>';};
@@ -610,7 +613,8 @@
       <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
-      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>`;
+      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
+      <div class="stat" id="ssTile" style="display:none"><div class="k" id="ssK">Network storage</div><div class="v" id="ssVal" style="color:var(--teal)">…</div><div id="ssSub" style="font-size:12px;color:var(--mut);margin-top:3px"></div></div>`;
     const _tp=document.getElementById('tbPrice');
     if(_tp)_tp.innerHTML=window.XAND_PRICE?('<a href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><span class="tbp-sym">XAND</span> <b>$'+window.XAND_PRICE.usd.toFixed(5)+'</b> <span style="color:'+(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)')+';font-size:12px;font-weight:600">'+(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'%</span> <span class="tbp-chart">chart ↗</span></a>'):'';
 
@@ -636,26 +640,22 @@
   function fmtBytes(b){if(b==null)return '…';const u=['B','KB','MB','GB','TB','PB'];let i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
   function countUp(el,target,fmt){if(!el)return;target=target||0;const red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;if(red){el.textContent=fmt?fmt(target):Math.round(target);return;}const t0=performance.now(),dur=1100;(function s(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3),v=target*e;el.textContent=fmt?fmt(v):Math.round(v);if(p<1)requestAnimationFrame(s);})(t0);}
   function renderStorage(){
-    const el=document.getElementById('storageCard');if(!el)return;
+    const t=document.getElementById('ssTile');if(!t)return;
     const S=window.NET_STORAGE;
-    const lbl=(S&&S.src==='fleet')?'Pulsar fleet storage':'Network storage';
-    if(!S||!S.committed){el.innerHTML='<div class="sc-top"><div class="k">'+lbl+'</div></div><div class="sc-fig"><b>…</b> <span>committed</span></div><div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';return;}
-    const pr=(S.used||0)/S.committed*100;
-    const pct=Math.min(100,Math.round(pr));
-    const pctLabel=pr>=1?Math.round(pr)+'% used':(S.used?'<1% used':'0% used');
-    const meta=S.nodes?(' · '+fmt(S.nodes)+' pNodes'):'';
-    const w=Math.max(pct,S.used?1.5:0);
-    el.innerHTML='<div class="sc-top"><div class="k">'+lbl+'</div><div class="sc-pct">'+pctLabel+meta+'</div></div>'
-      +'<div class="sc-fig"><b id="scUsed">0</b> <span>used of <b>'+fmtBytes(S.committed)+'</b> committed</span></div>'
-      +'<div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';
-    requestAnimationFrame(()=>{const f=el.querySelector('.sc-fill');if(f)f.style.width=w+'%';countUp(el.querySelector('#scUsed'),S.used||0,fmtBytes);});
+    if(!S||!S.committed){t.style.display='none';return;}
+    t.style.display='';
+    const used=S.used||0,pr=used/S.committed*100;
+    const pct=pr>=1?Math.round(pr)+'%':(used?'<1%':'0%');
+    document.getElementById('ssK').textContent=(S.src==='fleet')?'Pulsar fleet storage':'Network storage';
+    const v=document.getElementById('ssVal'); countUp(v,S.committed,fmtBytes);
+    document.getElementById('ssSub').textContent=fmtBytes(used)+' used · '+pct+(S.nodes?(' · '+fmt(S.nodes)+' nodes'):'');
   }
   // Live network storage — sourced from the public ChillXand/Atlas dashboard API (CORS-open), client-side only.
   // Falls back to our own fleet (NODE_STATS) if their endpoint is unavailable.
   window.__NS=window.__NS||{};
   function nsParse(s){if(!s)return 0;const m=String(s).match(/([\d.]+)\s*([KMGTPE]?B)/i);if(!m)return 0;const u={B:1,KB:1024,MB:1048576,GB:1073741824,TB:1099511627776,PB:1125899906842624,EB:1152921504606846976};return parseFloat(m[1])*(u[m[2].toUpperCase()]||1);}
   function fleetStorage(){let c=0,u=0,n=0;const ST=window.NODE_STATS||{};Object.keys(ST).forEach(k=>{const s=ST[k]||{};if(s.committed){c+=s.committed;u+=(s.stored||0);n++;}});return c?{committed:c,used:u,nodes:n,src:'fleet'}:null;}
-  function ensureNetStorage(net){const c=window.__NS[net];if(c&&(Date.now()-c.updated<90000))return;loadNetStorage(net);}
+  function ensureNetStorage(net){const c=window.__NS[net];if(c&&c.committed)return;loadNetStorage(net);}
   async function loadNetStorage(net){
     try{
       const r=await fetch('https://control.chillxand.com/pnode-viz/podstat_api/podstat_dashboard.php?network='+encodeURIComponent(net),{cache:'no-store',referrerPolicy:'no-referrer'});
@@ -670,7 +670,7 @@
   // Per-node storage (+ network health) for ALL nodes — same CORS-open ChillXand/Atlas API. Enriches roster + node modal.
   window.CX=window.CX||{};
   async function ensureCXNodes(net){
-    const c=window.CX[net];if(c&&Date.now()-c._t<120000)return;
+    const c=window.CX[net];if(c&&Object.keys(c).length>1)return;
     try{
       const r=await fetch('https://control.chillxand.com/pnode-viz/podstat_api/podstat_nodes_list.php?network='+encodeURIComponent(net),{cache:'no-store',referrerPolicy:'no-referrer'});
       const d=await r.json();const m={_t:Date.now()};
