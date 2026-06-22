@@ -186,10 +186,11 @@
     #network table tr{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:10px;cursor:pointer}
     #network table tr:hover{background:var(--surface-1)}
     #network table td{border:none;padding:5px 0;white-space:normal;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;text-align:right}
-    #network table td.hide-sm,#network table td.hide-xs{display:flex}
+    #network table td.hide-sm,#network table td.hide-xs{display:none}
     #network table td::before{content:attr(data-label);color:var(--mut2);font-weight:500;font-size:12px;text-align:left}
     #network table td:first-child{justify-content:flex-start;gap:8px;font-weight:600;border-bottom:1px solid var(--hairline);padding-bottom:9px;margin-bottom:5px}
     #network table td:first-child::before{content:none}
+    #network tbody tr:nth-of-type(n+11):not(.showall){display:none}
   }
   .proof{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 auto 30px;max-width:780px}
   @media(max-width:720px){.proof{grid-template-columns:repeat(3,1fr)}}
