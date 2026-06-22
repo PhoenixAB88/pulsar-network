@@ -165,14 +165,31 @@
   @media(max-width:720px){.hide-sm{display:none}}
   @media(max-width:480px){.hide-xs{display:none}.wrap{padding:0 16px}.mbody{padding:4px 16px 20px}.mtitle{font-size:19px}}
   @media(max-width:780px){.netseg.mini button{padding:9px 15px;font-size:13px}}
+  .ctxbar{border-bottom:1px solid var(--hairline);background:var(--surface-1);position:relative;z-index:1}
+  .ctxbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:9px;padding-bottom:9px;font-size:13px;color:var(--mut)}
+  .ctxbar a{color:var(--teal);font-weight:500}
+  .ctxbar .pw{white-space:nowrap}
+  @media(max-width:640px){.ctxbar .pw{display:none}.ctxbar .wrap{font-size:12px;justify-content:center;text-align:center}}
   @media(max-width:560px){.nav .right .stake-top{display:none}}
   @media(max-width:480px){
     .nav{gap:10px}.nav .right{gap:8px}
     section{padding:44px 0}
     .sec-head{margin-bottom:22px}.sec-head p{font-size:13.5px}
-    .cards{gap:10px}.stat{padding:14px 15px}.stat .v{font-size:24px;margin-top:5px}.stat .k{font-size:11.5px}
+    .cards{grid-template-columns:repeat(3,1fr);gap:8px}.stat{padding:11px 9px}.stat .v{font-size:17px;margin-top:4px;letter-spacing:-.01em}.stat .k{font-size:10px;letter-spacing:0}
     .band{padding:24px 18px}.steps{gap:12px}
     .stake-big{padding:12px 22px;font-size:14px}
+  }
+  @media(max-width:600px){
+    #network .scroll{max-height:none;border:none;overflow:visible}
+    #network table thead{display:none}
+    #network table,#network table tbody,#network table tr,#network table td{display:block;width:auto}
+    #network table tr{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:10px;cursor:pointer}
+    #network table tr:hover{background:var(--surface-1)}
+    #network table td{border:none;padding:5px 0;white-space:normal;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13.5px;text-align:right}
+    #network table td.hide-sm,#network table td.hide-xs{display:flex}
+    #network table td::before{content:attr(data-label);color:var(--mut2);font-weight:500;font-size:12px;text-align:left}
+    #network table td:first-child{justify-content:flex-start;gap:8px;font-weight:600;border-bottom:1px solid var(--hairline);padding-bottom:9px;margin-bottom:5px}
+    #network table td:first-child::before{content:none}
   }
   .proof{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 auto 30px;max-width:780px}
   @media(max-width:720px){.proof{grid-template-columns:repeat(3,1fr)}}
@@ -281,7 +298,7 @@
       <span class="name"><b>PULSAR</b><span>NODES</span></span>
     </a>
     <nav class="links">
-      <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a>
+      <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
       <div class="netseg mini" id="topNet" role="tablist" aria-label="Switch network">
@@ -295,8 +312,15 @@
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a>
+  <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
   <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X ↗</a>
+</div>
+
+<div class="ctxbar">
+  <div class="wrap">
+    <span><b style="color:var(--ink);font-weight:600">Pulsar Nodes</b> — independent operator &amp; live monitor for the <a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum</a> decentralized storage network on Solana</span>
+    <a class="pw" href="https://www.xandeum.network/" target="_blank" rel="noopener">Powered by Xandeum ↗</a>
+  </div>
 </div>
 
 <a id="top"></a>
@@ -312,7 +336,7 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <h2>Live Network</h2>
-      <p>Straight from the Herrenberg gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
+      <p>Live status of the <a href="https://www.xandeum.network/" target="_blank" rel="noopener" style="color:var(--teal)">Xandeum</a> pNode network — from the gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
       <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
     </div>
     <div class="cards reveal" id="statCards"></div>
@@ -351,6 +375,7 @@
       <div class="fcard reveal"><div class="ic">🔗</div><h4>Smart-contract-native</h4><p>Solana programs read and write storage directly through pRPC, so dApps finally get real on-chain persistence.</p></div>
       <div class="fcard reveal"><div class="ic">⚡</div><h4>Random access</h4><p>Fast, addressable reads and writes — not just append-only blobs — unlocking a new class of storage-enabled apps.</p></div>
     </div>
+    <div style="text-align:center;margin-top:26px"><a class="btn ghost" href="https://www.xandeum.network/" target="_blank" rel="noopener">Learn about Xandeum ↗</a></div>
   </div>
 </section>
 
@@ -499,14 +524,14 @@
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     meta.textContent=rows.length+' of '+pods.length;
     body.innerHTML=rows.map((p,i)=>`<tr tabindex="0" onclick="openNode('${p.pubkey}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${p.pubkey}')}">
-      <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" role="button" aria-label="Star node" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr hide-sm">${p.address||'—'}</td>
-      <td class="addr hide-sm" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
-      <td>${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
-      <td class="hide-sm"><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
-      <td class="snum">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
-      <td class="snum">${upCell(p)}</td>
-      <td class="hide-xs">${rel(ts(p))}</td>
-      <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
+      <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" role="button" aria-label="Star node" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr hide-sm" data-label="Address">${p.address||'—'}</td>
+      <td class="addr hide-sm" data-label="Pubkey" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
+      <td data-label="Location">${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
+      <td class="hide-sm" data-label="Version"><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
+      <td class="snum" data-label="Staked">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
+      <td class="snum" data-label="Uptime">${upCell(p)}</td>
+      <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
+      <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
       ||`<tr><td colspan="9" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
