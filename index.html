@@ -148,8 +148,16 @@
   .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px}
   .stat .k{color:var(--mut2);font-size:12px;letter-spacing:.01em;font-weight:500}
   .stat .v{font-size:clamp(22px,2.3vw,28px);font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
-  .qlink{display:inline-block;margin-top:7px;font-size:11.5px;color:var(--mut2);transition:color .15s}
-  .qlink:hover{color:var(--teal)}
+  .qlink{display:inline-block;margin-top:7px;font-size:11.5px;color:var(--teal);transition:color .15s,text-shadow .15s;animation:qglow 2.4s ease-in-out infinite}
+  .qlink:hover{color:#eafdff;text-shadow:0 0 14px rgba(70,230,239,.85)}
+  @keyframes qglow{0%,100%{text-shadow:0 0 5px rgba(70,230,239,.30)}50%{text-shadow:0 0 13px rgba(70,230,239,.70)}}
+  .yuga-box{text-align:center}
+  .yuga-dial{position:relative;width:124px;height:124px;margin:14px auto 12px;display:grid;place-items:center}
+  .yuga-dial::after{content:"";position:absolute;inset:0;border-radius:50%;border:5px solid var(--surface-2);z-index:0}
+  .yuga-dial::before{content:"";position:absolute;inset:0;border-radius:50%;padding:5px;background:conic-gradient(from 0deg,var(--orange),var(--teal) 35%,transparent 62%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;z-index:1;animation:yspin 5.5s linear infinite}
+  .yuga-num{position:relative;z-index:2;font-size:40px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+  @keyframes yspin{to{transform:rotate(360deg)}}
+  .yuga-sub{color:var(--mut2);font-size:12.5px;margin-top:2px}
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
@@ -290,7 +298,7 @@
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
-        <div class="box"><h3>Top countries</h3><div id="geodist"></div></div>
+        <div class="box yuga-box"><h3>Current yuga</h3><div class="yuga-dial"><div class="yuga-num" id="yugaNum">…</div></div><div class="yuga-sub">Network epoch — rewards settle each yuga</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
         <div class="box"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
       </div>
       <div class="box">
@@ -499,7 +507,6 @@
       <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      <div class="stat"><div class="k">Current yuga</div><div class="v">${window.CUR_YUGA||'…'}</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
       <div class="stat"><div class="k">XAND price</div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></div>`;
 
     renderCountries();
@@ -513,6 +520,17 @@
     renderStakeNodes();
     renderLeaderboard();
     renderMyNodes();
+    animateYuga();
+  }
+  function animateYuga(){
+    const el=document.getElementById('yugaNum'); if(!el)return;
+    const target=window.CUR_YUGA||0;
+    if(!target){el.textContent='…';return;}
+    if(el.dataset.done==target)return;
+    const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(reduce){el.textContent=target;el.dataset.done=target;return;}
+    const t0=performance.now(),dur=900;
+    (function step(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e);if(p<1)requestAnimationFrame(step);else{el.textContent=target;el.dataset.done=target;}})(t0);
   }
   function renderLeaderboard(){
     const el=document.getElementById('leaderboard'); if(!el)return;
