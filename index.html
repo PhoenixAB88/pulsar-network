@@ -165,6 +165,15 @@
   @media(max-width:720px){.hide-sm{display:none}}
   @media(max-width:480px){.hide-xs{display:none}.wrap{padding:0 16px}.mbody{padding:4px 16px 20px}.mtitle{font-size:19px}}
   @media(max-width:780px){.netseg.mini button{padding:9px 15px;font-size:13px}}
+  @media(max-width:560px){.nav .right .stake-top{display:none}}
+  @media(max-width:480px){
+    .nav{gap:10px}.nav .right{gap:8px}
+    section{padding:44px 0}
+    .sec-head{margin-bottom:22px}.sec-head p{font-size:13.5px}
+    .cards{gap:10px}.stat{padding:14px 15px}.stat .v{font-size:24px;margin-top:5px}.stat .k{font-size:11.5px}
+    .band{padding:24px 18px}.steps{gap:12px}
+    .stake-big{padding:12px 22px;font-size:14px}
+  }
   .proof{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 auto 30px;max-width:780px}
   @media(max-width:720px){.proof{grid-template-columns:repeat(3,1fr)}}
   .pf{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:13px 8px;text-align:center}
@@ -279,7 +288,7 @@
         <button data-net="devnet">Devnet</button>
         <button data-net="mainnet" class="on">Mainnet</button>
       </div>
-      <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
+      <a class="btn primary stake-top" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
       <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
