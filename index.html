@@ -242,8 +242,8 @@
     </nav>
     <div class="right">
       <div class="netseg mini" id="topNet" role="tablist" aria-label="Switch network">
-        <button data-net="devnet" class="on">Devnet</button>
-        <button data-net="mainnet">Mainnet</button>
+        <button data-net="devnet">Devnet</button>
+        <button data-net="mainnet" class="on">Mainnet</button>
       </div>
       <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
       <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
@@ -416,7 +416,7 @@
     devnet:  mkSet(window.NETWORK,         window.NETWORK_GENERATED_TS,         window.NETWORK_UPDATED),
     mainnet: mkSet(window.NETWORK_MAINNET, window.NETWORK_MAINNET_GENERATED_TS, window.NETWORK_MAINNET_UPDATED)
   };
-  let active='devnet';
+  let active='mainnet';
   window.sortK='seen'; window.sortD=-1;
   (async function loadPrice(){try{
     const j=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());
