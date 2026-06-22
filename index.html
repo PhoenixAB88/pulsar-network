@@ -410,7 +410,7 @@
         <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
         <a class="btn ghost" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Questions? DM us</a>
       </div>
-      <div style="margin-top:14px;font-size:13px;color:var(--mut)">Don't hold XAND yet? <a href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener" style="color:var(--teal);font-weight:500">Buy / trade XAND ↗</a></div>
+      <div style="margin-top:14px;font-size:13px;color:var(--mut)">Don't hold XAND yet? <a href="https://jup.ag/swap/SOL-XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx" onclick="openSwap();return false;" style="color:var(--teal);font-weight:500">Buy / trade XAND</a> <span style="color:var(--mut2);font-size:11.5px">(incl. 1% Pulsar fee)</span></div>
       <div class="snodes" id="stakeNodes"></div>
       <p style="font-size:12.5px;color:var(--mut2);margin:18px auto 0;max-width:60ch">Our 6 mainnet pNodes — copy a pubkey to find it on the portal. Live staked amounts update automatically.</p>
     </div>
@@ -425,7 +425,7 @@
       <a class="ccard reveal" href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener"><div class="ic">⌥</div><b>GitHub</b><small>Source &amp; data</small></a>
       <a class="ccard reveal" href="https://www.xandeum.network/" target="_blank" rel="noopener"><div class="ic">🌐</div><b>Xandeum</b><small>The network</small></a>
       <a class="ccard reveal" href="https://docs.xandeum.network/" target="_blank" rel="noopener"><div class="ic">📖</div><b>Docs</b><small>How it works</small></a>
-      <a class="ccard reveal" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="ic">📈</div><b>Trade XAND</b><small>Buy / sell</small></a>
+      <a class="ccard reveal" href="https://jup.ag/swap/SOL-XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx" onclick="openSwap();return false;"><div class="ic">📈</div><b>Trade XAND</b><small>Swap here (1% fee)</small></a>
     </div>
   </div>
 </section>
@@ -470,6 +470,7 @@
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script src="network_history.js" onerror="window.__noHist=1"></script>
 <script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
+<script src="https://plugin.jup.ag/plugin-v1.js" data-preload></script>
 <script>
   const root=document.documentElement; root.setAttribute('data-theme','dark');
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
@@ -564,7 +565,7 @@
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      <a class="stat statlink" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="k">XAND price <span style="color:var(--teal);font-weight:600">· Trade ↗</span></div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></a>`;
+      <a class="stat statlink" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="k">XAND price <span style="color:var(--teal);font-weight:600">· Chart ↗</span></div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></a>`;
 
     renderCountries();
 
@@ -590,6 +591,16 @@
     const items=[['6','licensed pairs'],['12','EU machines'],['16×','Deep South boost'],['10%','fair commission'],[staked?fmtC(staked):'…','XAND staked to us'],[avgUp!=null?avgUp+'%':'live','avg uptime']];
     el.innerHTML=items.map(x=>'<div class="pf"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
   }
+  // Embedded Jupiter swap — fees (1%) routed to Pulsar's referral account. Falls back to a deep link if the plugin fails to load.
+  const XAND_MINT='XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx',SOL_MINT='So11111111111111111111111111111111111111112',PULSAR_REF='DHLwdfPg8doM2KpBzeeFrZ3MRtVAMF13cWSLpw7EgxVx';
+  window.openSwap=function(out){
+    out=out||XAND_MINT;
+    if(window.Jupiter&&window.Jupiter.init){
+      window.Jupiter.init({displayMode:'modal',formProps:{initialInputMint:SOL_MINT,initialOutputMint:out,referralAccount:PULSAR_REF,referralFee:100}});
+    }else{
+      window.open('https://jup.ag/swap/SOL-'+out,'_blank','noopener');
+    }
+  };
   function animateYuga(){
     const el=document.getElementById('yugaNum'); if(!el)return;
     const target=window.CUR_YUGA||0;
