@@ -176,6 +176,11 @@
   .tb-txt b{display:block;font-weight:600;font-size:20px;letter-spacing:-.02em}
   .tb-txt span{color:var(--mut2);font-size:7px}
   .tb-cta{display:flex;gap:10px;flex-wrap:wrap}
+  .tb-price{position:relative;z-index:1;font-size:14px;color:var(--mut);white-space:nowrap}
+  .tb-price .tbp-sym{color:var(--mut2);font-size:12px}
+  .tb-price b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .tb-price .tbp-chart{color:var(--teal);font-size:11px}
+  @media(max-width:560px){.tb-price{margin:2px 0}}
   @media(max-width:560px){.tradebar{flex-direction:column;align-items:stretch;text-align:center}.tb-cta{justify-content:center}}
   .tradebar .tb-txt,.tradebar .tb-cta{position:relative;z-index:1}
   .tradebar::before{content:"";position:absolute;top:0;left:-60%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-18deg);z-index:0;pointer-events:none;animation:tbshine 6.5s ease-in-out infinite}
@@ -344,6 +349,7 @@
 
 <div class="wrap"><div class="tradebar">
   <div class="tb-txt"><b>Trade on Solana</b><span>Instant swaps at the best price via Jupiter · 1% fee (0.8% supports Pulsar)</span></div>
+  <div class="tb-price" id="tbPrice"></div>
   <div class="tb-cta">
     <button class="btn primary" onclick="openSwap()">Buy XAND</button>
     <button class="btn tb-sol" onclick="openSwap('So11111111111111111111111111111111111111112','EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')">Buy SOL</button>
@@ -588,8 +594,9 @@
       <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
-      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      <a class="stat statlink" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="k">XAND price <span style="color:var(--teal);font-weight:600">· Chart ↗</span></div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></a>`;
+      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>`;
+    const _tp=document.getElementById('tbPrice');
+    if(_tp)_tp.innerHTML=window.XAND_PRICE?('<a href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><span class="tbp-sym">XAND</span> <b>$'+window.XAND_PRICE.usd.toFixed(5)+'</b> <span style="color:'+(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)')+';font-size:12px;font-weight:600">'+(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'%</span> <span class="tbp-chart">chart ↗</span></a>'):'';
 
     renderCountries();
 
