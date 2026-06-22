@@ -616,7 +616,7 @@
     el.innerHTML=items.map(x=>'<div class="pf"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
   }
   // Embedded Jupiter swap — fees (1%) routed to Pulsar's referral account. Falls back to a deep link if the plugin fails to load.
-  const XAND_MINT='XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx',SOL_MINT='So11111111111111111111111111111111111111112',PULSAR_REF='DHLwdfPg8doM2KpBzeeFrZ3MRtVAMF13cWSLpw7EgxVx';
+  const XAND_MINT='XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx',SOL_MINT='So11111111111111111111111111111111111111112',PULSAR_REF='DZ64ysFXnaNhVk1LVNv56iKj7YhFW3qV7f2H1ygKM1n7';
   window.openSwap=function(out,inp){
     out=out||XAND_MINT; inp=inp||SOL_MINT;
     if(window.Jupiter&&window.Jupiter.init){
