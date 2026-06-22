@@ -172,8 +172,8 @@
   .ctxbar a{color:var(--teal);font-weight:500}
   .ctxbar .pw{white-space:nowrap}
   @media(max-width:640px){.ctxbar .pw{display:none}.ctxbar .wrap{font-size:12px;justify-content:center;text-align:center}}
-  .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:16px 20px;margin-top:18px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
-  .tb-txt b{display:block;font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:9px 18px;margin-top:16px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
+  .tb-txt b{display:block;font-weight:600;font-size:20px;letter-spacing:-.02em}
   .tb-txt span{color:var(--mut2);font-size:7px}
   .tb-cta{display:flex;gap:10px;flex-wrap:wrap}
   @media(max-width:560px){.tradebar{flex-direction:column;align-items:stretch;text-align:center}.tb-cta{justify-content:center}}
@@ -185,6 +185,9 @@
   @keyframes tbshift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
   @keyframes tbshine{0%{left:-60%}60%{left:130%}100%{left:130%}}
   @keyframes tbglow{0%,100%{box-shadow:0 0 0 0 rgba(247,169,59,0)}50%{box-shadow:0 0 18px 0 rgba(247,169,59,.5)}}
+  .tradebar .btn.tb-sol{background:#4b9bff;color:#08203f;border:1px solid transparent;font-weight:600;animation:tbglowblue 2.6s ease-in-out infinite}
+  .tradebar .btn.tb-sol:hover{background:#6fb0ff}
+  @keyframes tbglowblue{0%,100%{box-shadow:0 0 0 0 rgba(75,155,255,0)}50%{box-shadow:0 0 18px 0 rgba(75,155,255,.55)}}
   @media(max-width:560px){.nav .right .stake-top{display:none}}
   @media(max-width:480px){
     .nav{gap:10px}.nav .right{gap:8px}
@@ -213,7 +216,7 @@
   .pf b{display:block;font-size:19px;font-weight:600;color:var(--orange);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
   .pf span{display:block;color:var(--mut2);font-size:11px;margin-top:3px;line-height:1.3}
 
-  .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px}
+  .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px;align-items:start}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
   #map{height:380px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--hairline);margin-top:16px;background:var(--surface-1);z-index:1}
   .leaflet-container{background:var(--surface-1);font:13px inherit}
@@ -252,7 +255,7 @@
   .toolbar input:focus,.toolbar select:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--glow)}
   .toolbar input{flex:1;min-width:180px}
   .toolbar .meta{margin-left:auto;color:var(--mut2);font-size:12.5px;align-self:center;font-weight:500}
-  .scroll{max-height:560px;overflow:auto;border:1px solid var(--hairline);border-radius:var(--r-lg)}
+  .scroll{max-height:78vh;overflow:auto;border:1px solid var(--hairline);border-radius:var(--r-lg)}
   .scroll::-webkit-scrollbar{width:10px;height:10px}.scroll::-webkit-scrollbar-thumb{background:var(--hairline-2);border-radius:8px}
   table{width:100%;border-collapse:collapse}
   th,td{padding:11px 13px;text-align:left;white-space:nowrap;font-size:13px;border-bottom:1px solid var(--hairline)}
@@ -343,7 +346,7 @@
   <div class="tb-txt"><b>Trade on Solana</b><span>Instant swaps at the best price via Jupiter · 1% supports Pulsar</span></div>
   <div class="tb-cta">
     <button class="btn primary" onclick="openSwap()">Buy XAND</button>
-    <button class="btn ghost" onclick="openSwap('So11111111111111111111111111111111111111112','EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')">Buy SOL</button>
+    <button class="btn tb-sol" onclick="openSwap('So11111111111111111111111111111111111111112','EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')">Buy SOL</button>
   </div>
 </div></div>
 
