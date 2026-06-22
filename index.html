@@ -504,7 +504,6 @@
       <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
       <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
-      <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
       <div class="stat"><div class="k">XAND price</div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></div>`;
