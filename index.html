@@ -398,7 +398,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address">Address</th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort hide-sm" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="uptime">Uptime</th><th class="sort hide-xs" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
+            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address">Address</th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort hide-sm" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort hide-sm" data-k="storage">Storage</th><th class="sort" data-k="uptime">Uptime</th><th class="sort hide-xs" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -565,10 +565,13 @@
       return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q)||(p.cc||'').toLowerCase().includes(q);
     });
     const stakeOf=p=>(window.STAKE&&window.STAKE[p.pubkey])?window.STAKE[p.pubkey].stake:-1;
+    const CXN=(window.CX&&window.CX[active])||{};
+    const stoOf=p=>{const c=CXN[p.pubkey];return c&&c.storage!=null?c.storage:-1;};
+    const stoCell=p=>{const c=CXN[p.pubkey];return (c&&c.storage!=null)?'<b>'+fmtBytes(c.storage)+'</b>':'<span style="color:var(--mut2)">—</span>';};
     const UP=window['NODE_UPTIME'+(active==='mainnet'?'_MAINNET':'')]||{};
     const upOf=p=>UP[p.pubkey]==null?-1:UP[p.pubkey];
     const upCell=p=>{const u=UP[p.pubkey];if(u==null)return '<span style="color:var(--mut2)">—</span>';const c=u>=99?'var(--good)':u>=95?'var(--teal)':u>=80?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'">'+u+'%</b>';};
-    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0)};
+    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0),storage:(a,b)=>stoOf(a)-stoOf(b)};
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     const isMobile=window.matchMedia&&window.matchMedia('(max-width:600px)').matches;
@@ -581,11 +584,12 @@
       <td data-label="Location">${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
       <td class="hide-sm" data-label="Version"><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
       <td class="snum" data-label="Staked">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
+      <td class="snum hide-sm" data-label="Storage">${stoCell(p)}</td>
       <td class="snum" data-label="Uptime">${upCell(p)}</td>
       <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
-      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="9" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
-      ||`<tr><td colspan="9" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
+      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="10" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
+      ||`<tr><td colspan="10" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
   function renderNetwork(){
@@ -624,19 +628,56 @@
     animateYuga();
     renderNetSpark();
     renderProof();
+    window.NET_STORAGE=(window.__NS&&window.__NS[active])||window.NET_STORAGE||null;
     renderStorage();
+    ensureNetStorage(active);
+    ensureCXNodes(active);
   }
   function fmtBytes(b){if(b==null)return '…';const u=['B','KB','MB','GB','TB','PB'];let i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
   function countUp(el,target,fmt){if(!el)return;target=target||0;const red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;if(red){el.textContent=fmt?fmt(target):Math.round(target);return;}const t0=performance.now(),dur=1100;(function s(t){const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3),v=target*e;el.textContent=fmt?fmt(v):Math.round(v);if(p<1)requestAnimationFrame(s);})(t0);}
   function renderStorage(){
     const el=document.getElementById('storageCard');if(!el)return;
     const S=window.NET_STORAGE;
-    if(!S||!S.committed){el.innerHTML='<div class="sc-top"><div class="k">Network storage</div></div><div class="sc-fig"><b>…</b> <span>committed</span></div><div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';return;}
-    const pct=Math.min(100,Math.round((S.used||0)/S.committed*100));
-    el.innerHTML='<div class="sc-top"><div class="k">Network storage</div><div class="sc-pct">'+pct+'% used</div></div>'
+    const lbl=(S&&S.src==='fleet')?'Pulsar fleet storage':'Network storage';
+    if(!S||!S.committed){el.innerHTML='<div class="sc-top"><div class="k">'+lbl+'</div></div><div class="sc-fig"><b>…</b> <span>committed</span></div><div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';return;}
+    const pr=(S.used||0)/S.committed*100;
+    const pct=Math.min(100,Math.round(pr));
+    const pctLabel=pr>=1?Math.round(pr)+'% used':(S.used?'<1% used':'0% used');
+    const meta=S.nodes?(' · '+fmt(S.nodes)+' pNodes'):'';
+    const w=Math.max(pct,S.used?1.5:0);
+    el.innerHTML='<div class="sc-top"><div class="k">'+lbl+'</div><div class="sc-pct">'+pctLabel+meta+'</div></div>'
       +'<div class="sc-fig"><b id="scUsed">0</b> <span>used of <b>'+fmtBytes(S.committed)+'</b> committed</span></div>'
       +'<div class="sc-bar"><span class="sc-fill" style="width:0"></span></div>';
-    requestAnimationFrame(()=>{const f=el.querySelector('.sc-fill');if(f)f.style.width=pct+'%';countUp(el.querySelector('#scUsed'),S.used||0,fmtBytes);});
+    requestAnimationFrame(()=>{const f=el.querySelector('.sc-fill');if(f)f.style.width=w+'%';countUp(el.querySelector('#scUsed'),S.used||0,fmtBytes);});
+  }
+  // Live network storage — sourced from the public ChillXand/Atlas dashboard API (CORS-open), client-side only.
+  // Falls back to our own fleet (NODE_STATS) if their endpoint is unavailable.
+  window.__NS=window.__NS||{};
+  function nsParse(s){if(!s)return 0;const m=String(s).match(/([\d.]+)\s*([KMGTPE]?B)/i);if(!m)return 0;const u={B:1,KB:1024,MB:1048576,GB:1073741824,TB:1099511627776,PB:1125899906842624,EB:1152921504606846976};return parseFloat(m[1])*(u[m[2].toUpperCase()]||1);}
+  function fleetStorage(){let c=0,u=0,n=0;const ST=window.NODE_STATS||{};Object.keys(ST).forEach(k=>{const s=ST[k]||{};if(s.committed){c+=s.committed;u+=(s.stored||0);n++;}});return c?{committed:c,used:u,nodes:n,src:'fleet'}:null;}
+  function ensureNetStorage(net){const c=window.__NS[net];if(c&&(Date.now()-c.updated<90000))return;loadNetStorage(net);}
+  async function loadNetStorage(net){
+    try{
+      const r=await fetch('https://control.chillxand.com/pnode-viz/podstat_api/podstat_dashboard.php?network='+encodeURIComponent(net),{cache:'no-store',referrerPolicy:'no-referrer'});
+      const d=await r.json();
+      if(!d||!d.stats||!d.stats.total_storage)throw 0;
+      window.__NS[net]={committed:nsParse(d.stats.total_storage),used:nsParse(d.stats.total_storage_used),nodes:d.stats.total_nodes,src:'network',updated:Date.now()};
+    }catch(e){
+      const f=fleetStorage();if(f){f.updated=Date.now();window.__NS[net]=f;}
+    }
+    if(active===net&&window.__NS[net]){window.NET_STORAGE=window.__NS[net];renderStorage();}
+  }
+  // Per-node storage (+ network health) for ALL nodes — same CORS-open ChillXand/Atlas API. Enriches roster + node modal.
+  window.CX=window.CX||{};
+  async function ensureCXNodes(net){
+    const c=window.CX[net];if(c&&Date.now()-c._t<120000)return;
+    try{
+      const r=await fetch('https://control.chillxand.com/pnode-viz/podstat_api/podstat_nodes_list.php?network='+encodeURIComponent(net),{cache:'no-store',referrerPolicy:'no-referrer'});
+      const d=await r.json();const m={_t:Date.now()};
+      (d.nodes||[]).forEach(n=>{if(n.pubkey)m[n.pubkey]={storage:n.storage,health:n.health};});
+      window.CX[net]=m;
+      if(active===net)renderRoster();
+    }catch(e){}
   }
   function renderProof(){
     const el=document.getElementById('pulsarProof');if(!el)return;
@@ -856,6 +897,8 @@
         +row('Last settled yuga',st.settledYuga>0?st.settledYuga:'—');
     }else if(window.STAKE){h+='<div class="mnote">No on-chain stake record — staking is on mainnet; devnet &amp; unstaked nodes have none.</div>';}
     else{h+='<div class="mnote">Loading on-chain data…</div>';}
+    var cxset=(window.CX&&window.CX[inMain?'mainnet':'devnet'])||{};var cxd=cxset[pk];
+    if(cxd&&cxd.storage!=null){h+='<div class="msec">Storage</div>'+row('Committed',fmtBytes(cxd.storage))+(cxd.health!=null?row('Network health',cxd.health+'%'):'');}
     var stt=(window.NODE_STATS||{})[pk];
     if(stt){h+='<div class="msec">Node telemetry · live</div>'
       +row('Storage committed',stt.committed!=null?Math.round(stt.committed/1073741824)+' GiB':'—')
