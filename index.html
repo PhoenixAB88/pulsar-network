@@ -72,7 +72,8 @@
   .mobile-menu a{padding:13px 12px;border-radius:var(--r-md);color:var(--ink);font-weight:500}
   .mobile-menu a:hover{background:var(--surface-1)}
   .mobile-menu.open{display:flex}
-  @media(max-width:780px){nav.links{display:none} .nav .right .btn.primary{display:none} .menu-btn{display:grid;place-items:center}}
+  @media(max-width:780px){nav.links{display:none} .nav .right .xhide{display:none} .menu-btn{display:grid;place-items:center}}
+  @media(max-width:480px){.brand .name{display:none}}
 
   .logo{border-radius:50%;display:block;flex:0 0 auto}
   .hero-logo{width:52px;height:52px;margin:0 auto 12px;border-radius:50%;box-shadow:0 0 0 1px var(--hairline-2)}
@@ -230,7 +231,8 @@
         <button data-net="devnet" class="on">Devnet</button>
         <button data-net="mainnet">Mainnet</button>
       </div>
-      <a class="btn primary" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
+      <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
+      <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -241,19 +243,6 @@
 </div>
 
 <a id="top"></a>
-<div class="hero">
-  <div class="wrap">
-    <img class="logo hero-logo" src="logo.png" alt="Pulsar Nodes" width="88" height="88">
-    <span class="eyebrow"><span class="dotpulse"></span> Live community monitor</span>
-    <h1>The Xandeum pNode network, <span class="grad">at a glance</span>.</h1>
-    <p class="lead">A fast, real-time view of every pNode in the gossip network — online status, software versions and health. Built and operated by Pulsar Nodes.</p>
-    <div class="cta">
-      <a class="btn primary" href="#network">Explore the network</a>
-      <a class="btn ghost" href="#stake">Stake with Pulsar</a>
-    </div>
-    <div class="chips" id="heroChips"></div>
-  </div>
-</div>
 
 <section id="network">
   <div class="wrap">
@@ -323,7 +312,7 @@
       <h2>Ready to stake?</h2>
       <p>Delegation is live. Stake your XAND to a Pulsar pNode on the official portal — Match Delegation doubles it 1:1, and you earn STOINC at a fair 10% commission.</p>
       <div class="cta" style="justify-content:center">
-        <a class="btn primary" href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
+        <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
         <a class="btn ghost" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Questions? DM us</a>
       </div>
       <div class="snodes" id="stakeNodes"></div>
@@ -449,10 +438,7 @@
     document.getElementById('updatedAt').innerHTML = pods.length ? ('updated '+(S.updated||'—'))
       : (active==='mainnet' ? 'mainnet roster not available yet' : 'no data yet');
 
-    document.getElementById('heroChips').innerHTML=pods.length?`
-      <div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>
-      <div class="chip"><div><b style="color:var(--good)">${fmt(online)}</b><small>online now</small></div></div>
-      <div class="chip"><div><b>${vEntries.length}</b><small>software versions</small></div></div>`:'';
+    const _hc=document.getElementById('heroChips'); if(_hc)_hc.innerHTML=pods.length?`<div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>`:'';
 
     document.getElementById('statCards').innerHTML=`
       <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
