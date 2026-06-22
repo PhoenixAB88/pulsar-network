@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pulsar Nodes — Live Xandeum pNode Network Monitor</title>
-<meta name="description" content="A fast, community-built real-time monitor of the Xandeum pNode network. Live gossip roster, version distribution and node status — by Pulsar Nodes.">
+<meta name="description" content="Live real-time monitor of the Xandeum pNode network — node status, locations, software versions, on-chain stake and uptime. Stake XAND with Pulsar Nodes, a proven high-boost operator.">
+<meta name="keywords" content="Xandeum, pNode, XAND, Solana storage, STOINC, staking, pNode monitor, Pulsar Nodes, node uptime">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='8' fill='%23f7a93b'/><line x1='3' y1='8' x2='29' y2='24' stroke='%233fe7ef' stroke-width='3'/><line x1='3' y1='24' x2='29' y2='8' stroke='%233fe7ef' stroke-width='3'/><circle cx='16' cy='16' r='3.4' fill='%23fff'/></svg>">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pulsar Nodes — Live Xandeum pNode Network Monitor">
@@ -19,6 +20,7 @@
 <meta name="twitter:title" content="Pulsar Nodes — Live Xandeum pNode Network Monitor">
 <meta name="twitter:description" content="A fast, real-time monitor of the Xandeum pNode network — by Pulsar Nodes.">
 <meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/","description":"Live real-time monitor of the Xandeum pNode network — node status, locations, software versions, on-chain stake and uptime.","publisher":{"@type":"Organization","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/","sameAs":["https://x.com/PulsarNodes","https://github.com/PhoenixAB88/pulsar-network"]}}</script>
 <meta name="theme-color" content="#0a1426">
 <meta property="og:image:alt" content="Pulsar Nodes — live Xandeum pNode network monitor">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -158,6 +160,16 @@
   .yuga-num{position:relative;z-index:2;font-size:40px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
   @keyframes yspin{to{transform:rotate(360deg)}}
   .yuga-sub{color:var(--mut2);font-size:12.5px;margin-top:2px}
+  section[id]{scroll-margin-top:74px}
+  tbody tr:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+  @media(max-width:720px){.hide-sm{display:none}}
+  @media(max-width:480px){.hide-xs{display:none}.wrap{padding:0 16px}.mbody{padding:4px 16px 20px}.mtitle{font-size:19px}}
+  @media(max-width:780px){.netseg.mini button{padding:9px 15px;font-size:13px}}
+  .proof{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 auto 30px;max-width:780px}
+  @media(max-width:720px){.proof{grid-template-columns:repeat(3,1fr)}}
+  .pf{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:13px 8px;text-align:center}
+  .pf b{display:block;font-size:19px;font-weight:600;color:var(--orange);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .pf span{display:block;color:var(--mut2);font-size:11px;margin-top:3px;line-height:1.3}
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
@@ -310,7 +322,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort" data-k="address">Address</th><th>Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="uptime">Uptime</th><th class="sort" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
+            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address">Address</th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort hide-sm" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="uptime">Uptime</th><th class="sort hide-xs" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -339,6 +351,7 @@
       <h2>Stake your XAND with <span class="grad">a proven operator</span></h2>
       <p>Back Pulsar's pNodes and your stake works twice as hard — the Foundation matches outside delegation 1:1, on a fleet running the highest boost era.</p>
     </div>
+    <div class="proof reveal" id="pulsarProof"></div>
 
     <div class="feat">
       <div class="fcard reveal"><div class="ic">✦</div><h4>Your stake, doubled</h4><p>Match Delegation has the Xandeum Foundation match community stake 1:1 on qualifying nodes — so delegating to Pulsar puts twice the stake to work for you.</p></div>
@@ -407,7 +420,7 @@
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" role="dialog" aria-modal="true">
-    <div class="top"><button class="x" id="modalClose" aria-label="Close">✕</button></div>
+    <div class="top"><button class="x" id="modalShare" title="Copy shareable link" aria-label="Copy shareable link">🔗</button><button class="x" id="modalClose" aria-label="Close">✕</button></div>
     <div class="mbody" id="modalBody"></div>
   </div>
 </div>
@@ -476,14 +489,14 @@
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     meta.textContent=rows.length+' of '+pods.length;
-    body.innerHTML=rows.map((p,i)=>`<tr onclick="openNode('${p.pubkey}')">
-      <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr">${p.address||'—'}</td>
-      <td class="addr" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
+    body.innerHTML=rows.map((p,i)=>`<tr tabindex="0" onclick="openNode('${p.pubkey}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${p.pubkey}')}">
+      <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" role="button" aria-label="Star node" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr hide-sm">${p.address||'—'}</td>
+      <td class="addr hide-sm" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
       <td>${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
-      <td><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
+      <td class="hide-sm"><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
       <td class="snum">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
       <td class="snum">${upCell(p)}</td>
-      <td>${rel(ts(p))}</td>
+      <td class="hide-xs">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
       ||`<tr><td colspan="9" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
@@ -522,6 +535,16 @@
     renderMyNodes();
     animateYuga();
     renderNetSpark();
+    renderProof();
+  }
+  function renderProof(){
+    const el=document.getElementById('pulsarProof');if(!el)return;
+    const S=window.STAKE||{},U=window.NODE_UPTIME_MAINNET||{};
+    let staked=0,upv=[];
+    (window.PULSAR_NODES||[]).forEach(n=>{const s=S[n.pk];if(s&&s.stake)staked+=s.stake;if(U[n.pk]!=null)upv.push(U[n.pk]);});
+    const avgUp=upv.length?Math.round(upv.reduce((a,b)=>a+b,0)/upv.length):null;
+    const items=[['6','licensed pairs'],['12','EU machines'],['16×','Deep South boost'],['10%','fair commission'],[staked?fmtC(staked):'…','XAND staked to us'],[avgUp!=null?avgUp+'%':'live','avg uptime']];
+    el.innerHTML=items.map(x=>'<div class="pf"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
   }
   function animateYuga(){
     const el=document.getElementById('yugaNum'); if(!el)return;
@@ -684,6 +707,7 @@
   // ---- per-node detail modal ----
   window.copyTxt=t=>{try{navigator.clipboard.writeText(t);}catch(e){}};
   function fmtDate(t){if(!t)return '—';return new Date(t*1000).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}
+  function ago(t){if(!t)return '';const d=Math.floor(Date.now()/1000)-t,day=86400;if(d<day)return 'today';if(d<30*day)return Math.floor(d/day)+'d ago';if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return (d/(365*day)).toFixed(1)+'y ago';}
   function shortAddr(a){return a?a.slice(0,4)+'…'+a.slice(-4):'—';}
   function relFrom(t,r){if(!t)return '—';const d=r-t;return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';}
   let CUR_NODE=null;
@@ -715,7 +739,7 @@
       h+=row('Staked',`<b>${fmt(st.stake)} XAND</b>`)
         +row('Commission',(st.comm/100)+'%')
         +row('Operator',rg?`<span class="addr">${shortAddr(rg.owner)}</span> <a href="${sol(rg.owner)}" target="_blank" rel="noopener">↗</a>`:'—')
-        +row('Registered',rg?fmtDate(rg.ts):'—')
+        +row('Registered',rg?(fmtDate(rg.ts)+' · '+ago(rg.ts)):'—')
         +row('Current yuga',window.CUR_YUGA||'—')
         +row('Last settled yuga',st.settledYuga>0?st.settledYuga:'—');
     }else if(window.STAKE){h+='<div class="mnote">No on-chain stake record — staking is on mainnet; devnet &amp; unstaked nodes have none.</div>';}
@@ -726,6 +750,7 @@
   }
   function closeNode(){CUR_NODE=null;document.getElementById('modalOverlay').classList.remove('open');if(location.hash.indexOf('#node=')===0){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
   document.getElementById('modalClose').onclick=closeNode;
+  document.getElementById('modalShare').onclick=()=>{if(!CUR_NODE)return;copyTxt(location.origin+location.pathname+'#node='+CUR_NODE);const b=document.getElementById('modalShare');b.textContent='✓';setTimeout(()=>b.textContent='🔗',1200);};
   document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeNode();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeNode();});
   window.addEventListener('hashchange',()=>{const m=location.hash.match(/^#node=(.+)$/);if(m)openNode(decodeURIComponent(m[1]));else if(CUR_NODE)closeNode();});
