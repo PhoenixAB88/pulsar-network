@@ -99,9 +99,10 @@
   .netseg{display:inline-flex;margin-top:18px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--pill);padding:4px;gap:4px}
   .netseg button{border:none;background:transparent;color:var(--mut);font-weight:500;font-size:13px;letter-spacing:.01em;padding:8px 20px;border-radius:var(--pill);cursor:pointer;transition:color .18s,background .18s,box-shadow .18s,transform .12s;font-family:inherit}
   .netseg button:hover{color:var(--ink)}
-  .netseg button.on{font-weight:600}
-  .netseg button[data-net="devnet"].on{background:var(--teal);color:#06222b;box-shadow:0 0 0 1px var(--teal),0 0 18px rgba(70,230,239,.55)}
-  .netseg button[data-net="mainnet"].on{background:var(--orange);color:#2a1705;box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(247,169,59,.55)}
+  .netseg button.on{font-weight:600;box-shadow:0 0 0 1px rgb(var(--lit)),0 0 14px rgb(var(--lit) / .5);animation:litpulse 2.6s ease-in-out infinite}
+  .netseg button[data-net="devnet"].on{--lit:75 155 255;background:rgb(var(--lit));color:#08203f}
+  .netseg button[data-net="mainnet"].on{--lit:52 224 168;background:rgb(var(--lit));color:#04361f}
+  @keyframes litpulse{0%,100%{box-shadow:0 0 0 1px rgb(var(--lit)),0 0 9px rgb(var(--lit) / .35)}50%{box-shadow:0 0 0 1px rgb(var(--lit)),0 0 22px rgb(var(--lit) / .7)}}
   .stake-big{margin-top:18px;padding:13px 28px;font-size:15px}
   .netseg.mini{margin-top:0}
   .netseg.mini button{padding:6px 12px;font-size:12px}
