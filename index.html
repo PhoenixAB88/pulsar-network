@@ -522,8 +522,11 @@
     const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0)};
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
-    meta.textContent=rows.length+' of '+pods.length;
-    body.innerHTML=rows.map((p,i)=>`<tr tabindex="0" onclick="openNode('${p.pubkey}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${p.pubkey}')}">
+    const isMobile=window.matchMedia&&window.matchMedia('(max-width:600px)').matches;
+    const cap=(isMobile&&!window.__rosterAll)?10:rows.length;
+    const shown=rows.slice(0,cap);
+    meta.textContent=cap<rows.length?(cap+' of '+rows.length):(rows.length+' of '+pods.length);
+    body.innerHTML=shown.map((p,i)=>`<tr tabindex="0" onclick="openNode('${p.pubkey}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${p.pubkey}')}">
       <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" role="button" aria-label="Star node" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr hide-sm" data-label="Address">${p.address||'—'}</td>
       <td class="addr hide-sm" data-label="Pubkey" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
       <td data-label="Location">${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
@@ -532,6 +535,7 @@
       <td class="snum" data-label="Uptime">${upCell(p)}</td>
       <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
+      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="9" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
       ||`<tr><td colspan="9" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
@@ -737,6 +741,7 @@
     const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0,rootMargin:'0px 0px -40px 0px'});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   }else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
+  setTimeout(()=>{const vh=window.innerHeight||800;document.querySelectorAll('.reveal:not(.in)').forEach(el=>{if(el.getBoundingClientRect().top<vh*1.5)el.classList.add('in');});},800);
 
   // ---- per-node detail modal ----
   window.copyTxt=t=>{try{navigator.clipboard.writeText(t);}catch(e){}};
