@@ -125,6 +125,18 @@
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network .wrap{display:flex;flex-direction:column}
   #network .sec-head{order:1}#network .cards{order:2}#network .net-grid{order:3}#network #map{order:4}
+  .star{cursor:pointer;color:var(--mut2);font-size:14px;transition:color .15s;user-select:none}
+  .star.on,.star:hover{color:var(--orange)}
+  #mynodes h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+  .mynodes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  .mynode{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:14px 16px}
+  .mynode .top{display:flex;align-items:center;gap:8px}
+  .mynode .lbl{font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mynode .meta{color:var(--mut2);font-size:12px;margin-top:6px;font-family:ui-monospace,Menlo,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mynode .row2{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:13px}
+  .mynode .act{display:flex;gap:6px}
+  .mynode .act button{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:var(--r-sm);padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;transition:color .15s}
+  .mynode .act button:hover{color:var(--ink)}
 
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -135,7 +147,9 @@
   @media(max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}}
   .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px}
   .stat .k{color:var(--mut2);font-size:12px;letter-spacing:.01em;font-weight:500}
-  .stat .v{font-size:30px;font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .v{font-size:clamp(22px,2.3vw,28px);font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
+  .qlink{display:inline-block;margin-top:7px;font-size:11.5px;color:var(--mut2);transition:color .15s}
+  .qlink:hover{color:var(--teal)}
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
@@ -257,6 +271,13 @@
 </div>
 
 <a id="top"></a>
+<section id="mynodes" style="display:none;padding-bottom:0">
+  <div class="wrap">
+    <h2>★ My nodes</h2>
+    <p style="color:var(--mut);font-size:14px;margin:0 0 16px">Your starred nodes — saved in this browser. Star any node in the table, then label or group it here.</p>
+    <div class="mynodes-grid" id="myNodesGrid"></div>
+  </div>
+</section>
 
 <section id="network">
   <div class="wrap">
@@ -269,7 +290,7 @@
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
-        <div class="box"><h3>Version distribution</h3><div id="vdist"></div></div>
+        <div class="box"><h3>Top countries</h3><div id="geodist"></div></div>
         <div class="box"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
       </div>
       <div class="box">
@@ -280,7 +301,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort" data-k="address">Address</th><th>Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
+            <thead><tr><th>#</th><th class="sort" data-k="address">Address</th><th>Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="uptime">Uptime</th><th class="sort" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -385,6 +406,8 @@
 <script src="network_data.js" onerror="window.__noData=1"></script>
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
+<script src="network_history.js" onerror="window.__noHist=1"></script>
+<script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
 <script>
   const root=document.documentElement; root.setAttribute('data-theme','dark');
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
@@ -401,6 +424,7 @@
   ];
 
   const fmt=n=>n==null?'—':n.toLocaleString('en-US');
+  const fmtC=n=>n==null?'—':new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n);
   const ts=p=>p.last_seen_timestamp??p.lastSeenTimestamp??0;
   const shortver=v=>(v||'?').replace(/\.\d{8,}.*$/,'');
   const shortpk=pk=>pk?pk.slice(0,6)+'…'+pk.slice(-4):'—';
@@ -436,19 +460,23 @@
       return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q)||(p.cc||'').toLowerCase().includes(q);
     });
     const stakeOf=p=>(window.STAKE&&window.STAKE[p.pubkey])?window.STAKE[p.pubkey].stake:-1;
-    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0)};
+    const UP=window['NODE_UPTIME'+(active==='mainnet'?'_MAINNET':'')]||{};
+    const upOf=p=>UP[p.pubkey]==null?-1:UP[p.pubkey];
+    const upCell=p=>{const u=UP[p.pubkey];if(u==null)return '<span style="color:var(--mut2)">—</span>';const c=u>=99?'var(--good)':u>=95?'var(--teal)':u>=80?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'">'+u+'%</b>';};
+    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0)};
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     meta.textContent=rows.length+' of '+pods.length;
     body.innerHTML=rows.map((p,i)=>`<tr onclick="openNode('${p.pubkey}')">
-      <td>${i+1}</td><td class="addr">${p.address||'—'}</td>
+      <td><span class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" onclick="toggleFav('${p.pubkey}',event)">${isFav(p.pubkey)?'★':'☆'}</span> ${i+1}</td><td class="addr">${p.address||'—'}</td>
       <td class="addr" title="${p.pubkey||''}">${shortpk(p.pubkey)}</td>
       <td>${p.cc?flag(p.cc)+' ':''}${p.city||'<span style="color:var(--mut2)">—</span>'}</td>
       <td><span class="pill" title="${p.version||''}">${shortver(p.version)}</span></td>
       <td class="snum">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
+      <td class="snum">${upCell(p)}</td>
       <td>${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}">${isOn(p)?'● online':'● stale'}</td></tr>`).join('')
-      ||`<tr><td colspan="8" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
+      ||`<tr><td colspan="9" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
   function renderNetwork(){
@@ -469,16 +497,12 @@
       <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>
-      <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)">${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL):'…'}</div></div>
+      <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      <div class="stat"><div class="k">Current yuga</div><div class="v">${window.CUR_YUGA||'…'}</div></div>
+      <div class="stat"><div class="k">Current yuga</div><div class="v">${window.CUR_YUGA||'…'}</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
       <div class="stat"><div class="k">XAND price</div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></div>`;
 
-    document.getElementById('vdist').innerHTML=vEntries.map(([v,c])=>`
-      <div class="vrow"><span class="lab" title="${v}">${v}</span>
-        <span class="track"><span class="bar" style="width:${Math.round(c/vMax*100)}%"></span></span>
-        <span class="ct">${c}</span></div>`).join('')
-      ||`<div style="color:var(--mut)">${active==='mainnet'?"Mainnet pods (1.3.3) don't expose the pRPC gossip roster yet.":'No data yet.'}</div>`;
+    renderCountries();
 
     const cur=sel.value;
     sel.innerHTML='<option value="">All versions</option>'+vEntries.map(([v])=>`<option value="${v}">${v}</option>`).join('');
@@ -488,6 +512,7 @@
     plotMap();
     renderStakeNodes();
     renderLeaderboard();
+    renderMyNodes();
   }
   function renderLeaderboard(){
     const el=document.getElementById('leaderboard'); if(!el)return;
@@ -495,6 +520,41 @@
     const cityOf=pk=>{const p=main.find(x=>x.pubkey===pk);return (p&&p.city)?((p.cc?flag(p.cc)+' ':'')+p.city):shortpk(pk);};
     const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,8);
     el.innerHTML=top.length?top.map(([pk,v],i)=>`<div class="lrow"><span class="lr-n">${i+1}</span><span class="lr-c" title="${pk}">${cityOf(pk)}</span><span class="lr-s">${fmt(v.stake)}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">Loading on-chain…</div>';
+  }
+  function renderCountries(){
+    const el=document.getElementById('geodist'); if(!el)return;
+    const counts={}; (SETS[active].pods||[]).forEach(p=>{const cc=(p.cc||'').toUpperCase();if(cc)counts[cc]=(counts[cc]||0)+1;});
+    const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max=Math.max(...entries.map(e=>e[1]),1);
+    el.innerHTML=entries.length?entries.map(([cc,c])=>`<div class="vrow"><span class="lab">${flag(cc)} ${cc}</span><span class="track"><span class="bar" data-w="${Math.round(c/max*100)}" style="width:0"></span></span><span class="ct">${c}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">No data yet.</div>';
+    requestAnimationFrame(()=>el.querySelectorAll('.bar').forEach(b=>{b.style.width=b.dataset.w+'%';}));
+  }
+
+  // ---- My nodes (favourites + labels, saved in this browser) ----
+  const MYK='pulsar:mynodes';
+  function getMy(){try{return JSON.parse(localStorage.getItem(MYK)||'{}')||{};}catch(e){return {};}}
+  function setMy(m){try{localStorage.setItem(MYK,JSON.stringify(m));}catch(e){}}
+  function isFav(pk){return !!getMy()[pk];}
+  function toggleFav(pk,ev){if(ev&&ev.stopPropagation)ev.stopPropagation();const m=getMy();if(m[pk])delete m[pk];else m[pk]={label:''};setMy(m);renderRoster();renderMyNodes();}
+  function setLabel(pk){const m=getMy();if(!m[pk])m[pk]={label:''};const v=prompt('Label or group for this node (e.g. "My validator", "Team A"):',m[pk].label||'');if(v!==null){m[pk].label=v.trim();setMy(m);renderMyNodes();}}
+  function removeFav(pk){const m=getMy();delete m[pk];setMy(m);renderMyNodes();renderRoster();}
+  function findPod(pk){return (SETS.mainnet.pods||[]).concat(SETS.devnet.pods||[]).find(x=>x.pubkey===pk);}
+  function renderMyNodes(){
+    const sec=document.getElementById('mynodes'),grid=document.getElementById('myNodesGrid');if(!grid)return;
+    const m=getMy(),keys=Object.keys(m);
+    if(!keys.length){sec.style.display='none';return;}
+    sec.style.display='';
+    grid.innerHTML=keys.map(pk=>{
+      const p=findPod(pk)||{},inMain=(SETS.mainnet.pods||[]).some(x=>x.pubkey===pk),pref=inMain?SETS.mainnet.ref:SETS.devnet.ref;
+      const on=!!p.pubkey&&(pref-ts(p))<=900,st=(window.STAKE||{})[pk];
+      const loc=p.city?((p.cc?flag(p.cc)+' ':'')+p.city):'';
+      const lbl=m[pk].label||loc||shortpk(pk);
+      const status=p.pubkey?(on?'<span class="on" style="font-size:12px;font-weight:600">● online</span>':'<span class="off" style="font-size:12px;font-weight:600">● stale</span>'):'<span style="color:var(--mut2);font-size:12px">not in roster</span>';
+      return '<div class="mynode"><div class="top"><span class="star on" title="Remove" onclick="removeFav(\''+pk+'\')">★</span><span class="lbl">'+lbl+'</span>'+status+'</div>'
+        +'<div class="meta">'+shortpk(pk)+(loc&&m[pk].label?(' · '+loc):'')+'</div>'
+        +'<div class="row2"><span>'+(st&&st.stake>0?('<b style="color:var(--orange)">'+fmt(st.stake)+'</b> XAND'):'<span style="color:var(--mut2)">— XAND</span>')+'</span>'
+        +'<span class="act"><button onclick="setLabel(\''+pk+'\')">Edit label</button><button onclick="openNode(\''+pk+'\')">Details</button></span></div></div>';
+    }).join('');
   }
   function renderStakeNodes(){
     const el=document.getElementById('stakeNodes'); if(!el||!window.PULSAR_NODES)return;
@@ -602,12 +662,13 @@
     const st=(window.STAKE||{})[pk], rg=(window.REG||{})[pk];
     const sol=a=>'https://solscan.io/account/'+a;
     const row=(k,v)=>`<div class="mrow"><span class="mk">${k}</span><span class="mv">${v}</span></div>`;
-    let h=`<div class="mhead"><div><div class="mtitle">${p.cc?flag(p.cc)+' ':''}${p.city||'Unknown location'}</div><div class="msub">${inMain?'Mainnet':'Devnet'} pNode</div></div><span class="${on?'on':'off'}" style="font-weight:700;white-space:nowrap">${on?'● online':'● stale'}</span></div>`;
+    let h=`<div class="mhead"><div><div class="mtitle"><span class="star ${isFav(pk)?'on':''}" title="Star / favourite" style="cursor:pointer" onclick="toggleFav('${pk}',event);refreshModal()">${isFav(pk)?'★':'☆'}</span> ${p.cc?flag(p.cc)+' ':''}${p.city||'Unknown location'}</div><div class="msub">${inMain?'Mainnet':'Devnet'} pNode</div></div><span class="${on?'on':'off'}" style="font-weight:700;white-space:nowrap">${on?'● online':'● stale'}</span></div>`;
     h+='<div class="msec">Identity</div>'
       +row('Pubkey',`<span class="addr">${shortpk(pk)}</span> <button class="cpy" onclick="copyTxt('${pk}')">copy</button> <a href="${sol(pk)}" target="_blank" rel="noopener">↗</a>`)
       +row('Gossip address',`<span class="addr">${p.address||'—'}</span>`)
       +row('Software',`<span class="pill">${shortver(p.version)}</span>`)
-      +row('Last seen',relFrom(ts(p),pref));
+      +row('Last seen',relFrom(ts(p),pref))
+      +row('Uptime (tracked)',(function(){const U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};return U[pk]==null?'—':U[pk]+'%';})());
     h+='<div class="msec">Location</div>'
       +row('Country',p.cc?(flag(p.cc)+' '+p.cc):'—')
       +row('City',p.city||'—')

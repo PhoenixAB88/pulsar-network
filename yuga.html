@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is a Yuga? — Pulsar Nodes</title>
+<meta name="description" content="A plain-English explainer of the Yuga — Xandeum's epoch for measuring storage usage and settling STOINC rewards.">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='8' fill='%23f7a93b'/><line x1='3' y1='8' x2='29' y2='24' stroke='%233fe7ef' stroke-width='3'/><line x1='3' y1='24' x2='29' y2='8' stroke='%233fe7ef' stroke-width='3'/><circle cx='16' cy='16' r='3.4' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:48px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:36px 0 10px}
+  p{color:var(--mut);margin:0 0 16px}
+  .lead{font-size:18px;color:var(--ink)}
+  .card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px 22px;margin:22px 0}
+  ul{color:var(--mut);padding-left:20px;margin:0 0 16px}li{margin:7px 0}
+  .k{color:var(--mut2)}
+  .pill{display:inline-block;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--teal);font-family:ui-monospace,Menlo,monospace}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin-top:8px}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Nodes"><span><b>PULSAR</b><span>NODES</span></span></a>
+  <a class="back" href="/">← Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Glossary</span>
+  <h1>What is a Yuga?</h1>
+  <p class="lead">A <strong>yuga</strong> is Xandeum's <strong>epoch</strong> — the recurring settlement period the network uses to measure storage usage and pay out storage rewards (STOINC). Each yuga is numbered and counts up over the life of the network.</p>
+
+  <div class="card">
+    <p style="margin:0"><span class="k">In one line:</span> a yuga is one full reward cycle. At the end of each yuga the network tallies what every pNode contributed and settles the rewards earned for that period.</p>
+  </div>
+
+  <h2>Why it matters</h2>
+  <p>STOINC (Storage Income) rewards aren't streamed continuously — they're calculated and settled once per epoch. Xandeum's docs describe rewards being computed roughly every couple of days based on each operator's storage, performance score, stake and boost. The yuga is that clock.</p>
+  <ul>
+    <li><strong>Rewards settlement:</strong> storageCredits and STOINC are tallied per yuga.</li>
+    <li><strong>Performance tracking:</strong> a node's reliability is measured across yugas.</li>
+    <li><strong>Eligibility:</strong> programs like the Foundation Delegation Program (XFDP) qualify operators over a number of consecutive yugas of reliable uptime.</li>
+  </ul>
+
+  <h2>On the Pulsar dashboard</h2>
+  <p>The <span class="pill">Current yuga</span> stat is read live from the Xandeum staking program on Solana — it's the network-wide yuga counter right now. Open any node and you'll also see its <em>last settled yuga</em>: the most recent cycle that node was paid out for.</p>
+
+  <a class="btn" href="/">View the live network →</a>
+
+  <div class="src">
+    Sources &amp; further reading:
+    <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">Xandeum — STOINC</a> ·
+    <a href="https://www.xandeum.network/blog/master-xandeum-pnode-economics-unlock-storage-income-and-earn-rewards" target="_blank" rel="noopener">pNode Economics &amp; STOINC</a> ·
+    <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a>
+    <br><br>This is a plain-English explainer by Pulsar Nodes, an independent community operator — not official Xandeum documentation.
+  </div>
+</div></main>
+
+<footer><div class="wrap">© 2026 Pulsar Nodes · Built on Xandeum</div></footer>
+</body>
+</html>
