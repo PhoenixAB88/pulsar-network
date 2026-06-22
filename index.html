@@ -514,25 +514,24 @@
   initMap();
   renderNetwork();
 
-  // on-chain layer — Xandeum staking program (XStk…), lightweight client-side read.
+  // on-chain layer — Xandeum staking program (XStk…). Raw JSON-RPC, no web3.js import (much faster load).
   // 224-byte node records (stake/commission/yuga) + 176-byte registrations (operator/date). Fully optional.
   (async function loadChain(){
     try{
-      const web3=await import('https://esm.sh/@solana/web3.js@1.95.8');
-      const conn=new web3.Connection('https://solana-rpc.publicnode.com','confirmed');
-      const pid=new web3.PublicKey('XStkEMRTqU7WWVX8bzrPV1QcW9dYyRNXGCnmhoGSRrh');
+      const RPC='https://solana-rpc.publicnode.com', PID='XStkEMRTqU7WWVX8bzrPV1QcW9dYyRNXGCnmhoGSRrh';
+      const ALPHA='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
       const u64=(d,o)=>{let v=0n;for(let i=7;i>=0;i--)v=(v<<8n)+BigInt(d[o+i]);return v;};
-      const b58=d=>new web3.PublicKey(d).toBase58();
-      const recs=await conn.getProgramAccounts(pid,{filters:[{dataSize:224}],dataSlice:{offset:0,length:96}});
+      const b64=s=>{const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;};
+      const b58=bytes=>{const dg=[0];for(let i=0;i<bytes.length;i++){let c=bytes[i];for(let j=0;j<dg.length;j++){c+=dg[j]<<8;dg[j]=c%58;c=(c/58)|0;}while(c){dg.push(c%58);c=(c/58)|0;}}let s='';for(let i=0;i<bytes.length&&bytes[i]===0;i++)s+='1';for(let i=dg.length-1;i>=0;i--)s+=ALPHA[dg[i]];return s;};
+      const gpa=(size,len)=>fetch(RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getProgramAccounts',params:[PID,{encoding:'base64',filters:[{dataSize:size}],dataSlice:{offset:0,length:len}}]})}).then(r=>r.json()).then(j=>j.result||[]);
+      const [recs,regs]=await Promise.all([gpa(224,96),gpa(176,80)]);
       const m={};let total=0,cur=0;
-      recs.forEach(a=>{const d=a.account.data;const node=b58(d.slice(0,32));const stake=Number(u64(d,40)/1000000000n);
+      recs.forEach(a=>{const d=b64(a.account.data[0]);const node=b58(d.slice(0,32));const stake=Number(u64(d,40)/1000000000n);
         const cy=Number(u64(d,72));if(cy>cur)cur=cy;
         m[node]={stake,comm:Number(u64(d,32)),settledYuga:Number(u64(d,64))};total+=stake;});
-      window.STAKE=m;window.STAKE_TOTAL=total;window.CUR_YUGA=cur;
+      const r={};regs.forEach(a=>{const d=b64(a.account.data[0]);r[b58(d.slice(32,64))]={owner:b58(d.slice(0,32)),ts:Number(u64(d,72))};});
+      window.STAKE=m;window.STAKE_TOTAL=total;window.CUR_YUGA=cur;window.REG=r;
       renderNetwork(); refreshModal();
-      const regs=await conn.getProgramAccounts(pid,{filters:[{dataSize:176}],dataSlice:{offset:0,length:80}});
-      const r={};regs.forEach(a=>{const d=a.account.data;r[b58(d.slice(32,64))]={owner:b58(d.slice(0,32)),ts:Number(u64(d,72))};});
-      window.REG=r; refreshModal();
     }catch(e){/* on-chain layer optional; ignore on failure */}
   })();
 
