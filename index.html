@@ -113,6 +113,18 @@
   .snode .pk{font-family:ui-monospace,Menlo,monospace;color:var(--mut2);font-size:12px;margin-top:2px}
   .snode .stk{margin-left:auto;text-align:right}
   .snode .stk b{color:var(--orange);font-variant-numeric:tabular-nums;font-size:13.5px}
+  th.sort{cursor:pointer;user-select:none}
+  th.sort:hover{color:var(--ink)}
+  th.sort[data-dir="asc"]::after{content:" ▲";font-size:9px;color:var(--teal)}
+  th.sort[data-dir="desc"]::after{content:" ▼";font-size:9px;color:var(--teal)}
+  .net-left{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .lrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--hairline);font-size:13px}
+  .lrow:last-child{border-bottom:none}
+  .lr-n{width:18px;color:var(--mut2);font-variant-numeric:tabular-nums;text-align:right}
+  .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
+  #network .wrap{display:flex;flex-direction:column}
+  #network .sec-head{order:1}#network .cards{order:2}#network .net-grid{order:3}#network #map{order:4}
 
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -256,7 +268,10 @@
     <div class="cards reveal" id="statCards"></div>
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
-      <div class="box"><h3>Version distribution</h3><div id="vdist"></div></div>
+      <div class="net-left">
+        <div class="box"><h3>Version distribution</h3><div id="vdist"></div></div>
+        <div class="box"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
+      </div>
       <div class="box">
         <div class="toolbar">
           <input id="search" type="text" placeholder="Search address, pubkey or version…">
@@ -265,7 +280,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th>Address</th><th>Pubkey</th><th>Location</th><th>Version</th><th>Staked</th><th>Last seen</th><th>Status</th></tr></thead>
+            <thead><tr><th>#</th><th class="sort" data-k="address">Address</th><th>Pubkey</th><th class="sort" data-k="loc">Location</th><th class="sort" data-k="version">Version</th><th class="sort" data-k="stake">Staked</th><th class="sort" data-k="seen" data-dir="desc">Last seen</th><th class="sort" data-k="status">Status</th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -369,6 +384,7 @@
 
 <script src="network_data.js" onerror="window.__noData=1"></script>
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
+<script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script>
   const root=document.documentElement; root.setAttribute('data-theme','dark');
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
@@ -401,6 +417,11 @@
     mainnet: mkSet(window.NETWORK_MAINNET, window.NETWORK_MAINNET_GENERATED_TS, window.NETWORK_MAINNET_UPDATED)
   };
   let active='devnet';
+  window.sortK='seen'; window.sortD=-1;
+  (async function loadPrice(){try{
+    const j=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());
+    if(j&&j.xandeum){window.XAND_PRICE={usd:j.xandeum.usd,chg:j.xandeum.usd_24h_change||0};renderNetwork();}
+  }catch(e){}})();
   const sel=document.getElementById('verFilter');
   const body=document.getElementById('rosterBody'), meta=document.getElementById('rosterMeta');
 
@@ -409,11 +430,15 @@
     const isOn=p=>(ref-ts(p))<=900;
     const rel=t=>{if(!t)return '—';const d=ref-t;return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';};
     const q=(document.getElementById('search').value||'').toLowerCase(), vf=sel.value;
-    const rows=pods.slice().sort((a,b)=>ts(b)-ts(a)).filter(p=>{
+    const rows=pods.slice().filter(p=>{
       if(vf&&shortver(p.version)!==vf)return false;
       if(!q)return true;
       return (p.address||'').toLowerCase().includes(q)||(p.pubkey||'').toLowerCase().includes(q)||(p.version||'').toLowerCase().includes(q)||(p.city||'').toLowerCase().includes(q)||(p.cc||'').toLowerCase().includes(q);
     });
+    const stakeOf=p=>(window.STAKE&&window.STAKE[p.pubkey])?window.STAKE[p.pubkey].stake:-1;
+    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0)};
+    const cmp=cmps[window.sortK]||cmps.seen;
+    rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     meta.textContent=rows.length+' of '+pods.length;
     body.innerHTML=rows.map((p,i)=>`<tr onclick="openNode('${p.pubkey}')">
       <td>${i+1}</td><td class="addr">${p.address||'—'}</td>
@@ -444,7 +469,10 @@
       <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Versions</div><div class="v">${vEntries.length}</div></div>
-      <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)">${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL):'…'}</div></div>`;
+      <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)">${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL):'…'}</div></div>
+      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
+      <div class="stat"><div class="k">Current yuga</div><div class="v">${window.CUR_YUGA||'…'}</div></div>
+      <div class="stat"><div class="k">XAND price</div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></div>`;
 
     document.getElementById('vdist').innerHTML=vEntries.map(([v,c])=>`
       <div class="vrow"><span class="lab" title="${v}">${v}</span>
@@ -459,6 +487,14 @@
     renderRoster();
     plotMap();
     renderStakeNodes();
+    renderLeaderboard();
+  }
+  function renderLeaderboard(){
+    const el=document.getElementById('leaderboard'); if(!el)return;
+    const S=window.STAKE||{}, main=SETS.mainnet.pods||[];
+    const cityOf=pk=>{const p=main.find(x=>x.pubkey===pk);return (p&&p.city)?((p.cc?flag(p.cc)+' ':'')+p.city):shortpk(pk);};
+    const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,8);
+    el.innerHTML=top.length?top.map(([pk,v],i)=>`<div class="lrow"><span class="lr-n">${i+1}</span><span class="lr-c" title="${pk}">${cityOf(pk)}</span><span class="lr-s">${fmt(v.stake)}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">Loading on-chain…</div>';
   }
   function renderStakeNodes(){
     const el=document.getElementById('stakeNodes'); if(!el||!window.PULSAR_NODES)return;
@@ -511,6 +547,13 @@
     document.querySelectorAll('.netseg button').forEach(x=>x.classList.toggle('on',x.dataset.net===active));
     renderNetwork();
   }));
+  document.querySelectorAll('th.sort').forEach(th=>th.addEventListener('click',()=>{
+    const k=th.dataset.k;
+    if(window.sortK===k)window.sortD=-window.sortD; else{window.sortK=k;window.sortD=(k==='stake'||k==='seen')?-1:1;}
+    document.querySelectorAll('th.sort').forEach(x=>x.removeAttribute('data-dir'));
+    th.setAttribute('data-dir',window.sortD<0?'desc':'asc');
+    renderRoster();
+  }));
   initMap();
   renderNetwork();
 
@@ -518,6 +561,7 @@
   // 224-byte node records (stake/commission/yuga) + 176-byte registrations (operator/date). Fully optional.
   (async function loadChain(){
     try{
+      if(window.STAKE&&Object.keys(window.STAKE).length){renderNetwork();refreshModal();return;}
       const RPC='https://solana-rpc.publicnode.com', PID='XStkEMRTqU7WWVX8bzrPV1QcW9dYyRNXGCnmhoGSRrh';
       const ALPHA='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
       const u64=(d,o)=>{let v=0n;for(let i=7;i>=0;i--)v=(v<<8n)+BigInt(d[o+i]);return v;};
