@@ -298,6 +298,7 @@
     <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
+        <div class="box"><h3>Network online (recent)</h3><div id="netspark"></div></div>
         <div class="box yuga-box"><h3>Current yuga</h3><div class="yuga-dial"><div class="yuga-num" id="yugaNum">…</div></div><div class="yuga-sub">Network epoch — rewards settle each yuga</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
         <div class="box"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
       </div>
@@ -520,6 +521,7 @@
     renderLeaderboard();
     renderMyNodes();
     animateYuga();
+    renderNetSpark();
   }
   function animateYuga(){
     const el=document.getElementById('yugaNum'); if(!el)return;
@@ -530,6 +532,23 @@
     if(reduce){el.textContent=target;el.dataset.done=target;return;}
     const t0=performance.now(),dur=900;
     (function step(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e);if(p<1)requestAnimationFrame(step);else{el.textContent=target;el.dataset.done=target;}})(t0);
+  }
+  function spark(vals,opts){
+    opts=opts||{};const w=opts.w||140,h=opts.h||30,pad=2,col=opts.color||'#46e6ef';
+    if(!vals||vals.length<2)return '<span style="color:var(--mut2);font-size:12px">building…</span>';
+    const mn=Math.min(...vals),mx=Math.max(...vals),rng=(mx-mn)||1,n=vals.length;
+    const pts=vals.map((v,i)=>{const x=pad+i/(n-1)*(w-2*pad);const y=h-pad-((v-mn)/rng)*(h-2*pad);return x.toFixed(1)+','+y.toFixed(1);});
+    const line=pts.join(' '),area=pad+','+(h-pad)+' '+line+' '+(w-pad).toFixed(1)+','+(h-pad);
+    return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="display:block;max-width:100%">'
+      +'<polygon points="'+area+'" fill="'+col+'" opacity="0.13"/>'
+      +'<polyline points="'+line+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+  }
+  function renderNetSpark(){
+    const el=document.getElementById('netspark');if(!el)return;
+    const hist=window['NET_HISTORY'+(active==='mainnet'?'_MAINNET':'')]||[];
+    if(hist.length<2){el.innerHTML='<span style="color:var(--mut2);font-size:12.5px">Building history…</span>';return;}
+    const vals=hist.map(p=>p.on),cur=vals[vals.length-1],mn=Math.min(...vals),mx=Math.max(...vals);
+    el.innerHTML='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><b style="font-size:24px;color:var(--good);font-variant-numeric:tabular-nums">'+cur+'</b><span style="color:var(--mut2);font-size:12px">online · range '+mn+'–'+mx+'</span></div>'+spark(vals,{w:256,h:46,color:'#34e0a8'});
   }
   function renderLeaderboard(){
     const el=document.getElementById('leaderboard'); if(!el)return;
@@ -685,7 +704,8 @@
       +row('Gossip address',`<span class="addr">${p.address||'—'}</span>`)
       +row('Software',`<span class="pill">${shortver(p.version)}</span>`)
       +row('Last seen',relFrom(ts(p),pref))
-      +row('Uptime (tracked)',(function(){const U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};return U[pk]==null?'—':U[pk]+'%';})());
+      +row('Uptime (tracked)',(function(){const U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};return U[pk]==null?'—':U[pk]+'%';})())
+      +row('Recent trend',spark((window['NODE_HIST'+(inMain?'_MAINNET':'')]||{})[pk],{w:150,h:26}));
     h+='<div class="msec">Location</div>'
       +row('Country',p.cc?(flag(p.cc)+' '+p.cc):'—')
       +row('City',p.city||'—')
