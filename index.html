@@ -148,6 +148,8 @@
   td.snum{text-align:right;font-variant-numeric:tabular-nums}
   @media(max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}}
   .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px}
+  a.statlink{display:block;text-decoration:none;color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+  a.statlink:hover{border-color:var(--hairline-2);background:var(--surface-2)}
   .stat .k{color:var(--mut2);font-size:12px;letter-spacing:.01em;font-weight:500}
   .stat .v{font-size:clamp(22px,2.3vw,28px);font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
   .qlink{display:inline-block;margin-top:10px;font-size:14px;font-weight:500;color:var(--teal);transition:color .15s,text-shadow .15s;animation:qglow 2.4s ease-in-out infinite}
@@ -377,6 +379,7 @@
       <div class="fcard reveal"><div class="ic">⚡</div><h4>Random access</h4><p>Fast, addressable reads and writes — not just append-only blobs — unlocking a new class of storage-enabled apps.</p></div>
     </div>
     <div style="text-align:center;margin-top:26px"><a class="btn ghost" href="https://www.xandeum.network/" target="_blank" rel="noopener">Learn about Xandeum ↗</a></div>
+    <div style="text-align:center;margin-top:12px"><a class="qlink" href="https://docs.xandeum.network/" target="_blank" rel="noopener">What is a pNode? ↗</a></div>
   </div>
 </section>
 
@@ -389,8 +392,8 @@
     <div class="proof reveal" id="pulsarProof"></div>
 
     <div class="feat">
-      <div class="fcard reveal"><div class="ic">✦</div><h4>Your stake, doubled</h4><p>Match Delegation has the Xandeum Foundation match community stake 1:1 on qualifying nodes — so delegating to Pulsar puts twice the stake to work for you.</p></div>
-      <div class="fcard reveal"><div class="ic">🛰️</div><h4>Deep South 16× boost</h4><p>Our licenses sit on the highest boost era available, meaning a larger share of STOINC storage rewards for every unit of stake.</p></div>
+      <div class="fcard reveal"><div class="ic">✦</div><h4>Your stake, doubled</h4><p>Match Delegation has the Xandeum Foundation match community stake 1:1 on qualifying nodes — so delegating to Pulsar puts twice the stake to work for you.</p><a class="qlink" href="https://www.xandeum.network/blog/xfdp-explained-xandeum-foundation-delegation-program" target="_blank" rel="noopener">What is Match Delegation? ↗</a></div>
+      <div class="fcard reveal"><div class="ic">🛰️</div><h4>Deep South 16× boost</h4><p>Our licenses sit on the highest boost era available, meaning a larger share of STOINC storage rewards for every unit of stake.</p><a class="qlink" href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">What is STOINC? ↗</a></div>
       <div class="fcard reveal"><div class="ic">📡</div><h4>Transparent &amp; monitored 24/7</h4><p>6 licensed pairs across 12 EU machines, watched around the clock. You're looking at the live proof on this very page.</p></div>
     </div>
 
@@ -407,6 +410,7 @@
         <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
         <a class="btn ghost" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Questions? DM us</a>
       </div>
+      <div style="margin-top:14px;font-size:13px;color:var(--mut)">Don't hold XAND yet? <a href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener" style="color:var(--teal);font-weight:500">Buy / trade XAND ↗</a></div>
       <div class="snodes" id="stakeNodes"></div>
       <p style="font-size:12.5px;color:var(--mut2);margin:18px auto 0;max-width:60ch">Our 6 mainnet pNodes — copy a pubkey to find it on the portal. Live staked amounts update automatically.</p>
     </div>
@@ -421,6 +425,7 @@
       <a class="ccard reveal" href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener"><div class="ic">⌥</div><b>GitHub</b><small>Source &amp; data</small></a>
       <a class="ccard reveal" href="https://www.xandeum.network/" target="_blank" rel="noopener"><div class="ic">🌐</div><b>Xandeum</b><small>The network</small></a>
       <a class="ccard reveal" href="https://docs.xandeum.network/" target="_blank" rel="noopener"><div class="ic">📖</div><b>Docs</b><small>How it works</small></a>
+      <a class="ccard reveal" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="ic">📈</div><b>Trade XAND</b><small>Buy / sell</small></a>
     </div>
   </div>
 </section>
@@ -559,7 +564,7 @@
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      <div class="stat"><div class="k">XAND price</div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></div>`;
+      <a class="stat statlink" href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener"><div class="k">XAND price <span style="color:var(--teal);font-weight:600">· Trade ↗</span></div><div class="v" style="color:var(--teal)">${window.XAND_PRICE?'$'+window.XAND_PRICE.usd.toFixed(5):'…'}</div><div style="font-size:12px;font-weight:600;margin-top:3px;color:${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)'):'var(--mut2)'}">${window.XAND_PRICE?(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'% 24h':''}</div></a>`;
 
     renderCountries();
 
