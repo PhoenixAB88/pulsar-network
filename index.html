@@ -75,29 +75,41 @@
   @media(max-width:780px){nav.links{display:none} .nav .right .btn.primary{display:none} .menu-btn{display:grid;place-items:center}}
 
   .logo{border-radius:50%;display:block;flex:0 0 auto}
-  .hero-logo{width:84px;height:84px;margin:0 auto 20px;border-radius:50%;box-shadow:0 0 0 1px var(--hairline-2)}
+  .hero-logo{width:52px;height:52px;margin:0 auto 12px;border-radius:50%;box-shadow:0 0 0 1px var(--hairline-2)}
 
   #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-  .hero{position:relative;padding:96px 0 56px;text-align:center;z-index:1}
+  .hero{position:relative;padding:38px 0 26px;text-align:center;z-index:1}
   .hero .wrap{position:relative;z-index:1}
   .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--mut);border:1px solid var(--hairline-2);background:var(--surface-1);padding:6px 14px;border-radius:var(--pill)}
-  .hero h1{font-size:clamp(40px,6vw,72px);line-height:1.04;margin:24px auto 18px;font-weight:600;letter-spacing:-.03em;max-width:16ch;text-wrap:balance}
-  .hero p.lead{font-size:clamp(16px,2.1vw,19px);color:var(--mut);max-width:62ch;margin:0 auto 30px;text-wrap:pretty}
+  .hero h1{font-size:clamp(29px,4.2vw,48px);line-height:1.06;margin:14px auto 12px;font-weight:600;letter-spacing:-.03em;max-width:18ch;text-wrap:balance}
+  .hero p.lead{font-size:clamp(15px,1.7vw,17px);color:var(--mut);max-width:60ch;margin:0 auto 22px;text-wrap:pretty}
   .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .chips{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .chips{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
   .chip{display:flex;align-items:center;gap:10px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:12px 18px;font-weight:600}
   .chip b{font-size:21px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.chip small{color:var(--mut2);font-weight:400;font-size:12px;display:block;letter-spacing:.01em}
   .dotpulse{width:9px;height:9px;border-radius:50%;background:var(--good);flex:0 0 auto;animation:pulse 2s infinite}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,224,168,.5)}70%{box-shadow:0 0 0 9px rgba(52,224,168,0)}100%{box-shadow:0 0 0 0 rgba(52,224,168,0)}}
 
   section{padding:clamp(64px,9vw,96px) 0;position:relative;z-index:1}
+  #network{padding-top:clamp(18px,3vw,30px)}
   .sec-head{text-align:center;margin:0 auto 40px;max-width:60ch}
   .sec-head h2{font-size:clamp(28px,3.5vw,40px);margin:0 0 10px;font-weight:600;letter-spacing:-.02em;text-wrap:balance}
   .sec-head p{color:var(--mut);margin:0;font-size:16px;text-wrap:pretty}
   .netseg{display:inline-flex;margin-top:18px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--pill);padding:4px;gap:4px}
   .netseg button{border:none;background:transparent;color:var(--mut);font-weight:500;font-size:13px;letter-spacing:.01em;padding:8px 20px;border-radius:var(--pill);cursor:pointer;transition:color .15s,background .15s;font-family:inherit}
   .netseg button:hover{color:var(--ink)}
-  .netseg button.on{background:var(--surface-3);color:var(--ink);font-weight:600}
+  .netseg button.on{font-weight:600}
+  .netseg button[data-net="devnet"].on{background:rgba(70,230,239,.16);color:var(--teal);box-shadow:inset 0 0 0 1px rgba(70,230,239,.45)}
+  .netseg button[data-net="mainnet"].on{background:rgba(247,169,59,.18);color:var(--orange);box-shadow:inset 0 0 0 1px rgba(247,169,59,.5)}
+  .netseg.mini{margin-top:0}
+  .netseg.mini button{padding:6px 12px;font-size:12px}
+  @media(max-width:560px){.brand .name span{display:none}}
+  .snodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:24px;text-align:left}
+  .snode{display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-md);padding:12px 14px}
+  .snode .c{font-weight:600;font-size:13.5px}
+  .snode .pk{font-family:ui-monospace,Menlo,monospace;color:var(--mut2);font-size:12px;margin-top:2px}
+  .snode .stk{margin-left:auto;text-align:right}
+  .snode .stk b{color:var(--orange);font-variant-numeric:tabular-nums;font-size:13.5px}
 
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -214,6 +226,10 @@
       <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a>
     </nav>
     <div class="right">
+      <div class="netseg mini" id="topNet" role="tablist" aria-label="Switch network">
+        <button data-net="devnet" class="on">Devnet</button>
+        <button data-net="mainnet">Mainnet</button>
+      </div>
       <a class="btn primary" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
@@ -304,14 +320,14 @@
     </div>
 
     <div class="band reveal">
-      <h2>Be first in line when delegation opens</h2>
-      <p>XAND staking workflows are rolling out across the network. Join the Pulsar waitlist and we'll guide you through delegating — and lock in your spot with a high-boost, reliable operator.</p>
-      <form id="waitForm" class="wait">
-        <input id="waitEmail" type="email" required placeholder="you@email.com" aria-label="Email address">
-        <button class="btn primary" type="submit">Join the waitlist</button>
-      </form>
-      <div class="wait-alt">or <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">DM @PulsarNodes</a> to talk staking directly · prefer to <a href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">run your own node</a>?</div>
-      <div id="waitMsg" class="wait-msg" role="status"></div>
+      <h2>Ready to stake?</h2>
+      <p>Delegation is live. Stake your XAND to a Pulsar pNode on the official portal — Match Delegation doubles it 1:1, and you earn STOINC at a fair 10% commission.</p>
+      <div class="cta" style="justify-content:center">
+        <a class="btn primary" href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
+        <a class="btn ghost" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Questions? DM us</a>
+      </div>
+      <div class="snodes" id="stakeNodes"></div>
+      <p style="font-size:12.5px;color:var(--mut2);margin:18px auto 0;max-width:60ch">Our 6 mainnet pNodes — copy a pubkey to find it on the portal. Live staked amounts update automatically.</p>
     </div>
   </div>
 </section>
@@ -370,27 +386,15 @@
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
   if(mb){mb.onclick=()=>mm.classList.toggle('open');mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));}
 
-  /* Staking waitlist capture. Paste a Formspree endpoint (https://formspree.io/f/XXXX) into WAITLIST_ENDPOINT to collect emails to inbox; until then submissions hand off to X. */
-  const WAITLIST_ENDPOINT='';
-  const wf=document.getElementById('waitForm');
-  if(wf){wf.addEventListener('submit',async e=>{
-    e.preventDefault();
-    const inp=document.getElementById('waitEmail'),msg=document.getElementById('waitMsg');
-    const email=(inp.value||'').trim();
-    if(!email)return;
-    const btn=wf.querySelector('button');btn.disabled=true;
-    if(WAITLIST_ENDPOINT){
-      try{
-        const r=await fetch(WAITLIST_ENDPOINT,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify({email,source:'pulsarnetwork.xyz staking funnel'})});
-        if(!r.ok)throw 0;
-        msg.style.color='var(--good)';msg.textContent="You're on the list — we'll reach out when delegation opens.";wf.reset();
-      }catch(_){msg.style.color='var(--warn)';msg.textContent='Could not submit. DM @PulsarNodes on X and we\'ll add you.';}
-    }else{
-      msg.style.color='var(--good)';msg.textContent='Thanks! Follow & DM @PulsarNodes to confirm your spot.';
-      window.open('https://x.com/PulsarNodes','_blank','noopener');
-    }
-    btn.disabled=false;
-  });}
+  // Pulsar's 6 mainnet pNodes (public gossip pubkeys) — listed live in the Stake section.
+  window.PULSAR_NODES=[
+    {pk:'9pDAS3TKQXw2x8B7pWDDdPbRnjPaM6mGht45vzK2QY8h',pair:'Pair 1'},
+    {pk:'FzZAd2JVqMh3Kmkq4bS9zxUnK18ereztcJC96Me7PG8B',pair:'Pair 2'},
+    {pk:'AMJRveiTgbB3SJrwCnDHHzcw1sRFDQyJu9UyBmGi3u1g',pair:'Pair 3'},
+    {pk:'2btDBEm5Ph5dy6HUg9mjEJJomrFwGzuVv3QmPt2r5g6H',pair:'Pair 4'},
+    {pk:'BXWnaL5R2MZXrQYiX7xSWTFMxhQs6JLR1FdWqPZyan7r',pair:'Pair 5'},
+    {pk:'44qbR85TX1AXFByN89iFiv9VDg91uc1A3b44U39HokAe',pair:'Pair 6'}
+  ];
 
   const fmt=n=>n==null?'—':n.toLocaleString('en-US');
   const ts=p=>p.last_seen_timestamp??p.lastSeenTimestamp??0;
@@ -469,6 +473,18 @@
 
     renderRoster();
     plotMap();
+    renderStakeNodes();
+  }
+  function renderStakeNodes(){
+    const el=document.getElementById('stakeNodes'); if(!el||!window.PULSAR_NODES)return;
+    const main=SETS.mainnet.pods||[];
+    el.innerHTML=window.PULSAR_NODES.map(n=>{
+      const p=main.find(x=>x.pubkey===n.pk)||{};
+      const st=(window.STAKE||{})[n.pk];
+      const loc=p.city?((p.cc?flag(p.cc)+' ':'')+p.city):('Mainnet · '+n.pair);
+      const stake=(st&&st.stake>0)?fmt(st.stake)+' XAND':'—';
+      return `<div class="snode"><div><div class="c">${loc}</div><div class="pk">${shortpk(n.pk)} <button class="cpy" onclick="copyTxt('${n.pk}')">copy</button></div></div><div class="stk"><b>${stake}</b><div class="pk">${n.pair} · 10%</div></div></div>`;
+    }).join('');
   }
 
   function baseUrl(){return 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';}
@@ -507,7 +523,7 @@
   sel.addEventListener('change',renderRoster);
   document.querySelectorAll('.netseg button').forEach(b=>b.addEventListener('click',()=>{
     active=b.dataset.net;
-    document.querySelectorAll('.netseg button').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('.netseg button').forEach(x=>x.classList.toggle('on',x.dataset.net===active));
     renderNetwork();
   }));
   initMap();
