@@ -172,6 +172,19 @@
   .ctxbar a{color:var(--teal);font-weight:500}
   .ctxbar .pw{white-space:nowrap}
   @media(max-width:640px){.ctxbar .pw{display:none}.ctxbar .wrap{font-size:12px;justify-content:center;text-align:center}}
+  .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-xl);padding:16px 20px;margin-top:18px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
+  .tb-txt b{display:block;font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .tb-txt span{color:var(--mut2);font-size:12.5px}
+  .tb-cta{display:flex;gap:10px;flex-wrap:wrap}
+  @media(max-width:560px){.tradebar{flex-direction:column;align-items:stretch;text-align:center}.tb-cta{justify-content:center}}
+  .tradebar .tb-txt,.tradebar .tb-cta{position:relative;z-index:1}
+  .tradebar::before{content:"";position:absolute;top:0;left:-60%;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-18deg);z-index:0;pointer-events:none;animation:tbshine 6.5s ease-in-out infinite}
+  .tradebar .btn.primary{animation:tbglow 2.6s ease-in-out infinite}
+  .tradebar .btn{transition:transform .14s,background .15s,box-shadow .15s}
+  .tradebar .btn:hover{transform:translateY(-2px)}
+  @keyframes tbshift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  @keyframes tbshine{0%{left:-60%}60%{left:130%}100%{left:130%}}
+  @keyframes tbglow{0%,100%{box-shadow:0 0 0 0 rgba(247,169,59,0)}50%{box-shadow:0 0 18px 0 rgba(247,169,59,.5)}}
   @media(max-width:560px){.nav .right .stake-top{display:none}}
   @media(max-width:480px){
     .nav{gap:10px}.nav .right{gap:8px}
@@ -325,6 +338,14 @@
     <a class="pw" href="https://www.xandeum.network/" target="_blank" rel="noopener">Powered by Xandeum ↗</a>
   </div>
 </div>
+
+<div class="wrap"><div class="tradebar">
+  <div class="tb-txt"><b>Trade on Solana</b><span>Instant swaps at the best price via Jupiter · 1% supports Pulsar</span></div>
+  <div class="tb-cta">
+    <button class="btn primary" onclick="openSwap()">Buy XAND</button>
+    <button class="btn ghost" onclick="openSwap('So11111111111111111111111111111111111111112','EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')">Buy SOL</button>
+  </div>
+</div></div>
 
 <a id="top"></a>
 <section id="mynodes" style="display:none;padding-bottom:0">
@@ -593,12 +614,12 @@
   }
   // Embedded Jupiter swap — fees (1%) routed to Pulsar's referral account. Falls back to a deep link if the plugin fails to load.
   const XAND_MINT='XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx',SOL_MINT='So11111111111111111111111111111111111111112',PULSAR_REF='DHLwdfPg8doM2KpBzeeFrZ3MRtVAMF13cWSLpw7EgxVx';
-  window.openSwap=function(out){
-    out=out||XAND_MINT;
+  window.openSwap=function(out,inp){
+    out=out||XAND_MINT; inp=inp||SOL_MINT;
     if(window.Jupiter&&window.Jupiter.init){
-      window.Jupiter.init({displayMode:'modal',formProps:{initialInputMint:SOL_MINT,initialOutputMint:out,referralAccount:PULSAR_REF,referralFee:100}});
+      window.Jupiter.init({displayMode:'modal',formProps:{initialInputMint:inp,initialOutputMint:out,referralAccount:PULSAR_REF,referralFee:100}});
     }else{
-      window.open('https://jup.ag/swap/SOL-'+out,'_blank','noopener');
+      window.open('https://jup.ag/swap/'+inp+'-'+out,'_blank','noopener');
     }
   };
   function animateYuga(){
