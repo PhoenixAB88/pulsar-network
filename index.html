@@ -126,7 +126,12 @@
   .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network .wrap{display:flex;flex-direction:column}
-  #network .sec-head{order:1}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}#network:not(.has-storage) th[data-k="storage"],#network:not(.has-storage) td[data-label="Storage"]{display:none}
+  #network .nethero{order:1}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}#network:not(.has-storage) th[data-k="storage"],#network:not(.has-storage) td[data-label="Storage"]{display:none}
+  .nethero{position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--hairline);padding:clamp(40px,8vw,84px) 22px;margin-bottom:6px}
+  .nethero #mapBg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6;filter:saturate(1.15)}
+  .nethero #mapBg .leaflet-control-container{display:none}
+  .nethero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(125% 135% at 50% 30%,rgba(8,12,22,.22),rgba(8,12,22,.88) 74%)}
+  .nethero .sec-head{position:relative;z-index:2;margin:0}
   .storagecard{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:16px}
   .sc-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .sc-pct{color:var(--teal);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
@@ -232,7 +237,7 @@
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px;align-items:start}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
-  #map{height:380px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--hairline);margin-top:16px;background:var(--surface-1);z-index:1}
+  #map{height:300px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--hairline);margin-top:16px;background:var(--surface-1);z-index:1}
   .leaflet-container{background:var(--surface-1);font:13px inherit}
   .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface-2);color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.4)}
   .leaflet-popup-content{font:12.5px/1.45 inherit}
@@ -376,10 +381,13 @@
 
 <section id="network">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <h2>Live Network</h2>
-      <p>Live status of the <a href="https://www.xandeum.network/" target="_blank" rel="noopener" style="color:var(--teal)">Xandeum</a> pNode network — from the gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
-      <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
+    <div class="nethero reveal">
+      <div id="mapBg" aria-hidden="true"></div>
+      <div class="sec-head">
+        <h2>Live Network</h2>
+        <p>Live status of the <a href="https://www.xandeum.network/" target="_blank" rel="noopener" style="color:var(--teal)">Xandeum</a> pNode network — from the gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
+        <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
+      </div>
     </div>
     <div class="cards reveal" id="statCards"></div>
     <!-- network storage now renders as a stat tile (#ssTile) -->
@@ -798,6 +806,14 @@
     window.__map.on('zoomend',syncLabels); syncLabels();
     setTimeout(()=>window.__map&&window.__map.invalidateSize(),400);
   }
+  function initMapBg(){
+    if(typeof L==='undefined'||!document.getElementById('mapBg'))return;
+    const B=[[-85,-180],[85,180]];
+    window.__mapBg=L.map('mapBg',{attributionControl:false,zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,touchZoom:false,tap:false,minZoom:2,maxZoom:3,maxBounds:B,fadeAnimation:true}).setView([26,6],2);
+    L.tileLayer(baseUrl(),{noWrap:true,bounds:B,subdomains:'abcd'}).addTo(window.__mapBg);
+    window.__markersBg=L.layerGroup().addTo(window.__mapBg);
+    setTimeout(()=>window.__mapBg&&window.__mapBg.invalidateSize(),400);
+  }
   function plotMap(){
     if(!window.__map||!window.__markers)return;
     window.__markers.clearLayers();
@@ -809,6 +825,14 @@
         .bindPopup(`<b>${shortpk(p.pubkey)}</b><br>${flag(p.cc)} ${p.city||''}<br>${shortver(p.version)} · ${on?'online':'stale'}<br><a href="#node=${p.pubkey}">Details ↗</a>`)
         .addTo(window.__markers);
     });
+    if(window.__markersBg){
+      window.__markersBg.clearLayers();
+      S.pods.forEach(p=>{
+        if(p.lat==null||p.lon==null)return;
+        const on=(ref-ts(p))<=900;
+        L.circleMarker([p.lat,p.lon],{radius:4,weight:0,fillColor:on?'#46e6ef':'#ff5d6c',fillOpacity:.9}).addTo(window.__markersBg);
+      });
+    }
   }
 
   document.getElementById('search').addEventListener('input',renderRoster);
@@ -826,6 +850,7 @@
     renderRoster();
   }));
   initMap();
+  initMapBg();
   renderNetwork();
 
   // on-chain layer — Xandeum staking program (XStk…). Raw JSON-RPC, no web3.js import (much faster load).
