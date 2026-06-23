@@ -369,6 +369,8 @@
 </style>
 </head>
 <body>
+<!-- (c) 2026 Pulsar Nodes. Original work. pulsarnetwork.xyz. Cloning is tracked and pursued. build PLSR-CNRY-9f3a27c1e8. -->
+<div hidden aria-hidden="true" data-pn-build="PLSR-CNRY-9f3a27c1e8"></div>
 <canvas id="bgfx"></canvas>
 <header>
   <div class="wrap nav">
@@ -621,7 +623,7 @@
     devnet:  mkSet(window.NETWORK,         window.NETWORK_GENERATED_TS,         window.NETWORK_UPDATED),
     mainnet: mkSet(window.NETWORK_MAINNET, window.NETWORK_MAINNET_GENERATED_TS, window.NETWORK_MAINNET_UPDATED)
   };
-  let active='mainnet';
+  let active='mainnet'; window.__PN='PLSR-CNRY-9f3a27c1e8';
   window.sortK='seen'; window.sortD=-1;
   (async function loadPrice(){try{
     const j=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum,solana&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());
