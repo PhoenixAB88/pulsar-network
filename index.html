@@ -210,10 +210,13 @@
   @media(max-width:480px){.hide-xs{display:none}.wrap{padding:0 16px}.mbody{padding:4px 16px 20px}.mtitle{font-size:19px}}
   @media(max-width:780px){.netseg.mini button{padding:9px 15px;font-size:13px}}
   .ctxbar{border-bottom:1px solid var(--hairline);background:var(--surface-1);position:relative;z-index:1}
-  .ctxbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:9px;padding-bottom:9px;font-size:13px;color:var(--mut)}
+  .ctxbar .wrap{padding-top:9px;padding-bottom:9px}
+  .ctxrow{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:13px;color:var(--mut)}
+  .ctxbar .tradealign{margin-top:0}
+  .tradealign .ctxrow{grid-column:2}
   .ctxbar a{color:var(--teal);font-weight:500}
   .ctxbar .pw{white-space:nowrap}
-  @media(max-width:640px){.ctxbar .pw{display:none}.ctxbar .wrap{font-size:12px;justify-content:center;text-align:center}}
+  @media(max-width:640px){.ctxbar .pw{display:none}.ctxrow{font-size:12px;justify-content:center;text-align:center}}
   .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:9px 18px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
   .tradealign{display:grid;grid-template-columns:300px minmax(0,1fr) 300px;gap:16px;margin-top:16px}
   .tradealign .tradebar{grid-column:2}
@@ -399,8 +402,12 @@
 
 <div class="ctxbar">
   <div class="wrap">
-    <span><b style="color:var(--ink);font-weight:600">Pulsar Nodes</b> - independent operator &amp; live monitor for the <a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum</a> decentralized storage network on Solana</span>
-    <a class="pw" href="https://www.xandeum.network/" target="_blank" rel="noopener">Powered by Xandeum ↗</a>
+    <div class="tradealign ctxalign">
+      <div class="ctxrow">
+        <span><b style="color:var(--ink);font-weight:600">Pulsar Nodes</b> - independent operator &amp; live monitor for the <a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum</a> decentralized storage network on Solana</span>
+        <a class="pw" href="https://www.xandeum.network/" target="_blank" rel="noopener">Powered by Xandeum ↗</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -796,7 +803,7 @@
     const el=document.getElementById('leaderboard'); if(!el)return;
     const S=window.STAKE||{}, main=SETS.mainnet.pods||[];
     const cityOf=pk=>{const p=main.find(x=>x.pubkey===pk);return (p&&p.city)?((p.cc?flag(p.cc)+' ':'')+p.city):shortpk(pk);};
-    const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,6);
+    const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,10);
     el.innerHTML=top.length?top.map(([pk,v],i)=>`<div class="lrow" role="button" tabindex="0" onclick="openNode('${pk}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${pk}')}"><span class="lr-n">${i+1}</span><span class="lr-c" title="${pk}">${cityOf(pk)}</span><span class="lr-s">${fmt(v.stake)}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">Loading on-chain…</div>';
   }
   function renderCountries(){
