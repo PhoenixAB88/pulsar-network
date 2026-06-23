@@ -302,6 +302,10 @@
   .band p{margin:0 auto 24px;color:var(--mut);max-width:56ch;text-wrap:pretty}
 
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0 28px}
+  #stake{padding-top:clamp(34px,5vw,54px)}
+  #stake .sec-head{margin-bottom:22px}
+  #stake .proof{margin-bottom:18px}
+  #stake .steps{margin:16px 0 18px}
   @media(max-width:820px){.steps{grid-template-columns:1fr}}
   .step{position:relative;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:24px 22px 22px}
   .step .num{display:grid;place-items:center;width:32px;height:32px;border-radius:var(--r-md);font-weight:600;font-size:15px;color:#1a1205;background:var(--orange);margin-bottom:14px;font-variant-numeric:tabular-nums}
@@ -344,6 +348,7 @@
       <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
+      <button class="icon-btn" id="navSearch" aria-label="Search nodes" title="Search nodes">🔍</button>
       <div class="netseg mini" id="topNet" role="tablist" aria-label="Switch network">
         <button data-net="devnet">Devnet</button>
         <button data-net="mainnet" class="on">Mainnet</button>
@@ -850,6 +855,7 @@
   }
 
   document.getElementById('search').addEventListener('input',renderRoster);
+  (function(){var b=document.getElementById('navSearch');if(b)b.addEventListener('click',function(){var s=document.getElementById('search');if(s){s.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){try{s.focus({preventScroll:true});}catch(e){s.focus();}},350);}});})();
   sel.addEventListener('change',renderRoster);
   document.querySelectorAll('.netseg button').forEach(b=>b.addEventListener('click',()=>{
     active=b.dataset.net;
