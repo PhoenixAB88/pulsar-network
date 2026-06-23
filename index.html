@@ -239,7 +239,10 @@
 
   .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px;align-items:start}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
-  #map{height:300px;border-radius:var(--r-xl);overflow:hidden;border:1px solid var(--hairline);margin-top:16px;background:var(--surface-1);z-index:1}
+  #map{height:200px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--hairline);background:var(--surface-1);z-index:1}
+  #mapsec{padding-top:0}
+  .mapmini{max-width:460px;margin:0 auto;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:12px}
+  .mapmini-cap{font-size:12px;color:var(--mut);margin-bottom:8px;letter-spacing:.03em;text-align:center}
   .leaflet-container{background:var(--surface-1);font:13px inherit}
   .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface-2);color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.4)}
   .leaflet-popup-content{font:12.5px/1.45 inherit}
@@ -393,7 +396,6 @@
     </div>
     <div class="cards reveal" id="statCards"></div>
     <!-- network storage now renders as a stat tile (#ssTile) -->
-    <div id="map" class="reveal"></div>
     <div class="net-grid reveal">
       <div class="net-left">
         <div class="box"><h3>Network online (recent)</h3><div id="netspark"></div></div>
@@ -476,6 +478,15 @@
       <a class="ccard reveal" href="https://www.xandeum.network/" target="_blank" rel="noopener"><div class="ic">🌐</div><b>Xandeum</b><small>The network</small></a>
       <a class="ccard reveal" href="https://docs.xandeum.network/" target="_blank" rel="noopener"><div class="ic">📖</div><b>Docs</b><small>How it works</small></a>
       <a class="ccard reveal" href="https://jup.ag/swap/SOL-XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx" onclick="openSwap();return false;"><div class="ic">📈</div><b>Trade XAND</b><small>Swap here (1% fee)</small></a>
+    </div>
+  </div>
+</section>
+
+<section id="mapsec">
+  <div class="wrap">
+    <div class="mapmini reveal">
+      <div class="mapmini-cap">Live node map</div>
+      <div id="map"></div>
     </div>
   </div>
 </section>
