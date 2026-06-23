@@ -132,14 +132,26 @@
   th.sort[data-dir="asc"]::after{content:" ▲";font-size:9px;color:var(--teal)}
   th.sort[data-dir="desc"]::after{content:" ▼";font-size:9px;color:var(--teal)}
   .net-left{display:flex;flex-direction:column;gap:16px;min-width:0}
-  .lrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--hairline);font-size:13px}
+  .lrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-bottom:1px solid var(--hairline);font-size:13px;cursor:pointer;border-radius:6px;transition:background .15s}
+  .lrow:hover{background:var(--surface-2)}
+  .lrow:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
   .lrow:last-child{border-bottom:none}
   .lr-n{width:18px;color:var(--mut2);font-variant-numeric:tabular-nums;text-align:right}
   .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network .wrap{display:flex;flex-direction:column}
   #network .nethero{order:1}#network .cards{order:3}#network .net-grid{order:4}#network #map{order:5}#network:not(.has-storage) th[data-k="storage"],#network:not(.has-storage) td[data-label="Storage"]{display:none}
-  .nethero{position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--hairline);padding:clamp(44px,8vw,88px) 22px;margin-bottom:6px;background:#070d18;text-align:center}
+  .nethero{position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--hairline);padding:clamp(24px,3.2vw,44px) clamp(18px,2.4vw,32px);margin-bottom:6px;background:#070d18;text-align:center}
+  .nethero-grid{position:relative;z-index:2;display:grid;grid-template-columns:300px minmax(0,1fr) 300px;gap:18px;align-items:center}
+  .nethero-side{display:flex;flex-direction:column;gap:14px;text-align:left}
+  .hbox{padding:14px 16px}
+  .hbox h3{font-size:12.5px;color:var(--mut);margin:0 0 8px;font-weight:600;letter-spacing:.02em}
+  .hbox .yuga-dial{width:92px;height:92px;margin:8px auto}
+  .hbox .yuga-num{font-size:30px}
+  .hbox .yuga-sub{font-size:11px}
+  .hbox .qlink{font-size:12.5px;margin-top:6px}
+  .hbox .lrow{font-size:12px}
+  @media(max-width:1080px){.nethero-grid{grid-template-columns:1fr}.nethero-grid .sec-head{order:-1}}
   .nethero #mapBg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.95;filter:saturate(1.25) contrast(1.08) brightness(1.06)}
   .nethero #mapBg .leaflet-control-container{display:none}
   .nethero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 130% at 50% 44%,rgba(8,12,22,.16) 0%,rgba(8,12,22,.40) 55%,rgba(8,12,22,.72) 100%)}
@@ -199,7 +211,7 @@
   .ctxbar a{color:var(--teal);font-weight:500}
   .ctxbar .pw{white-space:nowrap}
   @media(max-width:640px){.ctxbar .pw{display:none}.ctxbar .wrap{font-size:12px;justify-content:center;text-align:center}}
-  .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:9px 18px;margin-top:16px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
+  .tradebar{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(120deg,var(--surface-1),var(--surface-2),var(--surface-1));background-size:220% 220%;border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:9px 18px;margin:16px auto 0;max-width:1120px;flex-wrap:wrap;animation:tbshift 9s ease-in-out infinite}
   .tb-txt b{display:block;font-weight:600;font-size:20px;letter-spacing:-.02em}
   .tb-txt span{color:var(--mut2);font-size:7px}
   .tb-cta{display:flex;gap:10px;flex-wrap:wrap}
@@ -248,7 +260,7 @@
   .pf b{display:block;font-size:19px;font-weight:600;color:var(--orange);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
   .pf span{display:block;color:var(--mut2);font-size:11px;margin-top:3px;line-height:1.3}
 
-  .net-grid{display:grid;grid-template-columns:300px 1fr;gap:16px;margin-top:16px;align-items:start}
+  .net-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;align-items:start}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
   #map{height:200px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--hairline);background:var(--surface-1);z-index:1}
   #mapsec{padding-top:0}
@@ -408,20 +420,24 @@
   <div class="wrap">
     <div class="nethero reveal">
       <div id="mapBg" aria-hidden="true"></div>
-      <div class="sec-head">
-        <h2>Live Network</h2>
-        <p>Live status of the <a href="https://www.xandeum.network/" target="_blank" rel="noopener" style="color:var(--teal)">Xandeum</a> pNode network - from the gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
-        <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
+      <div class="nethero-grid">
+        <div class="nethero-side">
+          <div class="box hbox"><h3>Network online (recent)</h3><div id="netspark"></div></div>
+          <div class="box yuga-box hbox"><h3>Current yuga</h3><div class="yuga-dial"><div class="yuga-num" id="yugaNum">…</div></div><div class="yuga-sub">Network epoch - rewards settle each yuga</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
+        </div>
+        <div class="sec-head">
+          <h2>Live Network</h2>
+          <p>Live status of the <a href="https://www.xandeum.network/" target="_blank" rel="noopener" style="color:var(--teal)">Xandeum</a> pNode network - from the gossip roster via pRPC <code>get-pods</code> · <span id="updatedAt">—</span></p>
+          <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
+        </div>
+        <div class="nethero-side">
+          <div class="box hbox"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
+        </div>
       </div>
     </div>
     <div class="cards reveal" id="statCards"></div>
     <!-- network storage now renders as a stat tile (#ssTile) -->
     <div class="net-grid reveal">
-      <div class="net-left">
-        <div class="box"><h3>Network online (recent)</h3><div id="netspark"></div></div>
-        <div class="box yuga-box"><h3>Current yuga</h3><div class="yuga-dial"><div class="yuga-num" id="yugaNum">…</div></div><div class="yuga-sub">Network epoch - rewards settle each yuga</div><a class="qlink" href="yuga.html" target="_blank" rel="noopener">What is a Yuga? ↗</a></div>
-        <div class="box"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
-      </div>
       <div class="box">
         <div class="toolbar">
           <input id="search" type="text" placeholder="Search address, pubkey or version…">
@@ -771,8 +787,8 @@
     const el=document.getElementById('leaderboard'); if(!el)return;
     const S=window.STAKE||{}, main=SETS.mainnet.pods||[];
     const cityOf=pk=>{const p=main.find(x=>x.pubkey===pk);return (p&&p.city)?((p.cc?flag(p.cc)+' ':'')+p.city):shortpk(pk);};
-    const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,8);
-    el.innerHTML=top.length?top.map(([pk,v],i)=>`<div class="lrow"><span class="lr-n">${i+1}</span><span class="lr-c" title="${pk}">${cityOf(pk)}</span><span class="lr-s">${fmt(v.stake)}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">Loading on-chain…</div>';
+    const top=Object.entries(S).filter(([,v])=>v.stake>0).sort((a,b)=>b[1].stake-a[1].stake).slice(0,6);
+    el.innerHTML=top.length?top.map(([pk,v],i)=>`<div class="lrow" role="button" tabindex="0" onclick="openNode('${pk}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${pk}')}"><span class="lr-n">${i+1}</span><span class="lr-c" title="${pk}">${cityOf(pk)}</span><span class="lr-s">${fmt(v.stake)}</span></div>`).join(''):'<div style="color:var(--mut2);font-size:13px">Loading on-chain…</div>';
   }
   function renderCountries(){
     const el=document.getElementById('geodist'); if(!el)return;
