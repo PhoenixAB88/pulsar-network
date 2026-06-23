@@ -71,6 +71,17 @@
   .icon-btn{width:38px;height:38px;border-radius:var(--r-md);border:1px solid var(--hairline-2);background:var(--surface-1);display:grid;place-items:center;cursor:pointer;color:var(--ink);font-size:16px;transition:background .15s}
   .icon-btn:hover{background:var(--surface-2)}
   .menu-btn{display:none;width:38px;height:38px;border-radius:var(--r-md);border:1px solid var(--hairline-2);background:var(--surface-1);color:var(--ink);font-size:17px;cursor:pointer}
+  .navsearch{position:relative;display:flex;align-items:center}
+  .navsearch input{width:0;opacity:0;padding:0;border:1px solid transparent;background:var(--surface-1);color:var(--ink);border-radius:var(--r-md);font-size:13.5px;font-family:inherit;outline:none;transition:width .25s ease,opacity .18s ease,padding .25s ease,border-color .15s}
+  .navsearch.open input{width:min(210px,46vw);opacity:1;padding:8px 12px;border-color:var(--hairline-2);margin-left:6px}
+  .navsearch.open input:focus{border-color:var(--teal)}
+  .navresults{position:absolute;top:46px;right:0;width:min(320px,88vw);max-height:62vh;overflow:auto;background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-md);box-shadow:0 18px 50px rgba(0,0,0,.5);padding:6px;display:none;z-index:60}
+  .navresults.show{display:block}
+  .navresults .grp{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut2);padding:8px 10px 4px}
+  .navresults a,.navresults button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;background:none;border:none;color:var(--ink);font-family:inherit;font-size:13.5px;font-weight:500;padding:8px 10px;border-radius:var(--r-sm);cursor:pointer;text-decoration:none}
+  .navresults a:hover,.navresults button:hover{background:var(--surface-2)}
+  .navresults small{color:var(--mut2);font-size:11.5px;font-weight:400}
+  .navresults .empty{color:var(--mut);font-size:13px;padding:12px 10px}
   .mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;z-index:49;background:var(--canvas);border-bottom:1px solid var(--hairline);padding:10px 22px;flex-direction:column;gap:2px}
   .mobile-menu a{padding:13px 12px;border-radius:var(--r-md);color:var(--ink);font-weight:500}
   .mobile-menu a:hover{background:var(--surface-1)}
@@ -348,7 +359,11 @@
       <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
-      <button class="icon-btn" id="navSearch" aria-label="Search nodes" title="Search nodes">🔍</button>
+      <div class="navsearch" id="navSearch">
+        <button class="icon-btn" id="navSearchBtn" aria-label="Search" title="Search">🔍</button>
+        <input id="navSearchInput" type="text" placeholder="Search nodes, pages…" autocomplete="off" aria-label="Search the site">
+        <div class="navresults" id="navResults" role="listbox"></div>
+      </div>
       <div class="netseg mini" id="topNet" role="tablist" aria-label="Switch network">
         <button data-net="devnet">Devnet</button>
         <button data-net="mainnet" class="on">Mainnet</button>
@@ -855,7 +870,48 @@
   }
 
   document.getElementById('search').addEventListener('input',renderRoster);
-  (function(){var b=document.getElementById('navSearch');if(b)b.addEventListener('click',function(){var s=document.getElementById('search');if(s){s.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){try{s.focus({preventScroll:true});}catch(e){s.focus();}},350);}});})();
+  (function(){
+    var wrap=document.getElementById('navSearch'),btn=document.getElementById('navSearchBtn'),inp=document.getElementById('navSearchInput'),res=document.getElementById('navResults');
+    if(!wrap||!btn||!inp||!res)return;
+    var PAGES=[
+      {t:'Live network',s:'Node roster, map & stats',u:'#network'},
+      {t:'Why storage',s:'Why on-chain storage',u:'#why'},
+      {t:'Stake with Pulsar',s:'Delegate XAND, earn STOINC',u:'#stake'},
+      {t:'Community',s:'X, GitHub & docs',u:'#community'},
+      {t:'Insights',s:'Articles & analysis',u:'insights.html'},
+      {t:'What Is Decentralized Storage',s:'Article',u:'articles/decentralized-storage.html'},
+      {t:'DePIN, Explained',s:'Article',u:'articles/depin-explained.html'},
+      {t:'Firedancer Is Live',s:'Article',u:'articles/firedancer-solana-2026.html'},
+      {t:'Solana RWAs & Tokenization',s:'Article',u:'articles/solana-rwa-2026.html'},
+      {t:'The Economics of Running a Node',s:'Article',u:'articles/node-economics.html'},
+      {t:'How Macro Moves Crypto',s:'Article',u:'articles/macro-and-crypto.html'},
+      {t:'Terms of Service',s:'Legal',u:'terms.html'},
+      {t:'Privacy Policy',s:'Legal',u:'privacy.html'}
+    ];
+    function esc(s){return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    function openS(){wrap.classList.add('open');setTimeout(function(){inp.focus();},60);}
+    function closeS(){wrap.classList.remove('open');res.classList.remove('show');}
+    btn.addEventListener('click',function(){if(wrap.classList.contains('open')){if(inp.value){inp.value='';doSearch();}else closeS();}else openS();});
+    function doSearch(){
+      var q=inp.value.trim().toLowerCase();
+      var ts=document.getElementById('search');if(ts){ts.value=inp.value;renderRoster();}
+      if(!q){res.classList.remove('show');res.innerHTML='';return;}
+      var html='';
+      var pm=PAGES.filter(function(p){return (p.t+' '+p.s).toLowerCase().indexOf(q)>-1;}).slice(0,6);
+      if(pm.length){html+='<div class="grp">Pages</div>'+pm.map(function(p){return '<a href="'+p.u+'">'+esc(p.t)+'<small>'+esc(p.s)+'</small></a>';}).join('');}
+      try{
+        var S=SETS[active]||{pods:[]};
+        var nm=S.pods.filter(function(p){return ((p.address||'')+' '+(p.pubkey||'')+' '+(p.city||'')+' '+(p.version||'')+' '+(p.cc||'')).toLowerCase().indexOf(q)>-1;}).slice(0,6);
+        if(nm.length){html+='<div class="grp">Nodes</div>'+nm.map(function(p){return '<button type="button" data-pk="'+esc(p.pubkey)+'">'+esc(p.city||'Unknown')+(p.cc?' · '+esc(p.cc):'')+'<small>'+esc((p.pubkey||'').slice(0,10))+'… · '+esc(p.address||'')+'</small></button>';}).join('');}
+      }catch(e){}
+      if(!html)html='<div class="empty">No matches for "'+esc(inp.value)+'"</div>';
+      res.innerHTML=html;res.classList.add('show');
+    }
+    inp.addEventListener('input',doSearch);
+    res.addEventListener('click',function(e){var b=e.target.closest('button[data-pk]');if(b){closeS();if(window.openNode)openNode(b.getAttribute('data-pk'));return;}if(e.target.closest('a'))closeS();});
+    inp.addEventListener('keydown',function(e){if(e.key==='Escape')closeS();});
+    document.addEventListener('click',function(e){if(!wrap.contains(e.target))closeS();});
+  })();
   sel.addEventListener('change',renderRoster);
   document.querySelectorAll('.netseg button').forEach(b=>b.addEventListener('click',()=>{
     active=b.dataset.net;
