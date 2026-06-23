@@ -624,8 +624,10 @@
   let active='mainnet';
   window.sortK='seen'; window.sortD=-1;
   (async function loadPrice(){try{
-    const j=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());
-    if(j&&j.xandeum){window.XAND_PRICE={usd:j.xandeum.usd,chg:j.xandeum.usd_24h_change||0};renderNetwork();}
+    const j=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum,solana&vs_currencies=usd&include_24hr_change=true').then(r=>r.json());
+    if(j&&j.xandeum){window.XAND_PRICE={usd:j.xandeum.usd,chg:j.xandeum.usd_24h_change||0};}
+    if(j&&j.solana){window.SOL_PRICE={usd:j.solana.usd,chg:j.solana.usd_24h_change||0};}
+    if(j&&(j.xandeum||j.solana))renderNetwork();
   }catch(e){}})();
   const sel=document.getElementById('verFilter');
   const body=document.getElementById('rosterBody'), meta=document.getElementById('rosterMeta');
@@ -690,7 +692,10 @@
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
       <div class="stat" id="ssTile" style="display:none"><div class="k" id="ssK">Network storage</div><div class="v" id="ssVal" style="color:var(--teal)">…</div><div id="ssSub" style="font-size:12px;color:var(--mut);margin-top:3px"></div></div>`;
     const _tp=document.getElementById('tbPrice');
-    if(_tp)_tp.innerHTML=window.XAND_PRICE?('<a href="https://www.coingecko.com/en/coins/xandeum" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><span class="pxblink"></span><span class="tbp-sym">XAND</span> <b>$'+window.XAND_PRICE.usd.toFixed(5)+'</b> <span style="color:'+(window.XAND_PRICE.chg>=0?'var(--good)':'var(--bad)')+';font-size:12px;font-weight:600">'+(window.XAND_PRICE.chg>=0?'+':'')+window.XAND_PRICE.chg.toFixed(1)+'%</span> <span class="tbp-chart">chart ↗</span></a>'):'';
+    if(_tp){
+      const prow=(sym,p,id,dp)=>p?('<a href="https://www.coingecko.com/en/coins/'+id+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;display:flex;align-items:center;gap:6px"><span class="pxblink"></span><span class="tbp-sym">'+sym+'</span> <b>$'+p.usd.toFixed(dp)+'</b> <span style="color:'+(p.chg>=0?'var(--good)':'var(--bad)')+';font-size:12px;font-weight:600">'+(p.chg>=0?'+':'')+p.chg.toFixed(1)+'%</span> <span class="tbp-chart">chart ↗</span></a>'):'';
+      _tp.innerHTML=(window.XAND_PRICE||window.SOL_PRICE)?('<div style="display:flex;flex-direction:column;gap:4px">'+prow('XAND',window.XAND_PRICE,'xandeum',5)+prow('SOL',window.SOL_PRICE,'solana',2)+'</div>'):'';
+    }
 
     renderCountries();
 
