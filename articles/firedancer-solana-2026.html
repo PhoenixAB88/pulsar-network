@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
-<title>Firedancer Is Live: What Solana's New Validator Client Changes in 2026 | Pulsar Nodes</title>
-<meta name="description" content="Firedancer, Jump Crypto's independent Solana validator client, reached full mainnet block production in 2026. Here's what it means for throughput and resilience.">
+<title>Frankendancer Is Live: Solana's Path to Full Firedancer (2026) | Pulsar Nodes</title>
+<meta name="description" content="What's actually live on Solana in 2026: Frankendancer runs on mainnet, full Firedancer reached v1.0.0 on testnet, and FireBAM is Jito's block-assembly client. The differences, explained.">
 <link rel="canonical" href="https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Pulsar Nodes">
-<meta property="og:title" content="Firedancer Is Live: What Solana's New Validator Client Changes in 2026">
-<meta property="og:description" content="Firedancer reached full mainnet block production in 2026 - what it means for Solana's throughput and resilience.">
+<meta property="og:title" content="Frankendancer Is Live: Solana's Path to Full Firedancer">
+<meta property="og:description" content="Firedancer vs Frankendancer vs FireBAM in 2026 - what's really running on Solana mainnet, and what's still on testnet.">
 <meta property="og:url" content="https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html">
 <meta property="og:image" content="https://pulsarnetwork.xyz/og-firedancer.png">
 <meta property="og:image:width" content="1200">
@@ -19,10 +19,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://pulsarnetwork.xyz/og-firedancer.png">
 <meta name="twitter:site" content="@PulsarNodes">
-<meta name="twitter:title" content="Firedancer Is Live: What Solana's New Validator Client Changes in 2026">
-<meta name="twitter:description" content="What Solana's new validator client means in 2026.">
+<meta name="twitter:title" content="Frankendancer Is Live: Solana's Path to Full Firedancer">
+<meta name="twitter:description" content="What's really running on Solana mainnet in 2026, and what's still on testnet.">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Firedancer Is Live: What Solana's New Validator Client Changes in 2026","datePublished":"2026-06-23","author":{"@type":"Organization","name":"Pulsar Nodes"},"publisher":{"@type":"Organization","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/"},"mainEntityOfPage":"https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html"}
+{"@context":"https://schema.org","@type":"Article","headline":"Frankendancer Is Live: Solana's Path to Full Firedancer","datePublished":"2026-06-23","dateModified":"2026-06-24","author":{"@type":"Person","name":"Abdennour T Bada"},"publisher":{"@type":"Organization","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/"},"mainEntityOfPage":"https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html"}
 </script>
 <link rel="stylesheet" href="article.css">
 </head>
@@ -37,45 +37,64 @@
 <main class="wrap">
   <a class="back" href="../insights.html">← All insights</a>
   <div class="tags"><span class="tag">Solana</span><span class="tag">Infrastructure</span></div>
-  <h1>Firedancer Is Live: What Solana's New Validator Client Changes in 2026</h1>
-  <div class="meta">By Pulsar Nodes · <time datetime="2026-06-23">June 23, 2026</time> · 6 min read</div>
-  <p class="lede">For years Solana ran on essentially one validator software stack - a single point of fragility for a chain that prizes speed. Firedancer, an independent client built from scratch by Jump Crypto, changes that. In 2026 it moved from promise to production.</p>
+  <h1>Frankendancer Is Live: Solana's Path to Full Firedancer</h1>
+  <div class="meta">By Abdennour T Bada · <time datetime="2026-06-23">June 23, 2026</time> · Last reviewed <time datetime="2026-06-24">June 24, 2026</time> · 6 min read</div>
+  <p class="lede">For years Solana ran on essentially one validator software stack, a single point of fragility for a chain that prizes speed. That is changing through a deliberately staged rollout. But in 2026 the story has three names that are easy to confuse, and the difference matters: <strong>Firedancer</strong>, <strong>Frankendancer</strong>, and <strong>FireBAM</strong>.</p>
 
-  <h2>What Firedancer is</h2>
-  <p>Firedancer is a new Solana validator client written in C by Jump Crypto, the technology arm of Jump Trading.<sup><a href="#r1">1</a></sup> A "validator client" is the software that nodes run to process transactions and produce blocks. Until recently, almost the entire network ran one implementation (Agave). Firedancer is a completely separate codebase designed for raw performance and, just as importantly, for <strong>client diversity</strong>.</p>
+  <div class="callout" style="border-left:3px solid var(--teal,#3fe7ef)">
+    <h4>Correction &amp; clarification (June 24, 2026)</h4>
+    <p>An earlier version of this article said full Firedancer began mainnet block production in May 2026. That overstated its status. This version distinguishes Frankendancer (the hybrid client that actually carries mainnet stake today) from full Firedancer (which reached v1.0.0 on <em>testnet</em> in June 2026 and is not yet recommended for mainnet), and adds FireBAM and primary sources.</p>
+  </div>
 
-  <h2>The status in 2026</h2>
-  <p>The rollout has been deliberately staged. A hybrid build called <em>Frankendancer</em> - Firedancer's networking layer bolted onto the existing runtime - has been live on mainnet since 2024. Full Firedancer block production began on mainnet in May 2026, after more than 100 days of continuous testnet operation and over 50,000 testnet blocks, and by Q2 2026 it was running on 20%+ of active validators.<sup><a href="#r2">2</a></sup></p>
+  <h2>Three names, three different things</h2>
+  <p><strong>Firedancer</strong> is a brand-new Solana validator client written from scratch in C by Jump Crypto, the technology arm of Jump Trading.<sup><a href="#r1">1</a></sup> A "validator client" is the software nodes run to process transactions and produce blocks. Until recently almost the entire network ran one implementation (Agave). Firedancer is a completely separate codebase built for raw performance and, just as importantly, for <strong>client diversity</strong>.</p>
+  <p><strong>Frankendancer</strong> is the hybrid stepping-stone: Firedancer's high-performance networking front-end bolted onto the existing Agave execution core. It lets the network gain Firedancer's networking benefits while the from-scratch execution engine is still being hardened.<sup><a href="#r2">2</a></sup></p>
+  <p><strong>FireBAM</strong> is something different again: a Frankendancer-compatible <em>Block Assembly Marketplace</em> (BAM) client from Jito. It is not a validator client but a transaction-ordering layer that uses trusted execution environments to create an encrypted mempool and reduce harmful MEV (like sandwich attacks). It bridges Jito's block-assembly infrastructure into the Firedancer ecosystem.<sup><a href="#r5">5</a></sup></p>
+
+  <h2>What's actually live in 2026</h2>
+  <p>This is where careful wording matters:</p>
+  <ul>
+    <li><strong>Frankendancer is live on mainnet-beta</strong> and runs under roughly <strong>20%+ of active mainnet stake</strong>. This hybrid is the real, measurable client diversity Solana has today.<sup><a href="#r2">2</a></sup></li>
+    <li><strong>Full Firedancer reached v1.0.0 on testnet</strong> in mid-June 2026 (the binary was renamed from <code>fdctl</code> to <code>firedancer</code>). The release is explicitly <strong>testnet-oriented and not suggested for Mainnet Beta use</strong> yet, even though a small number of validators have run it in a limited capacity.<sup><a href="#r3">3</a></sup><sup><a href="#r4">4</a></sup></li>
+    <li><strong>FireBAM is live on testnet and mainnet</strong> and is onboarding third parties, expanding MEV-aware block assembly to more of the validator set.<sup><a href="#r5">5</a></sup></li>
+  </ul>
+  <p>So the honest headline is not "full Firedancer has taken over mainnet." It is: the hybrid (Frankendancer) is doing real work on mainnet, the pure client (Firedancer) has hit a major testnet milestone, and the path to full mainnet runs through continued testing and tooling.</p>
 
   <h2>The throughput question</h2>
-  <p>Firedancer's headline number is <strong>1 million transactions per second</strong> - but that figure deserves context. It's a single-validator lab benchmark, not what the live network sustains.<sup><a href="#r2">2</a></sup> In production as of 2026 Solana processes on the order of a few thousand TPS in normal conditions, with a landmark 2025 stress test briefly pushing it to around 100,000 TPS.<sup><a href="#r2">2</a></sup></p>
-  <blockquote>The real win isn't the benchmark - it's that validators running Firedancer/Frankendancer have shown better transaction inclusion and fewer dropped transactions than the baseline client.</blockquote>
-  <p>For everyday users, that translates into a more reliable experience during congestion: more of your transactions land on the first try.</p>
+  <p>Firedancer's headline number is <strong>over 1 million transactions per second</strong>, but that figure needs context: it is a single-validator lab target, not what the live network sustains.<sup><a href="#r1">1</a></sup> The Frankendancer hybrid has demonstrated <strong>600,000+ TPS</strong> in test conditions.<sup><a href="#r2">2</a></sup> In normal production, Solana processes on the order of a few thousand TPS, with stress tests pushing far higher. The practical near-term win isn't the benchmark.</p>
+  <blockquote>The real payoff is resilience: more independent client code, better transaction inclusion, and fewer dropped transactions during congestion.</blockquote>
+  <p>For everyday users, that means a more reliable experience when the network is busy, more of your transactions land on the first try.</p>
 
   <h2>Why client diversity is the bigger story</h2>
-  <p>Solana's most painful moments have been full or partial outages. When one client runs the whole network, a single bug can stop everything. Multiple independent clients mean a flaw in one is unlikely to exist in the other, so the network can keep producing blocks even if one implementation stumbles. This is the same resilience principle Ethereum pursued years ago with multiple clients - and it's arguably Firedancer's most important contribution to Solana's credibility as serious financial infrastructure.</p>
+  <p>Solana's most painful moments have been full or partial outages. When one client runs the whole network, a single bug can stop everything. Multiple independent clients mean a flaw in one is unlikely to exist in another, so the network can keep producing blocks even if one implementation stumbles. This is the same resilience principle Ethereum pursued years ago with multiple clients, and it is arguably Firedancer's most important contribution to Solana's credibility as serious financial infrastructure. Frankendancer's mainnet stake is the first big step; full Firedancer would deepen it.</p>
 
   <h2>What it means for operators and builders</h2>
-  <p>For node operators, Firedancer introduces real choice and competition on performance and efficiency. For builders and institutions weighing Solana for high-value applications - payments, tokenized assets, exchanges - a more resilient, diversely-clienteled base layer lowers the perceived risk of building there.</p>
+  <p>For node operators, the Firedancer family introduces real choice and competition on performance and efficiency. For builders and institutions weighing Solana for high-value applications, payments, tokenized assets, exchanges, a more resilient and diversely-clienteled base layer lowers the perceived risk of building there. Watch the split between Frankendancer and full Firedancer stake over the coming quarters as the clearest signal of how far the transition has gone.</p>
 
   <div class="callout">
     <h4>Key takeaways</h4>
     <ul>
-      <li>Firedancer is an independent, from-scratch Solana validator client by Jump Crypto; full mainnet block production began in 2026.</li>
-      <li>The "1M TPS" figure is a single-validator benchmark; the practical gains are better transaction inclusion and fewer drops.</li>
-      <li>The deepest benefit is client diversity - reducing the risk that one bug halts the whole network.</li>
+      <li><strong>Frankendancer</strong> (hybrid: Firedancer networking + Agave execution) is what's live on mainnet today, at roughly 20%+ of stake.</li>
+      <li><strong>Full Firedancer</strong> reached v1.0.0 on <strong>testnet</strong> in June 2026 and is not yet recommended for mainnet.</li>
+      <li><strong>FireBAM</strong> is Jito's separate block-assembly-marketplace client, not a validator client.</li>
+      <li>The "1M TPS" figure is a lab target; the real near-term benefit is client diversity and better transaction inclusion.</li>
     </ul>
   </div>
 
   <h2 id="refs">References</h2>
   <ol class="refs">
     <li id="r1">Jump Crypto - Firedancer project overview. <a href="https://jumpcrypto.com/build/firedancer" target="_blank" rel="noopener">jumpcrypto.com/build/firedancer</a></li>
-    <li id="r2">Chainstack Blog - "What is Firedancer? Solana's new validator client explained." <a href="https://chainstack.com/firedancer-explained/" target="_blank" rel="noopener">chainstack.com</a></li>
+    <li id="r2">Firedancer (firedancer-io) - official repository and client documentation (Frankendancer vs Firedancer). <a href="https://github.com/firedancer-io/firedancer" target="_blank" rel="noopener">github.com/firedancer-io/firedancer</a></li>
+    <li id="r3">Solana - official announcement of Firedancer reaching Solana mainnet on an initial set of validators. <a href="https://x.com/solana/status/1999399841957576741" target="_blank" rel="noopener">x.com/solana</a></li>
+    <li id="r4">Solana Infrastructure Weekly (Week 25, 2026) - Firedancer v1.0.0 on testnet, "not suggested for Mainnet Beta use." <a href="https://yavorovych.medium.com/solana-this-week-firedancer-1-0-ms-etf-10ms-slots-e7ab449aa521" target="_blank" rel="noopener">yavorovych.medium.com</a></li>
+    <li id="r5">Jito - BAM (Block Assembly Marketplace) and FireBAM. <a href="https://bam.dev/blog/" target="_blank" rel="noopener">bam.dev/blog</a></li>
   </ol>
+
+  <p class="disclaimer">This article is for general information and education only, not financial advice. Infrastructure status changes quickly; figures reflect publicly reported information as of the "last reviewed" date above. Spotted an error? Tell us at <a href="mailto:contact@pulsarnetwork.xyz">contact@pulsarnetwork.xyz</a> and we will correct it.</p>
 
   <div class="share">
     <span>Share:</span>
-    <a href="https://twitter.com/intent/tweet?text=Firedancer%20Is%20Live%3A%20What%20Solana%27s%20New%20Validator%20Client%20Changes%20in%202026&url=https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html&via=PulsarNodes" target="_blank" rel="noopener">𝕏 Post</a>
+    <a href="https://twitter.com/intent/tweet?text=Frankendancer%20Is%20Live%3A%20Solana%27s%20Path%20to%20Full%20Firedancer&url=https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html&via=PulsarNodes" target="_blank" rel="noopener">𝕏 Post</a>
     <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html" target="_blank" rel="noopener">in Share</a>
   </div>
 
