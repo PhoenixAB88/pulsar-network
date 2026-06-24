@@ -17,7 +17,7 @@ Live: https://pulsarnetwork.xyz  ·  X: [@PulsarNodes](https://x.com/PulsarNodes
 
 ## Safety and transparency
 - **Read-only.** The site only reads public data. It never asks you to connect a wallet or sign a transaction, except the clearly-labeled swap, which is handled by Jupiter with the fee disclosed.
-- **Open source.** This repository is the full frontend. Audit it freely.
+- **Source-available.** This repository is the full frontend, public for transparency and audit (source-available, not open-source; see [LICENSE](LICENSE)).
 - **Privacy-first.** No accounts, minimal data collected. See the [Privacy Policy](https://pulsarnetwork.xyz/privacy.html) and [Terms of Service](https://pulsarnetwork.xyz/terms.html).
 
 ## Who builds it

@@ -73,7 +73,7 @@
     <li><strong>XAND and SOL prices:</strong> fetched live from CoinGecko in your browser.</li>
     <li><strong>Map tiles:</strong> a third-party tile provider; node locations are approximate, derived from public network data.</li>
   </ul>
-  <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, no per-request server sees or logs your activity.</p>
+  <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, we run no application backend of our own. As with any website, our hosting/CDN provider may process standard technical data (such as your IP address, browser type, and timestamps) to deliver and secure the site; see our <a href="privacy.html">Privacy Policy</a> for details.</p>
 
   <h2>Uptime methodology</h2>
   <p>Uptime reflects how consistently a node is present and responsive in the network's gossip data across each yuga (the network's reward epoch). We sample node presence on a regular interval and average it over the period shown. A reading of 100% means the node was observed as present and healthy in every sample for that window. Uptime is drawn from public network data, not self-reported, and like all live data it can be delayed or incomplete. Treat it as a strong indicator, not a guarantee.</p>
@@ -92,7 +92,7 @@
     <li><strong>Key-only SSH</strong> and a restrictive inbound firewall allow-list on every machine.</li>
     <li><strong>Least-privilege access</strong> and no production secrets in our public code.</li>
     <li><strong>Monitoring and alerting</strong> across the fleet, so we are notified quickly if a node degrades.</li>
-    <li><strong>Open source for audit.</strong> The full frontend is public on <a href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener">GitHub</a>; report any concern via our <a href="https://github.com/PhoenixAB88/pulsar-network/blob/main/SECURITY.md" target="_blank" rel="noopener">security policy</a>.</li>
+    <li><strong>Source-available for public audit.</strong> The full frontend is public on <a href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener">GitHub</a> (source-available, not open-source; see the license); report any concern via our <a href="https://github.com/PhoenixAB88/pulsar-network/blob/main/SECURITY.md" target="_blank" rel="noopener">security policy</a>.</li>
   </ul>
 
   <h2>Incident history</h2>
