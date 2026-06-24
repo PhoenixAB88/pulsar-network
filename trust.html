@@ -72,7 +72,7 @@
     <li><strong>Stake, yuga, and rewards data:</strong> read directly from public Solana on-chain state.</li>
     <li><strong>XAND and SOL prices:</strong> fetched live from CoinGecko in your browser.</li>
     <li><strong>Map tiles:</strong> a third-party tile provider; node locations are approximate, derived from public network data.</li>
-    <li><strong>Network storage totals, per-node storage, and node health (only when displayed):</strong> when shown, these specific metrics are aggregated from a public third-party network API rather than measured by us directly; their availability and freshness depend on that external service, and they are hidden when it is unavailable. We plan to source this data directly over time.</li>
+    <li><strong>Network storage totals and per-node storage:</strong> collected by polling each pNode's own public pRPC <code>get-stats</code> endpoint and aggregating it ourselves (the same public data any operator can read), refreshed on our generator cron. No third-party dashboard sits in the data path.</li>
   </ul>
   <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, we run no application backend of our own. As with any website, our hosting/CDN provider may process standard technical data (such as your IP address, browser type, and timestamps) to deliver and secure the site; see our <a href="privacy.html">Privacy Policy</a> for details.</p>
 
