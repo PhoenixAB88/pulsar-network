@@ -1,5 +1,7 @@
 # Pulsar Nodes
 
+![Pulsar Nodes - live Xandeum pNode network monitor](og-image.png)
+
 **Independent, community-built live monitor and operator for the [Xandeum](https://www.xandeum.network/) pNode storage network on Solana.**
 
 Live: https://pulsarnetwork.xyz  ·  X: [@PulsarNodes](https://x.com/PulsarNodes)
