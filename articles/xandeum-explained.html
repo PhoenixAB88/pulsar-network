@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum Explained: Exabyte Storage for Solana Apps | Pulsar Nodes</title>
+<meta name="description" content="Solana is fast but can't store much on-chain. Xandeum adds the missing storage layer: smart-contract-native buckets that scale to exabytes, a network of pNodes, and verifiable Poke/Peek/Prove access. How it works, explained.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/articles/xandeum-explained.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Nodes">
+<meta property="og:title" content="Xandeum Explained: Exabyte Storage for Solana">
+<meta property="og:description" content="The missing storage layer for Solana: buckets, pNodes, and verifiable Poke/Peek/Prove access, explained.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/articles/xandeum-explained.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-xandeum.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-xandeum.png">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum Explained: Exabyte Storage for Solana">
+<meta name="twitter:description" content="The missing storage layer for Solana, explained.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Xandeum Explained: Exabyte Storage for Solana Apps","datePublished":"2026-06-24","dateModified":"2026-06-24","author":{"@type":"Person","name":"Abdennour T Bada"},"publisher":{"@type":"Organization","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/"},"mainEntityOfPage":"https://pulsarnetwork.xyz/articles/xandeum-explained.html"}
+</script>
+<link rel="stylesheet" href="article.css">
+</head>
+<body>
+<!-- (c) 2026 Pulsar Nodes. Original work. pulsarnetwork.xyz. Cloning is tracked and pursued. build PLSR-CNRY-9f3a27c1e8. -->
+<div hidden aria-hidden="true" data-pn-build="PLSR-CNRY-9f3a27c1e8"></div>
+<div class="progress" aria-hidden="true"></div>
+<header class="top">
+  <a class="brand" href="../"><span class="dot"></span><span>PULSAR<small>NODES</small></span></a>
+  <nav><a href="../">Dashboard</a><a href="../insights.html">Insights</a><a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">X ↗</a></nav>
+</header>
+<main class="wrap">
+  <a class="back" href="../insights.html">← All insights</a>
+  <div class="tags"><span class="tag">Xandeum</span><span class="tag">Storage</span><span class="tag">Solana</span></div>
+  <h1>Xandeum Explained: Exabyte Storage for Solana</h1>
+  <div class="meta">By Abdennour T Bada · <time datetime="2026-06-24">June 24, 2026</time> · Last reviewed <time datetime="2026-06-24">June 24, 2026</time> · 8 min read</div>
+  <p class="lede">Solana can do tens of thousands of transactions per second, but ask it to store a video, a dataset, or a large document and it falls flat. On-chain state is deliberately scarce and expensive. Xandeum is built to fix exactly that gap: it adds a decentralized storage layer that Solana programs can actually use, at a scale ledgers were never meant to reach.</p>
+
+  <div class="callout" style="border-left:3px solid var(--teal,#3fe7ef)">
+    <h4>Disclosure</h4>
+    <p>Pulsar Nodes operates pNodes on the Xandeum network, so we have a stake in its success. We have tried to describe it factually; verify the specifics via Xandeum's own documentation, linked below.</p>
+  </div>
+
+  <h2>The problem: blockchains are terrible hard drives</h2>
+  <p>Every validator stores the chain's state, so putting large data on-chain means forcing thousands of machines to keep a copy of it forever, which is why it is priced to discourage. The result is a hard ceiling on what on-chain apps can hold. Developers work around it by stashing data on centralized clouds and putting only a pointer on-chain, which quietly reintroduces the single point of control that blockchains were meant to remove.</p>
+
+  <h2>What Xandeum is</h2>
+  <p>Xandeum is a storage layer for Solana: smart-contract-native <strong>buckets</strong> that can scale up to exabytes, served by a decentralized network of <strong>pNodes</strong> (provider nodes).<sup><a href="#r1">1</a></sup> Crucially, the storage is not a separate silo, programs reach it through extended Solana primitives via Xandeum-enabled RPC nodes, so a dApp can read and write large data as part of its normal on-chain logic. The pNodes that hold the data are cryptographically supervised by validator-style nodes, so integrity is checked rather than assumed.<sup><a href="#r2">2</a></sup></p>
+
+  <h2>How it works: Poke, Peek, and Prove</h2>
+  <p>Xandeum introduces three primitives that make storage feel native to Solana:<sup><a href="#r2">2</a></sup></p>
+  <ul>
+    <li><strong>Poke</strong> - write data from a Solana account into a bucket.</li>
+    <li><strong>Peek</strong> - read data from a bucket back into a Solana account.</li>
+    <li><strong>Prove</strong> - generate a cryptographic proof that the stored data is intact and unaltered.</li>
+  </ul>
+  <p>That third primitive is the important one. "Prove" is what separates verifiable decentralized storage from "just trust our servers": an app, or an auditor, can confirm the data is exactly what was stored, without trusting any single operator.</p>
+
+  <h2>The network today</h2>
+  <p>As of 2026, Xandeum runs <strong>300-plus pNodes</strong> operated independently around the world, with capacity growing week over week, and it has expanded node access through a series of "eras."<sup><a href="#r1">1</a></sup> A live network monitor (this site) tracks node status, locations, software versions, on-chain stake, and uptime in real time, the kind of transparency a storage network needs to earn trust.</p>
+
+  <h2>Why it matters: storage-enabled apps</h2>
+  <p>A usable on-chain storage layer unlocks application categories Solana could not host before: on-chain media and social, large verifiable datasets, document-heavy real-world-asset tokenization, game state, and, increasingly, AI data that needs provenance and durability. The common thread is the same one running through AI governance and the agent economy: applications increasingly need data that is both <em>large</em> and <em>verifiable</em>, and a storage layer fused with a fast chain is a natural home for it.</p>
+
+  <h2>The honest caveats</h2>
+  <p>Xandeum is an emerging network, and its architecture is still evolving from vision toward broad production use; capacity, tooling, and economics are maturing. As with any early infrastructure, real adoption (apps actually storing and proving data at scale) is the metric that matters, not roadmaps. Treat node participation and token mechanics as higher-risk, and do your own research; nothing here is financial advice.</p>
+
+  <div class="callout">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Solana keeps on-chain state scarce; Xandeum adds a decentralized storage layer programs can use.</li>
+      <li>Smart-contract-native <strong>buckets</strong> scale to exabytes, served by <strong>pNodes</strong> and integrity-checked by supervising nodes.</li>
+      <li>The <strong>Poke / Peek / Prove</strong> primitives make storage native and, with "Prove," verifiable.</li>
+      <li>300+ pNodes are live in 2026; the opportunity is storage-enabled apps that need large, verifiable data.</li>
+    </ul>
+  </div>
+
+  <h2 id="refs">References</h2>
+  <ol class="refs">
+    <li id="r1">Xandeum Network - storage for Solana programs (pNodes, buckets). <a href="https://www.xandeum.network/" target="_blank" rel="noopener">xandeum.network</a></li>
+    <li id="r2">Xandeum Docs - scalable storage solution and primitives. <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">docs.xandeum.network</a></li>
+  </ol>
+
+  <p class="disclaimer">This article is for general information and education only, not financial advice. Pulsar Nodes operates pNodes on the Xandeum network (see disclosure above). Details reflect publicly available information as of the "last reviewed" date. Spotted an error? Email <a href="mailto:contact@pulsarnetwork.xyz">contact@pulsarnetwork.xyz</a> and we will correct it.</p>
+
+  <div class="share">
+    <span>Share:</span>
+    <a href="https://twitter.com/intent/tweet?text=Xandeum%20Explained%3A%20Exabyte%20Storage%20for%20Solana&url=https://pulsarnetwork.xyz/articles/xandeum-explained.html&via=PulsarNodes" target="_blank" rel="noopener">𝕏 Post</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://pulsarnetwork.xyz/articles/xandeum-explained.html" target="_blank" rel="noopener">in Share</a>
+  </div>
+
+  <div class="cta">
+    <h3>See the network live</h3>
+    <p>Pulsar Nodes is the independent, real-time monitor of the Xandeum pNode network.</p>
+    <a class="btn" href="../">Open the dashboard →</a>
+  </div>
+</main>
+<footer>© 2026 Pulsar Nodes · <a href="../">pulsarnetwork.xyz</a> · Independent monitor for the Xandeum network. Educational content, not financial advice.</footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Verifiable Storage 101: Proofs, Redundancy, and Data Availability | Pulsar Nodes</title>
+<meta name="description" content="How do you know a decentralized network actually stored your data, can give it back, and hasn't changed it, without trusting any operator? A plain-English guide to storage proofs, redundancy, and data availability.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/articles/verifiable-storage-101.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Nodes">
+<meta property="og:title" content="Verifiable Storage 101: Proofs, Redundancy & Data Availability">
+<meta property="og:description" content="How storage proofs, redundancy, and data availability let you trust decentralized storage without trusting operators.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/articles/verifiable-storage-101.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-verifiable-storage.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-verifiable-storage.png">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Verifiable Storage 101">
+<meta name="twitter:description" content="Proofs, redundancy, and data availability, explained.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Verifiable Storage 101: Proofs, Redundancy, and Data Availability","datePublished":"2026-06-24","dateModified":"2026-06-24","author":{"@type":"Person","name":"Abdennour T Bada"},"publisher":{"@type":"Organization","name":"Pulsar Nodes","url":"https://pulsarnetwork.xyz/"},"mainEntityOfPage":"https://pulsarnetwork.xyz/articles/verifiable-storage-101.html"}
+</script>
+<link rel="stylesheet" href="article.css">
+</head>
+<body>
+<!-- (c) 2026 Pulsar Nodes. Original work. pulsarnetwork.xyz. Cloning is tracked and pursued. build PLSR-CNRY-9f3a27c1e8. -->
+<div hidden aria-hidden="true" data-pn-build="PLSR-CNRY-9f3a27c1e8"></div>
+<div class="progress" aria-hidden="true"></div>
+<header class="top">
+  <a class="brand" href="../"><span class="dot"></span><span>PULSAR<small>NODES</small></span></a>
+  <nav><a href="../">Dashboard</a><a href="../insights.html">Insights</a><a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">X ↗</a></nav>
+</header>
+<main class="wrap">
+  <a class="back" href="../insights.html">← All insights</a>
+  <div class="tags"><span class="tag">Storage</span><span class="tag">Explainer</span></div>
+  <h1>Verifiable Storage 101</h1>
+  <div class="meta">By Abdennour T Bada · <time datetime="2026-06-24">June 24, 2026</time> · Last reviewed <time datetime="2026-06-24">June 24, 2026</time> · 6 min read</div>
+  <p class="lede">When you hand a file to a decentralized network of strangers, three questions matter: did they really store it, can they give it back, and is it still exactly what you sent? Centralized clouds answer "trust us." Verifiable storage answers with math. Here is how, in plain English.</p>
+
+  <h2>The problem with "trust us"</h2>
+  <p>A storage provider could quietly delete rarely-accessed data to save money, keep one fragile copy instead of many, or serve back something subtly altered. With a single company you have contracts and reputation. With an open network of anonymous operators, you need a way to <em>check</em>, continuously, that they are doing what they're paid to do, without downloading everything yourself.</p>
+
+  <h2>Storage proofs: proving data is really there</h2>
+  <p>The core idea is to make a provider repeatedly prove it still holds your exact data:</p>
+  <ul>
+    <li><strong>Proof of Replication (PoRep)</strong> shows a provider has stored a unique physical copy, not just a pointer to someone else's.</li>
+    <li><strong>Proof of Spacetime (PoSt)</strong> shows it has kept that copy continuously over time, by answering random challenges it could only pass if the data is present. (Filecoin uses both.)</li>
+    <li><strong>Proof of Access</strong> (Arweave's approach) requires a miner to access a random past block to add a new one, incentivizing keeping the whole history available.</li>
+    <li><strong>Integrity proofs</strong>, like Xandeum's "Prove" primitive, let an app confirm stored data is intact and unaltered on demand.</li>
+  </ul>
+  <p>The unifying trick: challenge-response. The network periodically asks a question only an honest, data-holding node can answer, so cheating gets caught.</p>
+
+  <h2>Redundancy: surviving failure</h2>
+  <p>Proving data exists is useless if the one node holding it disappears. Two strategies add resilience. <strong>Full replication</strong> keeps several complete copies, simple but expensive. <strong>Erasure coding</strong> splits data into fragments with extra "parity" pieces, so the original can be rebuilt from a subset, far less overhead for the same fault tolerance. Walrus, for example, uses erasure coding to survive the loss of up to two-thirds of its nodes while storing far less redundant data than full replication would require.<sup><a href="#r1">1</a></sup></p>
+  <blockquote>Replication is keeping five photocopies. Erasure coding is shredding a document into pieces engineered so any subset can reconstruct the whole. Same safety, far less paper.</blockquote>
+
+  <h2>Data availability: can you actually get it back?</h2>
+  <p>A subtle but crucial point: storing data and <em>making it retrievable</em> are different guarantees. "Data availability" is the property that the data can be fetched when needed, not just that it exists somewhere. It's why modern networks pair storage proofs with retrieval guarantees and verifiable retrieval, and why "data availability layers" have become their own category in blockchain design.</p>
+
+  <h2>Why it matters now</h2>
+  <p>Verifiability is the whole point of the 2026 storage story. AI provenance, tokenized real-world assets, compliance records, and agent memory all need data that is not just stored but <em>provably</em> stored, intact, and retrievable. As more value depends on off-chain data, "trust us" stops being good enough, and proofs become the product.</p>
+
+  <h2>The honest caveats</h2>
+  <p>Proofs are powerful but narrow: they show data is stored and unchanged, not that the data is <em>true</em> or lawfully obtained. Not all networks marketed as "decentralized storage" offer strong proofs; some still lean on trusted gateways. And availability guarantees vary widely. When evaluating any storage network, ask precisely what is proven, how often, and what happens when a proof fails.</p>
+
+  <div class="callout">
+    <h4>Key takeaways</h4>
+    <ul>
+      <li>Verifiable storage replaces "trust us" with repeated, math-backed proofs that data is held intact.</li>
+      <li>Proofs (PoRep, PoSt, Proof of Access, integrity proofs) use challenge-response to catch cheating.</li>
+      <li>Redundancy via replication or (more efficiently) erasure coding keeps data safe through node failures.</li>
+      <li>Storage and retrievability differ: "data availability" guarantees you can actually get data back.</li>
+    </ul>
+  </div>
+
+  <h2 id="refs">References</h2>
+  <ol class="refs">
+    <li id="r1">Walrus - erasure-coded decentralized storage. <a href="https://www.walrus.xyz/" target="_blank" rel="noopener">walrus.xyz</a></li>
+    <li id="r2">Filecoin - Proof of Replication and Proof of Spacetime. <a href="https://filecoin.io/" target="_blank" rel="noopener">filecoin.io</a></li>
+    <li id="r3">Xandeum Docs - the Prove primitive. <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">docs.xandeum.network</a></li>
+  </ol>
+
+  <p class="disclaimer">This article is for general information and education only. Pulsar Nodes operates pNodes on the Xandeum network. Details reflect publicly available information as of the "last reviewed" date. Spotted an error? Email <a href="mailto:contact@pulsarnetwork.xyz">contact@pulsarnetwork.xyz</a> and we will correct it.</p>
+
+  <div class="share">
+    <span>Share:</span>
+    <a href="https://twitter.com/intent/tweet?text=Verifiable%20Storage%20101%3A%20Proofs%2C%20Redundancy%20%26%20Data%20Availability&url=https://pulsarnetwork.xyz/articles/verifiable-storage-101.html&via=PulsarNodes" target="_blank" rel="noopener">𝕏 Post</a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://pulsarnetwork.xyz/articles/verifiable-storage-101.html" target="_blank" rel="noopener">in Share</a>
+  </div>
+
+  <div class="cta">
+    <h3>Verifiable storage, live</h3>
+    <p>Pulsar Nodes monitors the Xandeum pNode storage network on Solana in real time.</p>
+    <a class="btn" href="../">Open the dashboard →</a>
+  </div>
+</main>
+<footer>© 2026 Pulsar Nodes · <a href="../">pulsarnetwork.xyz</a> · Independent monitor for the Xandeum network. Educational content, not financial advice.</footer>
+</body>
+</html>

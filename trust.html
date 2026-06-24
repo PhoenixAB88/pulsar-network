@@ -72,6 +72,7 @@
     <li><strong>Stake, yuga, and rewards data:</strong> read directly from public Solana on-chain state.</li>
     <li><strong>XAND and SOL prices:</strong> fetched live from CoinGecko in your browser.</li>
     <li><strong>Map tiles:</strong> a third-party tile provider; node locations are approximate, derived from public network data.</li>
+    <li><strong>Network storage totals, per-node storage, and node health (only when displayed):</strong> when shown, these specific metrics are aggregated from a public third-party network API rather than measured by us directly; their availability and freshness depend on that external service, and they are hidden when it is unavailable. We plan to source this data directly over time.</li>
   </ul>
   <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, we run no application backend of our own. As with any website, our hosting/CDN provider may process standard technical data (such as your IP address, browser type, and timestamps) to deliver and secure the site; see our <a href="privacy.html">Privacy Policy</a> for details.</p>
 
@@ -98,6 +99,9 @@
   <h2>Incident history</h2>
   <p>We disclose security incidents that affect our infrastructure.</p>
   <p><strong>June 2026, malware on one devnet node pair.</strong> We detected malware on a single node pair in our development (devnet) environment. We took it offline immediately, rebuilt it from clean images, rotated all credentials, moved the entire fleet to key-only SSH, and re-registered fresh keys. No user funds were ever at risk: the public site is read-only and holds no keys or funds. The issue was contained to that one devnet pair and is fully resolved.</p>
+
+  <h2>Source and deployment</h2>
+  <p>The live site is built and served by GitHub Pages directly from the <strong>main branch</strong> of our public repository, so production matches the visible source. If you are auditing the code, note that <code>raw.githubusercontent.com</code> and GitHub's web view can cache aggressively, so a stale view there may briefly lag what is actually deployed; the live site at pulsarnetwork.xyz is the source of truth. Every deployed page also carries a build stamp, <code>PLSR-CNRY-9f3a27c1e8</code>, in an HTML comment near the top, so you can confirm which build you are viewing.</p>
 
   <h2>Independence</h2>
   <p>Pulsar Nodes is an independent, third-party community project. It is not affiliated with, sponsored by, or endorsed by Xandeum, the Xandeum Foundation, or Xandeum Labs unless expressly stated in writing. Product names and trademarks belong to their respective owners and are used for identification only.</p>

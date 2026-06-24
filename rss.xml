@@ -6,7 +6,77 @@
   <atom:link href="https://pulsarnetwork.xyz/rss.xml" rel="self" type="application/rss+xml"/>
   <description>Independent analysis on decentralized storage, DePIN, Solana, node economics, and crypto markets, from the Pulsar Nodes team.</description>
   <language>en-us</language>
-  <lastBuildDate>Tue, 23 Jun 2026 09:00:00 GMT</lastBuildDate>
+  <lastBuildDate>Wed, 24 Jun 2026 09:00:00 GMT</lastBuildDate>
+  <item>
+    <title>AI Governance Meets Decentralized Storage</title>
+    <link>https://pulsarnetwork.xyz/articles/ai-governance-storage.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/ai-governance-storage.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Most AI rules come down to one question: can you prove what data went in? Why decentralized storage is becoming AI's accountability layer.</description>
+  </item>
+  <item>
+    <title>AI Agents and the On-Chain Economy</title>
+    <link>https://pulsarnetwork.xyz/articles/ai-agents-onchain.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/ai-agents-onchain.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Agents now pay, transact, and need to remember. How x402, AP2, stablecoins and decentralized storage power the agent economy.</description>
+  </item>
+  <item>
+    <title>Xandeum Explained: Exabyte Storage for Solana</title>
+    <link>https://pulsarnetwork.xyz/articles/xandeum-explained.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/xandeum-explained.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>The missing storage layer for Solana: buckets, pNodes, and verifiable Poke/Peek/Prove access, explained.</description>
+  </item>
+  <item>
+    <title>Inside the AI Data Center Boom</title>
+    <link>https://pulsarnetwork.xyz/articles/ai-data-centers.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/ai-data-centers.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>The 2026 AI power crunch, the economics, and how decentralized compute (DePIN) is carving out a real market.</description>
+  </item>
+  <item>
+    <title>Training Data Provenance</title>
+    <link>https://pulsarnetwork.xyz/articles/training-data-provenance.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/training-data-provenance.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>C2PA, AI labeling laws, and how decentralized storage anchors verifiable training data in 2026.</description>
+  </item>
+  <item>
+    <title>Edge AI and the Data Problem</title>
+    <link>https://pulsarnetwork.xyz/articles/edge-ai.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/edge-ai.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Capable AI now runs on-device. Why small models are surging, and the data challenges of the shift to the edge.</description>
+  </item>
+  <item>
+    <title>Solana's 2026 Roadmap: Alpenglow, Firedancer, and What's Next</title>
+    <link>https://pulsarnetwork.xyz/articles/solana-roadmap-2026.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/solana-roadmap-2026.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Alpenglow's ~100ms finality, Firedancer client diversity, and what else is coming to Solana in 2026.</description>
+  </item>
+  <item>
+    <title>The Decentralized Storage Landscape in 2026</title>
+    <link>https://pulsarnetwork.xyz/articles/storage-landscape-2026.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/storage-landscape-2026.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Filecoin, Arweave, Walrus and Xandeum: what each is built for and how to choose, in 2026.</description>
+  </item>
+  <item>
+    <title>Verifiable Storage 101</title>
+    <link>https://pulsarnetwork.xyz/articles/verifiable-storage-101.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/verifiable-storage-101.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>How storage proofs, redundancy, and data availability let you trust decentralized storage without trusting operators.</description>
+  </item>
+  <item>
+    <title>Stablecoins in 2026: The Quiet Backbone of Crypto Payments</title>
+    <link>https://pulsarnetwork.xyz/articles/stablecoins-2026.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/stablecoins-2026.html</guid>
+    <pubDate>Wed, 24 Jun 2026 09:00:00 GMT</pubDate>
+    <description>A $300B+ market, the GENIUS Act, and banks settling on-chain: why stablecoins are crypto's most-used product.</description>
+  </item>
   <item>
     <title>What Is Decentralized Storage, and Why It Underpins Web3</title>
     <link>https://pulsarnetwork.xyz/articles/decentralized-storage.html</link>
