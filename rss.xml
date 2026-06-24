@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Pulsar Insights</title>
+  <link>https://pulsarnetwork.xyz/insights.html</link>
+  <atom:link href="https://pulsarnetwork.xyz/rss.xml" rel="self" type="application/rss+xml"/>
+  <description>Independent analysis on decentralized storage, DePIN, Solana, node economics, and crypto markets, from the Pulsar Nodes team.</description>
+  <language>en-us</language>
+  <lastBuildDate>Tue, 23 Jun 2026 09:00:00 GMT</lastBuildDate>
+  <item>
+    <title>What Is Decentralized Storage, and Why It Underpins Web3</title>
+    <link>https://pulsarnetwork.xyz/articles/decentralized-storage.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/decentralized-storage.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>How decentralized storage works, the 2026 landscape (Filecoin, Arweave, Walrus), and why an open storage layer matters for Solana and Web3.</description>
+  </item>
+  <item>
+    <title>DePIN, Explained: The $10B Sector Turning Hardware Into Networks</title>
+    <link>https://pulsarnetwork.xyz/articles/depin-explained.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/depin-explained.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>How DePIN turns real-world hardware into token-incentivized networks, and what Messari's 2026 numbers reveal.</description>
+  </item>
+  <item>
+    <title>Firedancer Is Live: What Solana's New Validator Client Changes in 2026</title>
+    <link>https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/firedancer-solana-2026.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Firedancer reached full mainnet block production in 2026, what it means for Solana's throughput and resilience.</description>
+  </item>
+  <item>
+    <title>Solana's Institutional Moment: RWAs, Stablecoins and Tokenization in 2026</title>
+    <link>https://pulsarnetwork.xyz/articles/solana-rwa-2026.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/solana-rwa-2026.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>Solana leads all chains in RWA holders in 2026, with record tokenized value, a $16B+ stablecoin supply, and major institutions on-chain.</description>
+  </item>
+  <item>
+    <title>The Economics of Running a Node: How Web3 Infrastructure Earns</title>
+    <link>https://pulsarnetwork.xyz/articles/node-economics.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/node-economics.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>How validators, RPC and storage nodes earn, the revenue, the costs, and why fundamentals now decide who wins.</description>
+  </item>
+  <item>
+    <title>How Macro Moves Crypto: Reading the 2026 Signals</title>
+    <link>https://pulsarnetwork.xyz/articles/macro-and-crypto.html</link>
+    <guid>https://pulsarnetwork.xyz/articles/macro-and-crypto.html</guid>
+    <pubDate>Tue, 23 Jun 2026 09:00:00 GMT</pubDate>
+    <description>The macro forces moving crypto in 2026, Fed policy, liquidity, and ETF flows, explained in plain English.</description>
+  </item>
+</channel>
+</rss>

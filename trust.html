@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Trust & Transparency | Pulsar Nodes</title>
+<meta name="description" content="Who operates Pulsar Nodes, our verifiable node public keys, infrastructure, data sources, uptime methodology, fees, security practices, and incident history.">
+<meta name="robots" content="all">
+<link rel="canonical" href="https://pulsarnetwork.xyz/trust.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pulsar Nodes">
+<meta property="og:title" content="Trust & Transparency | Pulsar Nodes">
+<meta property="og:description" content="Operator identity, verifiable on-chain node keys, data sources, uptime methodology, fees, and security practices.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/trust.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<link rel="stylesheet" href="articles/article.css">
+<style>
+  .keys{list-style:none;padding:0;margin:18px 0}
+  .keys li{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .keys .pair{font-weight:600;min-width:64px}
+  .keys code{font-size:12.5px;word-break:break-all;opacity:.9}
+  .keys a{margin-left:auto;white-space:nowrap}
+  .factgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}
+  .factgrid .f{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px}
+  .factgrid .f b{display:block;font-size:13px;opacity:.65;font-weight:500;margin-bottom:4px}
+  .factgrid .f span{font-size:18px;font-weight:700}
+</style>
+</head>
+<body>
+<!-- (c) 2026 Pulsar Nodes. Original work. pulsarnetwork.xyz. Cloning is tracked and pursued. build PLSR-CNRY-9f3a27c1e8. -->
+<div hidden aria-hidden="true" data-pn-build="PLSR-CNRY-9f3a27c1e8"></div>
+<header class="top">
+  <a class="brand" href="./"><span class="dot"></span><span>PULSAR<small>NODES</small></span></a>
+  <nav><a href="./">Dashboard</a><a href="insights.html">Insights</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></nav>
+</header>
+<main class="wrap">
+  <a class="back" href="./">← Back to dashboard</a>
+  <h1>Trust &amp; Transparency</h1>
+  <div class="meta">Last updated: June 24, 2026</div>
+  <p class="lede">Pulsar Nodes is built so you do not have to take our word for anything. This page sets out who we are, the exact nodes we run (verifiable on-chain), where the data comes from, how we measure uptime, what we charge, and how we handle security. If anything here is unclear, <a href="mailto:contact@pulsarnetwork.xyz">contact us</a>.</p>
+
+  <h2>Who operates Pulsar</h2>
+  <p>Pulsar Nodes is built and run by <strong>Abdou and Hamza</strong>, two independent operators who have run Xandeum pNodes since the network's early phase. We operate <strong>6 licensed pNode pairs across 12 machines</strong> in European data centers. We are a community project, not a company, and not the Xandeum Foundation. You can reach a real person at <a href="mailto:contact@pulsarnetwork.xyz">contact@pulsarnetwork.xyz</a> or <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">@PulsarNodes</a> on X.</p>
+
+  <div class="factgrid">
+    <div class="f"><b>Node pairs</b><span>6</span></div>
+    <div class="f"><b>Machines</b><span>12</span></div>
+    <div class="f"><b>Regions</b><span>EU</span></div>
+    <div class="f"><b>Commission</b><span>10%</span></div>
+  </div>
+
+  <h2>Our nodes (verify on-chain)</h2>
+  <p>These are the public gossip identity keys of every pNode we operate. They are the only nodes we run. Anyone can verify our stake, activity, and standing directly on-chain, no trust required.</p>
+  <ul class="keys">
+    <li><span class="pair">Pair 1</span><code>9pDAS3TKQXw2x8B7pWDDdPbRnjPaM6mGht45vzK2QY8h</code><a href="https://solscan.io/account/9pDAS3TKQXw2x8B7pWDDdPbRnjPaM6mGht45vzK2QY8h" target="_blank" rel="noopener">Verify ↗</a></li>
+    <li><span class="pair">Pair 2</span><code>FzZAd2JVqMh3Kmkq4bS9zxUnK18ereztcJC96Me7PG8B</code><a href="https://solscan.io/account/FzZAd2JVqMh3Kmkq4bS9zxUnK18ereztcJC96Me7PG8B" target="_blank" rel="noopener">Verify ↗</a></li>
+    <li><span class="pair">Pair 3</span><code>AMJRveiTgbB3SJrwCnDHHzcw1sRFDQyJu9UyBmGi3u1g</code><a href="https://solscan.io/account/AMJRveiTgbB3SJrwCnDHHzcw1sRFDQyJu9UyBmGi3u1g" target="_blank" rel="noopener">Verify ↗</a></li>
+    <li><span class="pair">Pair 4</span><code>2btDBEm5Ph5dy6HUg9mjEJJomrFwGzuVv3QmPt2r5g6H</code><a href="https://solscan.io/account/2btDBEm5Ph5dy6HUg9mjEJJomrFwGzuVv3QmPt2r5g6H" target="_blank" rel="noopener">Verify ↗</a></li>
+    <li><span class="pair">Pair 5</span><code>BXWnaL5R2MZXrQYiX7xSWTFMxhQs6JLR1FdWqPZyan7r</code><a href="https://solscan.io/account/BXWnaL5R2MZXrQYiX7xSWTFMxhQs6JLR1FdWqPZyan7r" target="_blank" rel="noopener">Verify ↗</a></li>
+    <li><span class="pair">Pair 6</span><code>44qbR85TX1AXFByN89iFiv9VDg91uc1A3b44U39HokAe</code><a href="https://solscan.io/account/44qbR85TX1AXFByN89iFiv9VDg91uc1A3b44U39HokAe" target="_blank" rel="noopener">Verify ↗</a></li>
+  </ul>
+
+  <h2>Infrastructure and regions</h2>
+  <p>Each of our 6 pNodes runs as a high-availability pair (two machines) on dedicated servers in European data centers. Running in pairs lets us perform maintenance and recover from a single-machine failure without dropping off the network. We use dedicated hardware rather than shared hosting for predictable performance.</p>
+
+  <h2>Data sources and freshness</h2>
+  <p>Everything on the dashboard comes from public sources:</p>
+  <ul>
+    <li><strong>Network roster, locations, versions:</strong> the network's public pRPC gossip data (the <code>get-pods</code> and <code>get-stats</code> methods), refreshed about every 10 minutes.</li>
+    <li><strong>Stake, yuga, and rewards data:</strong> read directly from public Solana on-chain state.</li>
+    <li><strong>XAND and SOL prices:</strong> fetched live from CoinGecko in your browser.</li>
+    <li><strong>Map tiles:</strong> a third-party tile provider; node locations are approximate, derived from public network data.</li>
+  </ul>
+  <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, no per-request server sees or logs your activity.</p>
+
+  <h2>Uptime methodology</h2>
+  <p>Uptime reflects how consistently a node is present and responsive in the network's gossip data across each yuga (the network's reward epoch). We sample node presence on a regular interval and average it over the period shown. A reading of 100% means the node was observed as present and healthy in every sample for that window. Uptime is drawn from public network data, not self-reported, and like all live data it can be delayed or incomplete. Treat it as a strong indicator, not a guarantee.</p>
+
+  <h2>Fees and commission</h2>
+  <p>We believe in clear, disclosed pricing:</p>
+  <ul>
+    <li><strong>Staking commission: a flat 10%</strong> of pNode rewards, in line with fair market rates. It has been 10% since we launched. Any change will be announced in advance.</li>
+    <li><strong>Swap fee: 1%</strong> on the optional on-site token swap, disclosed in the swap interface at the time of the transaction. Of that, roughly 0.8% supports Pulsar and the remainder is retained by the underlying provider (Jupiter).</li>
+  </ul>
+  <p>Rewards from staking are variable and never guaranteed; see our <a href="terms.html">Terms</a>.</p>
+
+  <h2>Security practices</h2>
+  <ul>
+    <li><strong>Read-only site.</strong> The dashboard never asks you to connect a wallet or sign anything, except the clearly-labeled swap, which runs from your own wallet via Jupiter. We never touch your keys or funds.</li>
+    <li><strong>Key-only SSH</strong> and a restrictive inbound firewall allow-list on every machine.</li>
+    <li><strong>Least-privilege access</strong> and no production secrets in our public code.</li>
+    <li><strong>Monitoring and alerting</strong> across the fleet, so we are notified quickly if a node degrades.</li>
+    <li><strong>Open source for audit.</strong> The full frontend is public on <a href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener">GitHub</a>; report any concern via our <a href="https://github.com/PhoenixAB88/pulsar-network/blob/main/SECURITY.md" target="_blank" rel="noopener">security policy</a>.</li>
+  </ul>
+
+  <h2>Incident history</h2>
+  <p>We disclose security incidents that affect our infrastructure.</p>
+  <p><strong>June 2026, malware on one devnet node pair.</strong> We detected malware on a single node pair in our development (devnet) environment. We took it offline immediately, rebuilt it from clean images, rotated all credentials, moved the entire fleet to key-only SSH, and re-registered fresh keys. No user funds were ever at risk: the public site is read-only and holds no keys or funds. The issue was contained to that one devnet pair and is fully resolved.</p>
+
+  <h2>Independence</h2>
+  <p>Pulsar Nodes is an independent, third-party community project. It is not affiliated with, sponsored by, or endorsed by Xandeum, the Xandeum Foundation, or Xandeum Labs unless expressly stated in writing. Product names and trademarks belong to their respective owners and are used for identification only.</p>
+
+  <h2>Contact</h2>
+  <p>Questions, corrections, or verification requests: <a href="mailto:contact@pulsarnetwork.xyz">contact@pulsarnetwork.xyz</a> or <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">@PulsarNodes</a>.</p>
+</main>
+<footer>© 2026 Pulsar Nodes · <a href="./">pulsarnetwork.xyz</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · Independent monitor for the Xandeum network. Educational content, not financial advice.</footer>
+</body>
+</html>
