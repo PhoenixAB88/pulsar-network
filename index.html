@@ -196,6 +196,7 @@
   .pxblink{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 5px rgba(255,255,255,.85);margin-right:7px;vertical-align:middle;animation:pxblink 1.5s infinite}
   @keyframes pxblink{0%,55%{opacity:1}56%,100%{opacity:.12}}
   td.snum{text-align:right;font-variant-numeric:tabular-nums}
+  th.snum{text-align:right}
   @media(max-width:820px){.cards{grid-template-columns:repeat(2,1fr)}}
   .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px}
   a.statlink{display:block;text-decoration:none;color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
@@ -480,7 +481,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
+            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort snum" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort snum hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort snum" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort snum" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
