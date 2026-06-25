@@ -73,11 +73,15 @@
     <li><strong>XAND and SOL prices:</strong> fetched live from CoinGecko in your browser.</li>
     <li><strong>Map tiles:</strong> a third-party tile provider; node locations are approximate, derived from public network data.</li>
     <li><strong>Network storage totals and per-node storage:</strong> collected by polling each pNode's own public pRPC <code>get-stats</code> endpoint and aggregating it ourselves (the same public data any operator can read), refreshed on our generator cron. No third-party dashboard sits in the data path.</li>
+    <li><strong>Credits (per-node and network-wide):</strong> read from Xandeum's official public pod-credits API at <code>podcredits.xandeum.network</code>, the network's own first-party endpoint, cached on our generator cron. This is Xandeum's own infrastructure, not a competing dashboard.</li>
   </ul>
   <p>The dashboard shows a "data updated" timestamp so you can always see how fresh the figures are. Because the site is static, we run no application backend of our own. As with any website, our hosting/CDN provider may process standard technical data (such as your IP address, browser type, and timestamps) to deliver and secure the site; see our <a href="privacy.html">Privacy Policy</a> for details.</p>
 
   <h2>Uptime methodology</h2>
   <p>Uptime reflects how consistently a node is present and responsive in the network's gossip data across each yuga (the network's reward epoch). We sample node presence on a regular interval and average it over the period shown. A reading of 100% means the node was observed as present and healthy in every sample for that window. Uptime is drawn from public network data, not self-reported, and like all live data it can be delayed or incomplete. Treat it as a strong indicator, not a guarantee.</p>
+
+  <h2>Health score methodology</h2>
+  <p>The health score is a single 0 to 100 figure that blends two public signals so you can compare nodes at a glance. We compute it as <strong>70% tracked uptime plus 30% credits relative to the network's highest-credit node</strong> (that is, a node's credits divided by the current network maximum, scaled to 100). If only one of the two inputs is available for a node, the score uses that input alone; if neither is available, we show a dash rather than guess. Uptime comes from public gossip sampling and credits come from Xandeum's official pod-credits API. The score is a convenience indicator derived entirely from public data, not an official Xandeum rating, and newer nodes can read low simply because they have had less time to accrue credits.</p>
 
   <h2>Fees and commission</h2>
   <p>We believe in clear, disclosed pricing:</p>

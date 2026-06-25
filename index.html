@@ -480,7 +480,7 @@
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
+            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -640,6 +640,7 @@
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
 <script src="net_storage.js" onerror="window.__noNS=1"></script>
 <script src="node_storage.js" onerror="window.__noCX=1"></script>
+<script src="credits_data.js" onerror="window.__noCredits=1"></script>
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script src="network_history.js" onerror="window.__noHist=1"></script>
 <script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
@@ -693,6 +694,10 @@
   const sel=document.getElementById('verFilter');
   const body=document.getElementById('rosterBody'), meta=document.getElementById('rosterMeta');
 
+  function pcMax(){return (window.PODCREDITS&&window.PODCREDITS.max)||0;}
+  function pcMap(){return (window.PODCREDITS&&window.PODCREDITS.creds)||{};}
+  function healthOf(pk,net){var up=(window['NODE_UPTIME'+(net==='mainnet'?'_MAINNET':'')]||{})[pk];var mx=pcMax(),c=pcMap()[pk],cr=(mx&&c!=null)?c/mx*100:null;if(up!=null&&cr!=null)return Math.round(0.7*up+0.3*cr);if(up!=null)return Math.round(up);if(cr!=null)return Math.round(cr);return null;}
+  function healthCell(pk,net){var h=healthOf(pk,net);if(h==null)return '<span style="color:var(--mut2)">—</span>';var c=h>=90?'var(--good)':h>=75?'var(--teal)':h>=50?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'" title="Composite health: 70% tracked uptime + 30% credits vs network max. See Trust page.">'+h+'</b>';}
   function renderRoster(){
     const S=SETS[active], pods=S.pods, ref=S.ref;
     const isOn=p=>(ref-ts(p))<=900;
@@ -711,7 +716,7 @@
     const UP=window['NODE_UPTIME'+(active==='mainnet'?'_MAINNET':'')]||{};
     const upOf=p=>UP[p.pubkey]==null?-1:UP[p.pubkey];
     const upCell=p=>{const u=UP[p.pubkey];if(u==null)return '<span style="color:var(--mut2)">—</span>';const c=u>=99?'var(--good)':u>=95?'var(--teal)':u>=80?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'">'+u+'%</b>';};
-    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0),storage:(a,b)=>stoOf(a)-stoOf(b)};
+    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0),storage:(a,b)=>stoOf(a)-stoOf(b),health:(a,b)=>{const ha=healthOf(a.pubkey,active),hb=healthOf(b.pubkey,active);return (ha==null?-1:ha)-(hb==null?-1:hb);}};
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     const isMobile=window.matchMedia&&window.matchMedia('(max-width:600px)').matches;
@@ -726,10 +731,11 @@
       <td class="snum" data-label="Staked">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
       <td class="snum hide-sm" data-label="Storage">${stoCell(p)}</td>
       <td class="snum" data-label="Uptime">${upCell(p)}</td>
+      <td class="snum" data-label="Health">${healthCell(p.pubkey,active)}</td>
       <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`;}).join('')
-      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="10" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
-      ||`<tr><td colspan="10" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
+      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="11" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
+      ||`<tr><td colspan="11" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
   }
 
   function renderNetwork(){
@@ -751,6 +757,7 @@
       <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
+      ${(function(){const hv=pods.map(p=>healthOf(p.pubkey,active)).filter(x=>x!=null);if(!hv.length)return '';const a=Math.round(hv.reduce((x,y)=>x+y,0)/hv.length);const c=a>=90?'var(--good)':a>=75?'var(--teal)':'var(--warn)';return '<div class="stat"><div class="k">Avg health</div><div class="v" style="color:'+c+'" title="Mean composite health across '+hv.length+' nodes">'+a+'</div></div>';})()}
       <div class="stat" id="ssTile" style="display:none"><div class="k" id="ssK">Network storage</div><div class="v" id="ssVal" style="color:var(--teal)">…</div><div id="ssSub" style="font-size:12px;color:var(--mut);margin-top:3px"></div></div>`;
     const _tp=document.getElementById('tbPrice');
     if(_tp){
@@ -1105,6 +1112,7 @@
       +row('Last seen',relFrom(ts(p),pref))
       +row('Uptime (tracked)',(function(){const U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};return U[pk]==null?'—':U[pk]+'%';})())
       +row('Recent trend',spark((window['NODE_HIST'+(inMain?'_MAINNET':'')]||{})[pk],{w:150,h:26}));
+    (function(){var net=inMain?'mainnet':'devnet';var c=pcMap()[pk];var hh=healthOf(pk,net);if(c==null&&hh==null)return;h+='<div class="msec">Performance</div>';if(c!=null)h+=row('Credits (official)',fmt(c));if(hh!=null)h+=row('Health score',hh+' / 100');})();
     h+='<div class="msec">Location</div>'
       +row('Country',p.cc?(flag(p.cc)+' '+esc(p.cc)):'—')
       +row('City',p.city?esc(p.city):'—')
