@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- deploy pipeline test: 2026-06-26 (audit) -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
@@ -1150,7 +1149,7 @@
   document.getElementById('modalShare').onclick=()=>{if(!CUR_NODE)return;copyTxt(location.origin+location.pathname+'#node='+CUR_NODE);const b=document.getElementById('modalShare');b.textContent='✓';setTimeout(()=>b.textContent='🔗',1200);};
   document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeNode();});
   // ---- Contact / message box (Web3Forms -> contact@pulsarnetwork.xyz) ----
-  const WEB3FORMS_KEY='REPLACE_WITH_WEB3FORMS_ACCESS_KEY';
+  const WEB3FORMS_KEY='c04b089b-95f7-44aa-b480-658643954b59';
   window.openContact=function(){const o=document.getElementById('contactOverlay');if(!o)return;o.classList.add('open');modalOpen(o,document.getElementById('cmMsg'));};
   (function(){
     const ov=document.getElementById('contactOverlay'); if(!ov)return;
