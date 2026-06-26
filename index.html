@@ -1165,7 +1165,8 @@
       btn.textContent='Sending…'; btn.disabled=true;
       try{
         if(!WEB3FORMS_KEY||WEB3FORMS_KEY.indexOf('REPLACE')===0) throw new Error('no key');
-        const r=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:'New message from pulsarnetwork.xyz',from_name:'Pulsar website',message:msg,reply_to:reply,botcheck:''})});
+        const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),15000);
+        let r; try{ r=await fetch('https://api.web3forms.com/submit',{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:'New message from pulsarnetwork.xyz',from_name:'Pulsar website',message:msg,reply_to:reply,botcheck:''})}); } finally { clearTimeout(to); }
         const j=await r.json();
         if(j&&j.success){document.getElementById('cmForm').hidden=true;document.getElementById('cmSuccess').hidden=false;}
         else throw new Error((j&&j.message)||'failed');
