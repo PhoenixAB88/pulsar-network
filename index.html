@@ -181,6 +181,11 @@
   .star.on,.star:hover{color:var(--orange)}
   #mynodes h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
   .mynodes-grid{display:flex;flex-wrap:wrap;gap:12px}
+  .alertbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+  .alert-toggle{display:inline-flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--ink);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:500;cursor:pointer;transition:border-color .15s,color .15s}
+  .alert-toggle:hover{border-color:var(--teal)}
+  .alert-toggle.on{border-color:var(--good);color:var(--good)}
+  .alert-note{font-size:12.5px;color:var(--mut2)}
   .mynode{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:14px 16px;flex:1 1 280px;max-width:360px}
   .mynode .top{display:flex;align-items:center;gap:8px}
   .mynode .lbl{font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -452,6 +457,10 @@
   <div class="wrap">
     <h2>★ My nodes</h2>
     <p style="color:var(--mut);font-size:14px;margin:0 0 16px">Your starred nodes - saved in this browser. Star any node in the table, then label or group it here.</p>
+    <div class="alertbar">
+      <button id="alertToggle" type="button" class="alert-toggle" onclick="toggleAlerts()">🔔 Alert me if a saved node goes offline</button>
+      <span id="alertNote" class="alert-note"></span>
+    </div>
     <div class="mynodes-grid" id="myNodesGrid"></div>
   </div>
 </section>
@@ -923,6 +932,71 @@
         +'<span class="act"><button onclick="setLabel(\''+epk+'\')">Edit label</button><button onclick="openNode(\''+epk+'\')">Details</button></span></div></div>';
     }).join('');
   }
+  // ---- Free down-node alerts: browser notifications while this tab is open ----
+  const ALK='pulsar:alerts', ASTK='pulsar:alertstate';
+  function alertsOn(){return localStorage.getItem(ALK)==='1';}
+  function getAState(){try{return JSON.parse(localStorage.getItem(ASTK)||'{}')||{};}catch(e){return {};}}
+  function setAState(s){try{localStorage.setItem(ASTK,JSON.stringify(s));}catch(e){}}
+  let __alertTimer=null;
+  async function __fetchNet(url){
+    try{const txt=await fetch(url+'?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'');
+      if(!txt)return null;const w={};new Function('window',txt)(w);return w;}catch(e){return null;}
+  }
+  async function __freshSets(){
+    const d=await __fetchNet('network_data.js'), m=await __fetchNet('network_data_mainnet.js');
+    const sets={};
+    if(d&&d.NETWORK)sets.devnet=mkSet(d.NETWORK,d.NETWORK_GENERATED_TS,d.NETWORK_UPDATED);
+    if(m&&m.NETWORK_MAINNET)sets.mainnet=mkSet(m.NETWORK_MAINNET,m.NETWORK_MAINNET_GENERATED_TS,m.NETWORK_MAINNET_UPDATED);
+    return sets;
+  }
+  function __nodeStatus(sets,pk){
+    for(const net of ['mainnet','devnet']){const S=sets[net];if(!S)continue;
+      const p=(S.pods||[]).find(x=>x.pubkey===pk);if(p)return (S.ref-ts(p))<=900?'on':'off';}
+    return null;
+  }
+  function __nodeLabel(pk){const m=getMy();const lbl=(m[pk]&&m[pk].label)||'';if(lbl)return lbl;const p=findPod(pk)||{};return p.city?((p.cc?p.cc.toUpperCase()+' ':'')+p.city):shortpk(pk);}
+  function __notify(title,pk,body){
+    if(!('Notification'in window)||Notification.permission!=='granted')return;
+    try{const n=new Notification(title,{body:body,icon:'/logo.png',tag:'pn-'+pk});
+      n.onclick=()=>{try{window.focus();}catch(e){}openNode(pk);n.close();};}catch(e){}
+  }
+  async function alertCheck(){
+    if(!alertsOn())return;
+    const keys=Object.keys(getMy());if(!keys.length)return;
+    const sets=await __freshSets();
+    if(!sets.mainnet&&!sets.devnet)return;
+    const st=getAState();
+    keys.forEach(pk=>{const s=__nodeStatus(sets,pk);if(s==null)return;const prev=st[pk];
+      if(s==='off'&&prev!=='off')__notify('⚠️ Node offline',pk,__nodeLabel(pk)+' has no signal for over 15 minutes. Tap to view.');
+      else if(s==='on'&&prev==='off')__notify('✅ Node back online',pk,__nodeLabel(pk)+' is reporting again.');
+      st[pk]=s;});
+    setAState(st);
+  }
+  function startAlerts(){if(__alertTimer)clearInterval(__alertTimer);__alertTimer=setInterval(alertCheck,300000);alertCheck();}
+  function stopAlerts(){if(__alertTimer){clearInterval(__alertTimer);__alertTimer=null;}}
+  function updateAlertUI(){
+    const btn=document.getElementById('alertToggle'),note=document.getElementById('alertNote');if(!btn)return;
+    const supported=('Notification'in window);
+    const on=alertsOn()&&supported&&Notification.permission==='granted';
+    btn.textContent=on?'🔔 Alerts on':'🔔 Alert me if a saved node goes offline';
+    btn.classList.toggle('on',on);
+    if(note){
+      if(!supported)note.textContent='Your browser does not support notifications.';
+      else if(Notification.permission==='denied')note.textContent='Notifications are blocked - enable them in your browser settings.';
+      else if(on)note.textContent='Keep this tab open; we check every few minutes. Free.';
+      else note.textContent='Free - get a browser ping if a saved node goes offline.';
+    }
+  }
+  async function toggleAlerts(){
+    if(alertsOn()){try{localStorage.setItem(ALK,'0');}catch(e){}stopAlerts();updateAlertUI();return;}
+    if(!('Notification'in window)){updateAlertUI();return;}
+    let perm=Notification.permission;
+    if(perm!=='granted'){try{perm=await Notification.requestPermission();}catch(e){}}
+    if(perm==='granted'){try{localStorage.setItem(ALK,'1');}catch(e){}startAlerts();}
+    updateAlertUI();
+  }
+  window.addEventListener('load',()=>{updateAlertUI();if(alertsOn()&&('Notification'in window)&&Notification.permission==='granted')startAlerts();});
+
   function renderStakeNodes(){
     const el=document.getElementById('stakeNodes'); if(!el||!window.PULSAR_NODES)return;
     const main=SETS.mainnet.pods||[];
