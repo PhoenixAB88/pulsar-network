@@ -299,8 +299,10 @@
   .modal-overlay{position:fixed;inset:0;z-index:var(--z-overlay);background:rgba(5,10,20,.7);display:none;align-items:flex-start;justify-content:center;padding:42px 16px;overflow:auto}
   .modal-overlay.open{display:flex}
   .modal{background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);max-width:560px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.5);overflow:hidden}
-  .modal .top{display:flex;justify-content:flex-end;padding:12px 14px 0}
+  .modal .top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px 0}
   .modal .x{width:34px;height:34px;border-radius:var(--r-md);border:1px solid var(--hairline-2);background:var(--surface-2);color:var(--ink);cursor:pointer;font-size:15px}
+  .modal .share-btn{width:auto;height:34px;padding:0 13px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;white-space:nowrap}
+  .modal .share-btn:hover{border-color:var(--teal);color:var(--teal)}
   .modal .x:hover{color:var(--teal)}
   .mbody{padding:4px 26px 26px}
   .mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
@@ -639,7 +641,7 @@
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" role="dialog" aria-modal="true" aria-label="pNode details">
-    <div class="top"><button class="x" id="modalShare" title="Copy shareable link" aria-label="Copy shareable link">🔗</button><button class="x" id="modalClose" aria-label="Close">✕</button></div>
+    <div class="top"><button class="x share-btn" id="modalShare" title="Copy a link to this node" aria-label="Copy a shareable link to this node">🔗 Share node</button><button class="x" id="modalClose" aria-label="Close">✕</button></div>
     <div class="mbody" id="modalBody"></div>
   </div>
 </div>
@@ -1153,7 +1155,7 @@
   }
   function closeNode(){const _ov=document.getElementById('modalOverlay');CUR_NODE=null;_ov.classList.remove('open');modalClose(_ov);if(location.hash.indexOf('#node=')===0){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
   document.getElementById('modalClose').onclick=closeNode;
-  document.getElementById('modalShare').onclick=()=>{if(!CUR_NODE)return;copyTxt(location.origin+location.pathname+'#node='+CUR_NODE);const b=document.getElementById('modalShare');b.textContent='✓';setTimeout(()=>b.textContent='🔗',1200);};
+  document.getElementById('modalShare').onclick=()=>{if(!CUR_NODE)return;copyTxt(location.origin+location.pathname+'#node='+CUR_NODE);const b=document.getElementById('modalShare');b.textContent='✓ Link copied';setTimeout(()=>b.textContent='🔗 Share node',1400);};
   document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeNode();});
   // ---- Contact / message box (Web3Forms -> contact@pulsarnetwork.xyz) ----
   const WEB3FORMS_KEY='c04b089b-95f7-44aa-b480-658643954b59';
