@@ -250,7 +250,8 @@
   .tradebar .btn.tb-sol{background:#4b9bff;color:#08203f;border:1px solid transparent;font-weight:600;animation:tbglowblue 2.6s ease-in-out infinite}
   .tradebar .btn.tb-sol:hover{background:#6fb0ff}
   @keyframes tbglowblue{0%,100%{box-shadow:0 0 0 0 rgba(75,155,255,0)}50%{box-shadow:0 0 18px 0 rgba(75,155,255,.55)}}
-  @media(max-width:560px){.nav .right .stake-top{display:none}}
+  .nav .right .buy-top{padding:6px 12px;font-size:12.5px;height:32px;line-height:1}
+  @media(max-width:560px){.nav .right .stake-top,.nav .right .buy-top{display:none}}
   @media(max-width:480px){
     .nav{gap:10px}.nav .right{gap:8px}
     section{padding:44px 0}
@@ -415,6 +416,7 @@
         <button data-net="devnet" role="tab" aria-selected="false" aria-controls="network" tabindex="-1">Devnet</button>
         <button data-net="mainnet" class="on" role="tab" aria-selected="true" aria-controls="network" tabindex="0">Mainnet</button>
       </div>
+      <button class="btn ghost buy-top" type="button" onclick="openSwap()" title="Buy or trade XAND">Buy XAND</button>
       <a class="btn primary stake-top" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
       <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
