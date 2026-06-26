@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdnjs.cloudflare.com https://*.jup.ag; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://*.jup.ag; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://*.jup.ag; connect-src 'self' https: wss:; frame-src 'self' https://*.jup.ag; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'; frame-ancestors 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdnjs.cloudflare.com https://*.jup.ag https://*.beehiiv.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://*.jup.ag https://*.beehiiv.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com https://*.jup.ag https://*.beehiiv.com; connect-src 'self' https: wss:; frame-src 'self' https://*.jup.ag https://*.beehiiv.com; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'; frame-ancestors 'self'">
 <title>Pulsar Nodes - Live Xandeum pNode Network Monitor</title>
 <meta name="description" content="Live monitor of the Xandeum pNode network on Solana: node status, locations, versions, on-chain stake and uptime, by Pulsar Nodes.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -459,6 +459,7 @@
     <p style="color:var(--mut);font-size:14px;margin:0 0 16px">Your starred nodes - saved in this browser. Star any node in the table, then label or group it here.</p>
     <div class="alertbar">
       <button id="alertToggle" type="button" class="alert-toggle" onclick="toggleAlerts()">🔔 Alert me if a saved node goes offline</button>
+      <button type="button" class="alert-toggle" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})" title="Email/Telegram alerts that work even when this tab is closed">🚀 Pro alerts (coming soon) - get notified</button>
       <span id="alertNote" class="alert-note"></span>
     </div>
     <div class="mynodes-grid" id="myNodesGrid"></div>
@@ -599,6 +600,14 @@
       <div class="mapmini-cap">Live node map</div>
       <div id="map"></div>
     </div>
+  </div>
+</section>
+
+<section id="newsletter" class="reveal" style="padding:56px 0">
+  <div class="wrap" style="max-width:640px;text-align:center">
+    <h2 style="margin:0 0 8px">Get Pulsar Insights</h2>
+    <p style="color:var(--mut);margin:0 0 22px">Storage, DePIN &amp; Solana analysis - plus Xandeum network milestones. No spam, unsubscribe anytime.</p>
+    <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="f556db33-0db0-4213-bc46-eef1b161a522"></script>
   </div>
 </section>
 
@@ -1305,5 +1314,6 @@
   document.addEventListener('visibilitychange',()=>{vis=!document.hidden;cancelAnimationFrame(raf);if(vis)frame();});
   setTimeout(startfx,60);
 </script>
+<script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
 </body>
 </html>
