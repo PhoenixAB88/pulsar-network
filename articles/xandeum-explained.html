@@ -1,19 +1,19 @@
-<!doctyp
-<script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pulsarnetwork.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Insights", "item": "https://pulsarnetwork.xyz/insights.html"}, {"@type": "ListItem", "position": 3, "name": "Xandeum Explained: Exabyte Storage for Solana Apps", "item": "https://pulsarnetwork.xyz/articles/xandeum-explained.html"}]}
-</script>e html>
+<!doctype html>
 <html lang="en">
 <head>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pulsarnetwork.xyz/"}, {"@type": "ListItem", "position": 2, "name": "Insights", "item": "https://pulsarnetwork.xyz/insights.html"}, {"@type": "ListItem", "position": 3, "name": "What Is Xandeum? Solana Storage Explained", "item": "https://pulsarnetwork.xyz/articles/xandeum-explained.html"}]}
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
-<title>Xandeum Explained: Exabyte Storage for Solana Apps | Pulsar Network</title>
+<title>What Is Xandeum? Solana Storage Explained | Pulsar</title>
 <meta name="theme-color" content="#0a1426">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="apple-touch-icon" href="/logo.png">
-<meta name="description" content="Solana is fast but can't store much on-chain. Xandeum adds the missing storage layer: smart-contract-native buckets that scale to exabytes, a network of pNodes, and verifiable Poke/Peek/Prove access. How it works, explained.">
+<meta name="description" content="A plain-English guide to Xandeum, the decentralized exabyte storage layer for Solana: how pNodes, STOINC and the XAND token actually work.">
 <link rel="canonical" href="https://pulsarnetwork.xyz/articles/xandeum-explained.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Pulsar Network">
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Xandeum Explained: Exabyte Storage for Solana">
 <meta property="article:published_time" content="2026-06-24">
-<meta property="article:modified_time" content="2026-06-24">
+<meta property="article:modified_time" content="2026-06-27">
 <meta property="article:author" content="Abdennour T Bada">
 <meta property="article:section" content="Insights">
 <meta name="twitter:card" content="summary_large_image">
@@ -34,7 +34,7 @@
 <meta name="twitter:title" content="Xandeum Explained: Exabyte Storage for Solana">
 <meta name="twitter:description" content="The missing storage layer for Solana, explained.">
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "Article", "headline": "Xandeum Explained: Exabyte Storage for Solana Apps", "datePublished": "2026-06-24", "dateModified": "2026-06-24", "author": {"@type": "Person", "name": "Abdennour T Bada"}, "publisher": {"@type": "Organization", "name": "Pulsar Network", "url": "https://pulsarnetwork.xyz/", "logo": {"@type": "ImageObject", "url": "https://pulsarnetwork.xyz/logo.png", "width": 256, "height": 256}}, "mainEntityOfPage": "https://pulsarnetwork.xyz/articles/xandeum-explained.html", "image": ["https://pulsarnetwork.xyz/og-xandeum.png"], "description": "Solana is fast but can't store much on-chain. Xandeum adds the missing storage layer: smart-contract-native buckets that scale to exabytes, a network of pNodes, and verifiable Poke/Peek/Prove access. How it works, explained."}
+{"@context": "https://schema.org", "@type": "Article", "headline": "What Is Xandeum? Solana Storage Explained", "datePublished": "2026-06-24", "dateModified": "2026-06-24", "author": {"@type": "Person", "name": "Abdennour T Bada"}, "publisher": {"@type": "Organization", "name": "Pulsar Network", "url": "https://pulsarnetwork.xyz/", "logo": {"@type": "ImageObject", "url": "https://pulsarnetwork.xyz/logo.png", "width": 256, "height": 256}}, "mainEntityOfPage": "https://pulsarnetwork.xyz/articles/xandeum-explained.html", "image": ["https://pulsarnetwork.xyz/og-xandeum.png"], "description": "A plain-English guide to Xandeum, the decentralized exabyte storage layer for Solana: how pNodes, STOINC and the XAND token actually work."}
 </script>
 <link rel="stylesheet" href="article.css">
 </head>
@@ -92,7 +92,15 @@
     </ul>
   </div>
 
-  <h2 id="refs">References</h2>
+    <h2 id="faq">Frequently asked questions</h2>
+  <h3>What is Xandeum?</h3>
+  <p>Xandeum is a decentralized storage layer for Solana. It lets smart contracts read and write large amounts of data with random access, scaling toward exabyte capacity through a network of provider nodes (pNodes).</p>
+  <h3>How does Xandeum work?</h3>
+  <p>Data is spread across pNodes run by independent operators. The Xandeum program coordinates where data lives, while storage proofs and a Bitcoin-anchored checkpoint help keep that data verifiable.</p>
+  <h3>What is the XAND token used for?</h3>
+  <p>XAND is the network token. It is used for staking to pNodes, for storage-related activity on the network, and to align operators and the community around the network's growth.</p>
+
+<h2 id="refs">References</h2>
   <ol class="refs">
     <li id="r1">Xandeum Network - storage for Solana programs (pNodes, buckets). <a href="https://www.xandeum.network/" target="_blank" rel="noopener">xandeum.network</a></li>
     <li id="r2">Xandeum Docs - scalable storage solution and primitives. <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">docs.xandeum.network</a></li>
@@ -124,6 +132,9 @@
     <p>Pulsar Network is the independent, real-time monitor of the Xandeum pNode network.</p>
     <a class="btn" href="../">Open the dashboard →</a>
   </div>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is Xandeum?", "acceptedAnswer": {"@type": "Answer", "text": "Xandeum is a decentralized storage layer for Solana. It lets smart contracts read and write large amounts of data with random access, scaling toward exabyte capacity through a network of provider nodes (pNodes)."}}, {"@type": "Question", "name": "How does Xandeum work?", "acceptedAnswer": {"@type": "Answer", "text": "Data is spread across pNodes run by independent operators. The Xandeum program coordinates where data lives, while storage proofs and a Bitcoin-anchored checkpoint help keep that data verifiable."}}, {"@type": "Question", "name": "What is the XAND token used for?", "acceptedAnswer": {"@type": "Answer", "text": "XAND is the network token. It is used for staking to pNodes, for storage-related activity on the network, and to align operators and the community around the network's growth."}}]}
+</script>
 </main>
 <footer>© 2026 Pulsar Network · <a href="../">pulsarnetwork.xyz</a> · Independent monitor for the Xandeum network. Educational content, not financial advice.</footer>
 <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
