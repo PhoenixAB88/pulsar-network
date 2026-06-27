@@ -3,6 +3,16 @@
 > Handoff context for Claude Code working in this repo. The **source of truth for ops is the
 > OKFs**, especially `OKF/xandeum/pulsar-dashboard-ops.md` (full runbook). Keep the OKFs updated
 > after any meaningful change — they are the bridge across Cowork, Claude Code, and the owner.
+> **Follow the OKF Governance Policy in `OKF/xandeum/okf-system.md`:** read OKF → validate → execute → verify → update when material → record evidence → complete. Do NOT assume the newest file/edit is automatically correct; verify against the canonical files. Memory = pointers only. Sensitive files never go in Git.
+
+## ⚠️ Open operator tasks (read these FIRST, before any fleet/site work)
+Task briefs live in the working folder `Xandeum Nodes/`. Read in order:
+1. `claude-code-task-correct-fleet-model.md` — a STALE fleet model ("all devnet", "HA pair = 2 machines") was recently in play and may have leaked into this file / shared context. This brief has the VERIFIED topology; trust it over any older summary.
+2. `claude-code-task-backup-node-keys.md` — HIGHEST PRIORITY: only 1 of 12 pNode private keys has an off-server copy. Back up all 12.
+3. `claude-code-task-fleet-audit.md` — read-only version + cluster audit per machine.
+4. `claude-code-task-data-pull.md` — remaining gap is storage; stake/yuga are already decoded on-chain.
+
+Verified fleet truth: 6 licenses = devnet+mainnet pairs = 12 machines; Hamza = Pairs 1/2/3, Abdou = Pairs 4/5/6; mainnet pods pinned 1.3.3 (`apt-mark hold`), devnet on 1.4.x; the Trust page lists the 6 MAINNET pubkeys and they are CORRECT.
 
 ## What this is
 A **static** site on **GitHub Pages** (repo `PhoenixAB88/pulsar-network`, main/root) at the custom
@@ -32,6 +42,7 @@ ssh -i ~/.ssh/xandeum root@62.171.187.91 'cd /root/pulsar-network && git add -A 
 - `pulsar_alerts.py` → Telegram down-node alerts (mainnet node + sibling watchers).
 - `pulsar_addself.py` → injects the generator's own node into get-pods (a node omits itself).
 - `pulsar_storage_direct.py` → `net_storage.js`/`node_storage.js` (polls each :6000 get-stats; PARTIAL — full network storage needs Atlas, parked).
+- `Xandeum Nodes/fleet-dashboard/refresh_storage.py` (PRIVATE, has IPs; **Mac-side**) → fleet storage from our 6 devnet nodes via SSH localhost `get-stats` → `net_storage.js` (`__NS`, `src:"fleet"`) + `node_storage.js` (`CX`). Lights up the devnet "Pulsar fleet storage" tile (~775 GiB / 6 nodes). Deploy = `scp net_storage.js node_storage.js` → node-push (both in rsync-exclude). Can't be a node cron (node has no fleet SSH keys). Mainnet (1.3.3) serves no pRPC → devnet-only. Full investigation: `OKF/xandeum/pulsar-dashboard-ops.md` (2026-06-26 self-sourced data section).
 - `pulsar_credits.py` → `credits_data.js` (OFFICIAL credits from podcredits.xandeum.network; flat pubkey→credits map; powers the Health column).
 
 ## Data the frontend reads (window globals)

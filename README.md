@@ -1,12 +1,12 @@
-# Pulsar Nodes
+# Pulsar Network
 
-![Pulsar Nodes - live Xandeum pNode network monitor](og-image.png)
+![Pulsar Network - live Xandeum pNode network monitor](og-image.png)
 
 **Independent, community-built live monitor and operator for the [Xandeum](https://www.xandeum.network/) pNode storage network on Solana.**
 
 Live: https://pulsarnetwork.xyz  ·  X: [@PulsarNodes](https://x.com/PulsarNodes)
 
-> Pulsar Nodes is a third-party community project. It is **not** affiliated with or endorsed by the Xandeum Foundation.
+> Pulsar Network is a third-party community project. It is **not** affiliated with or endorsed by the Xandeum Foundation.
 
 ## What it does
 - Real-time view of the Xandeum pNode gossip network: node status, locations, software versions, on-chain stake, uptime, and a world map.
@@ -46,4 +46,4 @@ The site is read-only and never requests keys or custody of funds. See [SECURITY
 Source-available, not open-source. Public for transparency and audit; reuse, cloning, and redistribution are not permitted. See [LICENSE](LICENSE).
 
 ---
-(c) 2026 Pulsar Nodes. All rights reserved.
+(c) 2026 Pulsar Network. All rights reserved.

@@ -4,7 +4,7 @@
 If you discover a security issue in pulsarnetwork.xyz or this repository, please report it privately:
 
 - Email: contact@pulsarnetwork.xyz
-- Subject line: "Security report - Pulsar Nodes"
+- Subject line: "Security report - Pulsar Network"
 
 Include steps to reproduce and any relevant details. We aim to acknowledge reports within 72 hours. Please do not publicly disclose an issue until we have had a reasonable opportunity to address it.
 
