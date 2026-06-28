@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum pNode Rewards Calculator | Pulsar</title>
+<meta name="description" content="Free, open Xandeum pNode rewards calculator. Estimate STOINC earnings per Yuga, month and year, in wSOL and USD, with ROI and what-if analysis. No login.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum pNode Rewards Calculator">
+<meta property="og:description" content="Estimate Xandeum pNode STOINC earnings per Yuga, month and year, in wSOL and USD, with ROI and what-if analysis. Free, open, no login.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/calculator.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Xandeum pNode rewards calculator by Pulsar Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum pNode Rewards Calculator">
+<meta name="twitter:description" content="Estimate STOINC earnings per Yuga, month and year, in wSOL and USD, with ROI. Free, open, no login.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:40px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,42px);font-weight:600;letter-spacing:-.03em;margin:0 0 12px;line-height:1.1}
+  .lead{font-size:18px;color:var(--mut);margin:0 0 8px;max-width:760px}
+  h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:34px 0 12px}
+  p{color:var(--mut);margin:0 0 16px}
+  .banner{display:flex;gap:12px;background:rgba(247,169,59,.08);border:1px solid rgba(247,169,59,.3);border-radius:var(--r-lg);padding:14px 16px;margin:20px 0 6px;font-size:14px;color:var(--mut)}
+  .banner b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:24px;align-items:start}
+  @media(max-width:840px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px 22px}
+  .panel h3{margin:0 0 4px;font-size:16px;font-weight:600}
+  .panel .sub{font-size:13px;color:var(--mut2);margin:0 0 14px}
+  .res-panel{position:sticky;top:16px}
+  fieldset{border:0;margin:0;padding:0}
+  legend{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--teal);margin:16px 0 8px;padding:0}
+  legend:first-of-type{margin-top:0}
+  .field{margin:0 0 12px}
+  .field label{display:block;font-size:13px;color:var(--mut);margin:0 0 5px}
+  .field .hint{color:var(--mut2);font-size:12px}
+  .row{display:flex;gap:8px}
+  input[type=number],select{width:100%;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-md);color:var(--ink);font:inherit;font-size:15px;padding:9px 11px}
+  input[type=number]:focus,select:focus{outline:none;border-color:var(--teal)}
+  select{cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--teal)}
+  .perfval{float:right;color:var(--teal);font-weight:600}
+  .toggle{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--mut);cursor:pointer;user-select:none}
+  .toggle input{width:16px;height:16px;accent-color:var(--teal)}
+  .presets{display:flex;gap:6px;margin-top:6px}
+  .presets button{flex:1;background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:var(--r-md);padding:6px 4px;font:inherit;font-size:12px;cursor:pointer}
+  .presets button:hover{border-color:var(--teal);color:var(--ink)}
+  .scenario{border:1px dashed rgba(247,169,59,.4);border-radius:var(--r-md);padding:12px;margin-top:6px;background:rgba(247,169,59,.04)}
+  .scenario legend{color:var(--orange)}
+  .big{font-size:clamp(30px,5vw,40px);font-weight:600;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
+  .big .usd{color:var(--good)}
+  .big small{display:block;font-size:13px;color:var(--mut2);font-weight:400;letter-spacing:0;margin-top:4px}
+  .rrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--hairline)}
+  .rrow:last-child{border-bottom:0}
+  .rrow .k{color:var(--mut);font-size:14px}
+  .rrow .v{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+  .rrow .v small{display:block;font-weight:400;color:var(--mut2);font-size:12px}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .chip{background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-md);padding:9px 11px}
+  .chip .ck{font-size:12px;color:var(--mut2)}
+  .chip .cv{font-weight:600;color:var(--good);font-size:14px}
+  .splitbar{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:8px 0 4px}
+  .splitbar span{display:block}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--mut2);flex-wrap:wrap}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border:0;border-radius:var(--r-md);cursor:pointer;font-family:inherit}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal);background:transparent}
+  .faq{margin-top:46px}
+  .faq h2{margin-bottom:8px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"– "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+  .copied{color:var(--good);font-size:13px;align-self:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Xandeum pNode Rewards Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free, open calculator that estimates Xandeum pNode STOINC rewards per Yuga, month and year in wSOL and USD, with ROI and what-if analysis.","url":"https://pulsarnetwork.xyz/calculator.html","isPartOf":{"@type":"WebSite","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"pNode Rewards Calculator","item":"https://pulsarnetwork.xyz/calculator.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How are Xandeum pNode rewards calculated?","acceptedAnswer":{"@type":"Answer","text":"Each pNode earns a share of the per-Yuga STOINC pool based on its contribution weight: storage space x performance score x active stake x boost factor. Your share equals your weight divided by the total network weight, and 90% of the wSOL fee pool each Yuga goes to pNode operators (5% to Xandeum Platform Corporation, 5% to the Foundation)."}},
+{"@type":"Question","name":"What is STOINC?","acceptedAnswer":{"@type":"Answer","text":"STOINC (Storage Income) is Xandeum's system that converts real storage activity into wSOL fee pools paid to pNode operators. Fees are collected and settled once per Yuga, roughly every 2.8 days."}},
+{"@type":"Question","name":"How much can a Xandeum pNode earn?","acceptedAnswer":{"@type":"Answer","text":"It depends on your storage, uptime, staked XAND and boost factor relative to the rest of the network, and on the size of the wSOL pool that Yuga. Because the pool and network total are not fully known until a Yuga closes, all figures are formula-based estimates."}},
+{"@type":"Question","name":"What is a boost factor?","acceptedAnswer":{"@type":"Answer","text":"A multiplier on a pNode's reward weight. It combines your purchase-era boost with the multipliers of up to two assigned NFT boosts (for example a 1.2x and a 1.5x NFT give a 1.8x NFT boost)."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Free tool &middot; no login</span>
+  <h1>Xandeum pNode Rewards Calculator</h1>
+  <p class="lead">Estimate your <strong>STOINC</strong> earnings from running a Xandeum pNode: per Yuga, per month and per year, in wSOL and USD, plus ROI and what-if analysis. Open, shareable, and honest about what is known.</p>
+
+  <div class="banner">
+    <span>&#9888;&#65039;</span>
+    <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's contribution weight and the relative "what-if" figures are exact. Two values are <b>scenarios you set</b>, not live measurements: the wSOL pool per Yuga and the network's total weight, because neither is known until a Yuga closes. Absolute earnings scale with those two. Live network totals are on our roadmap.</span>
+  </div>
+
+  <div class="grid">
+    <!-- INPUTS -->
+    <form class="panel" id="calcForm" autocomplete="off">
+      <h3>Your pNode</h3>
+      <p class="sub">Adjust to match your setup. Results update live.</p>
+
+      <fieldset>
+        <legend>Storage &amp; performance</legend>
+        <div class="field">
+          <label for="storage">Storage committed</label>
+          <div class="row">
+            <input type="number" id="storage" min="0" step="0.5" value="1">
+            <select id="unit" style="width:90px"><option value="TB" selected>TB</option><option value="GB">GB</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="perf">Performance score <span class="perfval" id="perfval">100%</span></label>
+          <input type="range" id="perf" min="0" max="100" step="1" value="100">
+          <span class="hint">Uptime, responsiveness and reliability. 100% = perfect.</span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Stake</legend>
+        <div class="field">
+          <label for="stake">Your staked XAND</label>
+          <input type="number" id="stake" min="0" step="1000" value="100000">
+        </div>
+        <div class="field">
+          <label for="deleg">Delegated XAND from others <span class="hint">(optional)</span></label>
+          <input type="number" id="deleg" min="0" step="1000" value="0">
+        </div>
+        <label class="toggle"><input type="checkbox" id="match"> Foundation 1:1 match <span class="hint">(licensed nodes; matches delegation, capped 10M)</span></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Boost factor</legend>
+        <div class="field">
+          <label for="era">Purchase-era boost (&times;)</label>
+          <input type="number" id="era" min="1" step="0.1" value="16">
+          <span class="hint">Set by when you bought your pNode. The current top era is 16&times;.</span>
+        </div>
+        <div class="row">
+          <div class="field" style="flex:1"><label for="nft1">NFT slot 1 (&times;)</label><input type="number" id="nft1" min="1" step="0.1" value="1"></div>
+          <div class="field" style="flex:1"><label for="nft2">NFT slot 2 (&times;)</label><input type="number" id="nft2" min="1" step="0.1" value="1"></div>
+        </div>
+        <span class="hint">Up to 2 NFT boosts; they multiply together with the era boost.</span>
+      </fieldset>
+
+      <fieldset>
+        <legend>Operator</legend>
+        <div class="field">
+          <label for="comm">Your commission on delegators (%)</label>
+          <input type="number" id="comm" min="0" max="100" step="1" value="10">
+          <span class="hint">You keep all rewards on your own stake, plus this cut of delegators'.</span>
+        </div>
+        <div class="field">
+          <label for="cost">Upfront cost for ROI (USD) <span class="hint">(pNode + license + NFTs)</span></label>
+          <input type="number" id="cost" min="0" step="50" value="0">
+        </div>
+      </fieldset>
+
+      <div class="scenario">
+        <fieldset>
+          <legend>Network scenario &middot; you set these</legend>
+          <div class="field">
+            <label for="pool">STOINC pool this Yuga (wSOL)</label>
+            <input type="number" id="pool" min="0" step="1" value="50">
+            <div class="presets"><button type="button" data-pool="10">Low 10</button><button type="button" data-pool="50">Mid 50</button><button type="button" data-pool="200">High 200</button></div>
+            <span class="hint">Illustrative. The real pool isn't known until the Yuga closes.</span>
+          </div>
+          <div class="field">
+            <label for="net">Estimated network total weight</label>
+            <input type="number" id="net" min="0" step="1e9" value="500000000000">
+            <span class="hint">Sum of storage&times;performance&times;stake&times;boost across all online nodes. An estimate until we wire it live.</span>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+
+    <!-- RESULTS -->
+    <div class="panel res-panel">
+      <h3>Estimated earnings <span class="sub" id="pxnote" style="float:right;font-weight:400"></span></h3>
+      <div class="big" id="takeMain">&mdash;<small>your take per Yuga (&asymp;2.8 days)</small></div>
+
+      <div style="margin-top:16px">
+        <div class="rrow"><span class="k">Per month</span><span class="v" id="perMonth">&mdash;</span></div>
+        <div class="rrow"><span class="k">Per year</span><span class="v" id="perYear">&mdash;</span></div>
+        <div class="rrow"><span class="k">Implied annual yield on your stake</span><span class="v" id="yield">&mdash;</span></div>
+        <div class="rrow"><span class="k">ROI payback</span><span class="v" id="payback">&mdash;</span></div>
+      </div>
+
+      <h2 style="font-size:15px;margin:22px 0 6px">Under the hood</h2>
+      <div class="rrow"><span class="k">Your contribution weight</span><span class="v" id="weight">&mdash;</span></div>
+      <div class="rrow"><span class="k">Your share of network</span><span class="v" id="share">&mdash;</span></div>
+      <div class="rrow"><span class="k">Total boost factor</span><span class="v" id="boost">&mdash;</span></div>
+      <div class="rrow"><span class="k">Node gross / Yuga</span><span class="v" id="nodeGross">&mdash;</span></div>
+
+      <h2 style="font-size:15px;margin:22px 0 6px">Pool split</h2>
+      <div class="splitbar"><span style="width:90%;background:var(--teal)"></span><span style="width:5%;background:var(--orange)"></span><span style="width:5%;background:#7b5bff"></span></div>
+      <div class="legend"><span><i style="background:var(--teal)"></i>Operators 90%</span><span><i style="background:var(--orange)"></i>Foundation 5%</span><span><i style="background:#7b5bff"></i>Platform 5%</span></div>
+
+      <h2 style="font-size:15px;margin:22px 0 6px">What-if (exact, vs now)</h2>
+      <div class="chips">
+        <div class="chip"><div class="ck">+1 TB storage</div><div class="cv" id="wTB">&mdash;</div></div>
+        <div class="chip"><div class="ck">Add a 1.5&times; NFT</div><div class="cv" id="wNFT">&mdash;</div></div>
+        <div class="chip"><div class="ck">+100k XAND stake</div><div class="cv" id="wStake">&mdash;</div></div>
+        <div class="chip"><div class="ck">+10% performance</div><div class="cv" id="wPerf">&mdash;</div></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" id="shareBtn">Copy shareable link</button>
+        <a class="btn ghost" href="/#stake">Stake with Pulsar &rarr;</a>
+        <span class="copied" id="copied" hidden>Link copied</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="faq">
+    <h2>How Xandeum pNode rewards work</h2>
+    <details open><summary>How are rewards calculated?</summary><p>Each pNode earns a share of the per-Yuga STOINC pool based on its <strong>contribution weight = storage &times; performance score &times; active stake &times; boost factor</strong>. Your share is your weight divided by the total network weight. <strong>90%</strong> of the wSOL pool each Yuga goes to operators, 5% to Xandeum Platform Corporation and 5% to the Foundation.</p></details>
+    <details><summary>What is STOINC and a Yuga?</summary><p>STOINC (Storage Income) turns real storage activity into wSOL fee pools for operators. It settles once per <a href="yuga.html">Yuga</a>, roughly every 2.8 days. So a year holds about 130 Yugas.</p></details>
+    <details><summary>What is the boost factor?</summary><p>A multiplier on your weight. It combines your purchase-era boost with up to two NFT boosts that multiply together. A 1.2&times; and a 1.5&times; NFT give a 1.8&times; NFT boost; multiply that by your era boost for the total.</p></details>
+    <details><summary>Why are two inputs "scenarios"?</summary><p>The exact wSOL pool and the network's total weight aren't known until a Yuga closes, so no calculator can measure them in advance. We compute your node's weight and all relative effects exactly, and let you set those two to explore ranges. We will wire live network totals as we decode the on-chain STOINC data.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">Xandeum &mdash; STOINC</a> &middot;
+    <a href="https://www.xandeum.network/blog/master-xandeum-pnode-economics-unlock-storage-income-and-earn-rewards" target="_blank" rel="noopener">pNode Economics</a> &middot;
+    <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a>
+    <br><br>An independent tool by Pulsar Network. Not official Xandeum documentation, and not financial advice. Figures are formula-based estimates.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+
+<script>
+(function(){
+  var YPM=30.4375/2.8, YPY=365.25/2.8, OPPOOL=0.90, CAP=1e7;
+  var SOLUSD=null, XANDUSD=null;
+  var ids=['storage','unit','perf','stake','deleg','match','era','nft1','nft2','comm','cost','pool','net'];
+  function g(id){return document.getElementById(id);}
+  function n(id){return parseFloat(g(id).value)||0;}
+  function fmt(x,d){if(x==null||!isFinite(x))return '—';d=d==null?2:d;return x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function usd(w){return (SOLUSD!=null&&isFinite(w))? '$'+fmt(w*SOLUSD,2) : '—';}
+  function pct(x){return (isFinite(x)?fmt(x*100, x<0.001?4:3):'—')+'%';}
+
+  function state(){
+    var unit=g('unit').value;
+    var storageGB=n('storage')*(unit==='TB'?1000:1);
+    return {storageGB:storageGB, perf:n('perf')/100, stake:n('stake'), deleg:n('deleg'),
+      match:g('match').checked, era:n('era')||1, nft1:n('nft1')||1, nft2:n('nft2')||1,
+      comm:n('comm')/100, cost:n('cost'), pool:n('pool'), net:n('net')};
+  }
+  function calc(s,ov){
+    if(ov)s=Object.assign({},s,ov);
+    var matchAmt=s.match?Math.min(s.deleg,CAP):0;
+    var stakeW=s.stake+s.deleg+matchAmt;
+    var boost=s.era*s.nft1*s.nft2;
+    var weight=s.storageGB*s.perf*stakeW*boost;
+    var net=Math.max(s.net,weight);
+    var share=net>0?weight/net:0;
+    var nodeGross=share*s.pool*OPPOOL;
+    var others=s.deleg+matchAmt;
+    var fracYou=stakeW>0?s.stake/stakeW:0, fracOth=stakeW>0?others/stakeW:0;
+    var yourTake=nodeGross*(fracYou+s.comm*fracOth);
+    return {weight:weight,share:share,boost:boost,nodeGross:nodeGross,yourTake:yourTake};
+  }
+  function delta(base,s,ov){
+    var r=calc(s,ov);
+    var dY=r.yourTake-base.yourTake;
+    var dp=base.yourTake>0?dY/base.yourTake:0;
+    var u=(SOLUSD!=null)?(' ('+(dY>=0?'+':'')+'$'+fmt(dY*SOLUSD*YPM,0)+'/mo)'):'';
+    return (dp>=0?'+':'')+fmt(dp*100,1)+'%'+u;
+  }
+
+  function render(){
+    var s=state();
+    g('perfval').textContent=Math.round(s.perf*100)+'%';
+    var b=calc(s);
+    var takeUSD=usd(b.yourTake);
+    g('takeMain').innerHTML=(SOLUSD!=null?'<span class="usd">'+takeUSD+'</span>':fmt(b.yourTake,3)+' wSOL')+'<small>your take per Yuga (≈2.8 days) &middot; '+fmt(b.yourTake,3)+' wSOL</small>';
+    g('perMonth').innerHTML='<span>'+usd(b.yourTake*YPM)+'</span><small>'+fmt(b.yourTake*YPM,2)+' wSOL</small>';
+    g('perYear').innerHTML='<span>'+usd(b.yourTake*YPY)+'</span><small>'+fmt(b.yourTake*YPY,1)+' wSOL &middot; ~'+Math.round(YPY)+' Yugas</small>';
+    var stakeUSD=(XANDUSD!=null)?s.stake*XANDUSD:null;
+    var annualUSD=(SOLUSD!=null)?b.yourTake*YPY*SOLUSD:null;
+    g('yield').innerHTML=(annualUSD!=null&&stakeUSD)? fmt(annualUSD/stakeUSD*100,1)+'%' : '—';
+    if(s.cost>0&&annualUSD!=null&&b.yourTake>0){
+      var ppY=s.cost/(b.yourTake*SOLUSD);
+      g('payback').innerHTML=fmt(ppY,0)+' Yugas<small>~'+fmt(ppY/YPM,1)+' months</small>';
+    } else g('payback').innerHTML='<span style="color:var(--mut2);font-weight:400">enter a cost</span>';
+
+    g('weight').textContent=b.weight>0?b.weight.toExponential(2):'—';
+    g('share').textContent=pct(b.share);
+    g('boost').textContent=fmt(b.boost,2)+'×';
+    g('nodeGross').innerHTML=fmt(b.nodeGross,3)+' wSOL<small>'+usd(b.nodeGross)+'</small>';
+
+    g('wTB').textContent=delta(b,s,{storageGB:s.storageGB+1000});
+    var nftOv=(s.nft1===1)?{nft1:1.5}:(s.nft2===1?{nft2:1.5}:{nft2:s.nft2*1.5});
+    g('wNFT').textContent=delta(b,s,nftOv);
+    g('wStake').textContent=delta(b,s,{stake:s.stake+100000});
+    g('wPerf').textContent=delta(b,s,{perf:Math.min(1,s.perf+0.10)});
+
+    g('pxnote').textContent=(SOLUSD!=null)?('wSOL ≈ $'+fmt(SOLUSD,0)):'';
+    syncURL(s);
+  }
+
+  function syncURL(s){
+    try{
+      var q=ids.map(function(id){var el=g(id);return id+'='+encodeURIComponent(el.type==='checkbox'?(el.checked?1:0):el.value);}).join('&');
+      history.replaceState(null,'','#'+q);
+    }catch(e){}
+  }
+  function loadURL(){
+    if(!location.hash||location.hash.length<2)return;
+    location.hash.slice(1).split('&').forEach(function(kv){
+      var p=kv.split('='),id=p[0],v=decodeURIComponent(p[1]||'');
+      if(ids.indexOf(id)<0)return;var el=g(id);if(!el)return;
+      if(el.type==='checkbox')el.checked=(v==='1'||v==='true');else el.value=v;
+    });
+  }
+
+  ids.forEach(function(id){var el=g(id);if(el){el.addEventListener('input',render);el.addEventListener('change',render);}});
+  document.querySelectorAll('.presets button').forEach(function(btn){btn.addEventListener('click',function(){g('pool').value=btn.getAttribute('data-pool');render();});});
+  g('shareBtn').addEventListener('click',function(){
+    var url=location.href;
+    function ok(){var c=g('copied');c.hidden=false;setTimeout(function(){c.hidden=true;},1800);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,ok);}else ok();
+  });
+
+  loadURL();
+  render();
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum,solana&vs_currencies=usd')
+    .then(function(r){return r.json();})
+    .then(function(j){if(j&&j.solana)SOLUSD=j.solana.usd;if(j&&j.xandeum)XANDUSD=j.xandeum.usd;render();})
+    .catch(function(){});
+})();
+</script>
+</body>
+</html>
