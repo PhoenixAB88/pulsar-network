@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>How to Run a Xandeum pNode: 2026 Setup Guide | Pulsar</title>
+<meta name="description" content="A practical, independent guide to running a Xandeum pNode in 2026: hardware requirements, step-by-step install, devnet vs mainnet, costs, and operator tips.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/run-a-pnode.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="How to Run a Xandeum pNode (2026 Guide)">
+<meta property="og:description" content="Hardware, step-by-step install, devnet vs mainnet, costs, and hard-won operator tips from a team running 12 pNodes.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/run-a-pnode.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="How to run a Xandeum pNode, by Pulsar Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="How to Run a Xandeum pNode (2026 Guide)">
+<meta name="twitter:description" content="Hardware, install steps, devnet vs mainnet, costs and operator tips from a team running 12 pNodes.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--warn:#f7a93b;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:44px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:40px 0 12px}
+  h3{font-size:17px;font-weight:600;margin:24px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  .lead{font-size:18px;color:var(--ink)}
+  .card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin:20px 0}
+  .tip{background:rgba(52,224,168,.06);border:1px solid rgba(52,224,168,.28)}
+  .tip b{color:var(--good)}
+  .warnbox{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.3)}
+  ul,ol{color:var(--mut);padding-left:22px;margin:0 0 16px}li{margin:8px 0}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:top}
+  th{color:var(--mut2);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  td b{color:var(--ink)}
+  .steps{counter-reset:s;list-style:none;padding:0}
+  .steps>li{counter-increment:s;position:relative;padding:0 0 18px 46px;margin:0}
+  .steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--teal);font-weight:600;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .steps>li:not(:last-child)::after{content:"";position:absolute;left:15px;top:32px;bottom:0;width:1px;background:var(--hairline)}
+  .steps h3{margin:2px 0 6px}
+  code,pre{font-family:ui-monospace,Menlo,Consolas,monospace}
+  code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:13px;color:#cfe0ff}
+  pre{background:#070f1f;border:1px solid var(--hairline);border-radius:var(--r-md);padding:14px 16px;overflow-x:auto;font-size:13px;color:#cfe0ff;line-height:1.5;margin:10px 0 16px}
+  pre code{background:none;border:0;padding:0}
+  .pill{display:inline-block;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--teal)}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin:6px 8px 6px 0}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{background:transparent;color:var(--ink);border-color:var(--teal)}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"– "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"HowTo","name":"How to run a Xandeum pNode","description":"Set up a Xandeum pNode: provision a VPS, run the installer, choose a cluster, generate and back up a keypair, dedicate storage and register.","totalTime":"PT30M","tool":[{"@type":"HowToTool","name":"Ubuntu 24.04 VPS (4 cores, 4GB RAM, SSD)"}],"step":[{"@type":"HowToStep","name":"Provision a VPS","text":"Rent an Ubuntu 24.04 server with at least 4 cores, 4GB RAM, an SSD and a static IP."},{"@type":"HowToStep","name":"Run the installer","text":"Download and run the Xandeum xandminer installer and choose a fresh install."},{"@type":"HowToStep","name":"Choose a cluster","text":"Pick devnet to learn or mainnet-alpha for real rewards, and keep pRPC private."},{"@type":"HowToStep","name":"Back up your keypair","text":"Copy the generated pnode-keypair.json off the server and store it safely."},{"@type":"HowToStep","name":"Dedicate storage and register","text":"Enable Dedicate and Earn in the web UI and register your pNode in the portal."}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"How to run a Xandeum pNode","item":"https://pulsarnetwork.xyz/run-a-pnode.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What hardware do I need to run a Xandeum pNode?","acceptedAnswer":{"@type":"Answer","text":"At least 4 CPU cores, 4 GB RAM, an SSD (80 GB minimum to run, 256 GB or more to earn meaningful storage rewards), 1 Gbps bandwidth with a static IP, and Ubuntu 24.04. A budget VPS at about 5 to 10 dollars a month meets the minimum."}},
+{"@type":"Question","name":"How much does it cost to run a Xandeum pNode?","acceptedAnswer":{"@type":"Answer","text":"The pNode software is free and open to anyone. Your only required cost is the VPS, roughly 5 to 10 dollars a month. Boost NFTs that multiply rewards are optional and bought separately from the pNode Store."}},
+{"@type":"Question","name":"Should a beginner start on devnet or mainnet?","acceptedAnswer":{"@type":"Answer","text":"Start on devnet to learn the flow safely with no real stake or rewards, then run on mainnet-alpha for real STOINC earnings. Keep pRPC in private mode unless you have a reason not to."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Operator guide</span>
+  <h1>How to run a Xandeum pNode</h1>
+  <p class="lead">A practical, independent walkthrough of setting up a Xandeum <strong>pNode</strong>, the storage node that powers Solana's decentralized storage layer. This complements the <a href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">official setup docs</a>; the tips come from running a fleet of 12 pNodes ourselves.</p>
+
+  <div class="card">
+    <p style="margin:0"><span class="pill">In short</span> &nbsp;Rent a small Ubuntu 24.04 server, run one install command, pick a network, back up your key, dedicate some disk, and register. Running the software is <strong>free</strong>. The only required cost is the server, about $5 to $10 a month.</p>
+  </div>
+
+  <h2>What you need</h2>
+  <table>
+    <tr><th>Component</th><th>Minimum</th><th>Notes</th></tr>
+    <tr><td><b>CPU</b></td><td>4 cores</td><td>A standard budget VPS is fine</td></tr>
+    <tr><td><b>RAM</b></td><td>4 GB</td><td></td></tr>
+    <tr><td><b>Disk</b></td><td>80 GB SSD</td><td>Enough to run. To earn meaningful storage rewards, dedicate <b>256 GB+</b> (more is better)</td></tr>
+    <tr><td><b>Network</b></td><td>1 Gbps + static IP</td><td>A stable connection and a fixed IP matter</td></tr>
+    <tr><td><b>OS</b></td><td>Ubuntu 24.04</td><td>Required for current pNode releases</td></tr>
+  </table>
+  <p>Budget providers like Contabo or Netcup work well, often around $5 to $7 a month for a machine that meets the minimum.</p>
+
+  <h2>The cost picture</h2>
+  <ul>
+    <li><b>Running a node:</b> free software, you only pay for the VPS.</li>
+    <li><b>Boost NFTs (optional):</b> sold via the <a href="https://pnode.store.xandeum.network/" target="_blank" rel="noopener">pNode Store</a>. They multiply your STOINC rewards. Tiers have ranged from Rabbit (1.5&times;) up to Titan (11&times;). You can assign up to <b>2 NFTs per pNode</b>, and their multipliers combine (for example 1.2&times; &times; 1.5&times; = 1.8&times;). No NFT means a 1.0&times; boost.</li>
+    <li><b>Stake:</b> staked XAND scales your rewards. There is no officially published minimum, but real earnings generally need stake (your own or delegated).</li>
+  </ul>
+  <p>Want to see what a given setup might earn first? Use our <a href="calculator.html">pNode rewards calculator</a>.</p>
+
+  <h2>Set it up, step by step</h2>
+  <ol class="steps">
+    <li>
+      <h3>Provision a VPS</h3>
+      <p>Spin up an Ubuntu 24.04 server meeting the specs above, with a static IP. SSH in (the port forwards let you reach the local web UI and API from your machine):</p>
+      <pre><code>ssh -i ~/.ssh/id_ed25519 root@&lt;pnode-ip&gt; -L 4000:localhost:4000 -L 3000:localhost:3000 -L 8000:localhost:8000</code></pre>
+    </li>
+    <li>
+      <h3>Run the installer</h3>
+      <p>As root, download and run the official xandminer installer, then choose <b>option 1 (fresh install)</b>:</p>
+      <pre><code>wget -O install.sh "https://raw.githubusercontent.com/xandeum/xandminer-installer/refs/heads/master/install.sh" \
+  &amp;&amp; chmod a+x install.sh &amp;&amp; ./install.sh</code></pre>
+      <p>It installs the web UI (port <code>3000</code>), the API daemon (port <code>4000</code>), and the core <code>pod.service</code>, and sets them to auto-start on reboot.</p>
+    </li>
+    <li>
+      <h3>Choose your network</h3>
+      <p>The cluster and RPC mode are set with installer flags:</p>
+      <ul>
+        <li><code>--atlas-cluster</code> &mdash; <code>devnet</code> (default, best to learn) or <code>mainnet-alpha</code> (real rewards)</li>
+        <li><code>--prpc-mode private</code> &mdash; keep the pRPC API on localhost. <b>Recommended</b>, per Foundation guidance</li>
+        <li><code>--operator-revenue</code> &mdash; your commission in basis points (1000 = 10%). Required for non-interactive installs</li>
+      </ul>
+    </li>
+    <li>
+      <h3>Generate and BACK UP your keypair</h3>
+      <p>Your node identity lives at <code>/local/keypairs/pnode-keypair.json</code>. <strong>Copy it off the server and store it safely now.</strong> If the machine dies and you have no backup, you cannot recover that node's identity, stake history, or rewards.</p>
+    </li>
+    <li>
+      <h3>Dedicate storage and register</h3>
+      <p>Open the web UI at <code>http://localhost:3000/</code>, confirm the versions look right, and click <b>"Dedicate and Earn"</b> to commit disk. Then go to the <a href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">pNode Portal</a>, connect your wallet, and set your rewards wallet. The portal can also check that your node is reachable.</p>
+    </li>
+  </ol>
+
+  <div class="card tip">
+    <p style="margin:0 0 8px"><b>Tips from running 12 nodes</b></p>
+    <ul style="margin:0">
+      <li><b>Back up <code>pnode-keypair.json</code> the day you create it.</b> This is the single most common, most painful mistake.</li>
+      <li><b>Keep pRPC private.</b> The pod serves a pRPC API (used by monitors like this one). Leave it on localhost unless you specifically need it public.</li>
+      <li><b>Dedicate enough disk.</b> 80 GB runs the node, but rewards scale with the storage you actually commit.</li>
+      <li><b>Watch version pins on updates.</b> If a package is held back by apt, an update can silently no-op. Confirm versions in the UI after upgrading.</li>
+    </ul>
+  </div>
+
+  <h2>Mainnet vs devnet: which to pick</h2>
+  <p><b>Devnet</b> is the installer default and the safe place to learn the whole flow with no real stake or rewards on the line. <b>Mainnet-alpha</b> is the production network where real STOINC economics and boosts apply. There is also a <code>trynet</code> for automated testing builds, which you should not use in production. If you are new, start on devnet, get comfortable, then run mainnet.</p>
+
+  <h2>Keeping it running</h2>
+  <ul>
+    <li><b>Updating:</b> re-run the same installer command and choose <b>option 2 (upgrade)</b>, then confirm versions in the UI.</li>
+    <li><b>Monitoring:</b> the web UI on port 3000 shows your node; the live <a href="/">Pulsar dashboard</a> shows the whole network.</li>
+    <li><b>Earnings:</b> STOINC settles each <a href="yuga.html">Yuga</a> (~2.8 days), and the large majority of each pool goes to operators and stakers. Estimate yours with the <a href="calculator.html">calculator</a>.</li>
+  </ul>
+
+  <div style="margin-top:22px">
+    <a class="btn" href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">Official setup portal &#8599;</a>
+    <a class="btn ghost" href="calculator.html">Estimate your rewards &rarr;</a>
+  </div>
+
+  <h2 style="margin-top:46px">FAQ</h2>
+  <details open><summary>What hardware do I need?</summary><p>At least 4 cores, 4 GB RAM, an SSD (80 GB to run, 256 GB+ to earn well), 1 Gbps with a static IP, and Ubuntu 24.04.</p></details>
+  <details><summary>How much does it cost?</summary><p>The software is free. You only pay for the VPS, about $5 to $10 a month. Boost NFTs are optional and bought separately.</p></details>
+  <details><summary>Do I need to buy a license to run one?</summary><p>No. Running a pNode is free and open to anyone. Boost NFTs from the pNode Store only increase your reward multiplier; they are not required to participate.</p></details>
+  <details><summary>How do I update my pNode?</summary><p>Re-run the installer command and pick option 2 (upgrade), then check the versions in the web UI afterward.</p></details>
+
+  <div class="src">
+    Official sources: <a href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">pNode setup portal</a> &middot;
+    <a href="https://pnodes.xandeum.network/register-your-pnode" target="_blank" rel="noopener">Register your pNode</a> &middot;
+    <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot;
+    <a href="https://github.com/Xandeum/xandminer-installer" target="_blank" rel="noopener">Installer (GitHub)</a>
+    <br><br>An independent guide by Pulsar Network, a community operator. Not official Xandeum documentation. Details like store pricing and version numbers change; verify against the official portal before you buy or build.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+</body>
+</html>

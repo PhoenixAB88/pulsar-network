@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum vs Filecoin, Arweave & Walrus (2026) | Pulsar</title>
+<meta name="description" content="An honest 2026 comparison of decentralized storage: Xandeum vs Filecoin, Arweave and Walrus. Architecture, proofs, data access, pricing, scale and tradeoffs.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/xandeum-vs-filecoin-arweave-walrus.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum vs Filecoin, Arweave & Walrus (2026)">
+<meta property="og:description" content="How Xandeum's smart-contract-native storage for Solana compares to Filecoin, Arweave and Walrus, with an honest take on where it is still unproven.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/xandeum-vs-filecoin-arweave-walrus.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Xandeum vs Filecoin, Arweave and Walrus comparison">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum vs Filecoin, Arweave & Walrus (2026)">
+<meta name="twitter:description" content="An honest comparison of decentralized storage networks in 2026.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:44px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,42px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:40px 0 12px}
+  h3{font-size:17px;font-weight:600;margin:24px 0 6px}
+  p{color:var(--mut);margin:0 0 16px}
+  .lead{font-size:18px;color:var(--ink)}
+  ul{color:var(--mut);padding-left:22px;margin:0 0 16px}li{margin:7px 0}
+  .scroll{overflow-x:auto;margin:18px -4px;border:1px solid var(--hairline);border-radius:var(--r-lg)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:680px}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--hairline);vertical-align:top}
+  thead th{color:var(--ink);font-weight:600;background:var(--surface-1);position:sticky;top:0}
+  tbody th{color:var(--mut2);font-weight:600;font-size:12px;white-space:nowrap}
+  .xa{color:var(--teal);font-weight:600}
+  td b{color:var(--ink)}
+  .card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin:20px 0}
+  .warnbox{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.3)}
+  .warnbox b{color:var(--orange)}
+  .pill{display:inline-block;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--teal)}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin:6px 8px 6px 0}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--hairline-2)}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Xandeum vs Filecoin, Arweave & Walrus (2026)","description":"An honest 2026 comparison of decentralized storage networks: architecture, proofs, data access, pricing, scale and tradeoffs.","image":"https://pulsarnetwork.xyz/og-image.png","author":{"@type":"Organization","name":"Pulsar Network"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"mainEntityOfPage":"https://pulsarnetwork.xyz/xandeum-vs-filecoin-arweave-walrus.html"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Xandeum vs Filecoin, Arweave & Walrus","item":"https://pulsarnetwork.xyz/xandeum-vs-filecoin-arweave-walrus.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What makes Xandeum different from Filecoin and Arweave?","acceptedAnswer":{"@type":"Answer","text":"Xandeum is built for smart-contract-native random access on Solana: programs can read and write fine-grained data directly. Filecoin contracts cannot read stored bytes, Arweave serves whole files over HTTP, and Walrus offers availability programmability on Sui but not byte-level random reads. Xandeum targets mutable, low-latency app storage rather than archival."}},
+{"@type":"Question","name":"Is Xandeum bigger than Filecoin, Arweave or Walrus?","acceptedAnswer":{"@type":"Answer","text":"No. As of 2026 Xandeum is by far the smallest and earliest. Filecoin operates at multi-exabyte scale, Arweave and Walrus hold multi-petabyte live data, while Xandeum recently reached mainnet and is a micro-cap with a small live footprint."}},
+{"@type":"Question","name":"Which decentralized storage should I use?","acceptedAnswer":{"@type":"Answer","text":"For permanent immutable archival, Arweave fits best. For large, cheap cold storage, Filecoin. For Sui-native programmable blobs and data availability, Walrus. Xandeum's niche is low-latency, contract-readable, mutable storage for Solana apps, a different tradeoff it has yet to prove at full scale."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Comparison</span>
+  <h1>Xandeum vs Filecoin, Arweave &amp; Walrus</h1>
+  <p class="lead">Decentralized storage is not one market. These four networks solve different problems. Here is an honest 2026 comparison, including where Xandeum is genuinely differentiated and where it is still the smallest and least proven.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th></th><th>Filecoin</th><th>Arweave</th><th>Walrus</th><th class="xa">Xandeum</th></tr></thead>
+      <tbody>
+        <tr><th>Base chain</th><td>Own L1</td><td>Own chain (Blockweave)</td><td>Storage nodes + <b>Sui</b></td><td class="xa">Storage layer for <b>Solana</b></td></tr>
+        <tr><th>Storage model</th><td>Deal-based sealed sectors</td><td>Permanent replicated copies</td><td>Erasure-coded "slivers" (Red Stuff)</td><td class="xa">Sharded + erasure-coded, file-system-like</td></tr>
+        <tr><th>Proof</th><td>PoRep + PoSt (24h audits)</td><td>Proof of Access</td><td>On-chain availability (Sui objects)</td><td class="xa">Merkle roots anchored to Solana, then Bitcoin</td></tr>
+        <tr><th>Data access</th><td>Whole-file; contracts can't read bytes</td><td>Whole-file via HTTP</td><td>Whole-blob; Sui can manage availability</td><td class="xa"><b>Random access, contract-native</b> (peek, poke, prove)</td></tr>
+        <tr><th>Pricing</th><td>Rental (market deals)</td><td><b>Pay once, store forever</b></td><td>Rental per epoch</td><td class="xa">Usage-based; operators paid via STOINC</td></tr>
+        <tr><th>Market cap (Jun 2026)</th><td>~$590M</td><td>~$120M</td><td>~$75-88M</td><td class="xa">~$1-2M</td></tr>
+        <tr><th>Live scale</th><td>Multi-exabyte committed</td><td>Multi-petabyte permaweb</td><td>~4 PB, 100 nodes</td><td class="xa">Early; exabyte is the <b>goal</b></td></tr>
+        <tr><th>Maturity</th><td>Since 2020</td><td>Since 2018</td><td>Mainnet ~2025</td><td class="xa">Mainnet early 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--mut2)">Market caps and scale are June 2026 snapshots and move daily.</p>
+
+  <h2>The short version</h2>
+  <p>Filecoin and Arweave are the mature incumbents for <strong>archival</strong> storage: huge capacity, multi-year track records, but their stored data is not something a smart contract reads directly. Walrus is a newer, fast-growing option for <strong>programmable blobs and data availability</strong> on Sui. Xandeum is the newcomer with a narrower, sharper aim: storage that <strong>Solana programs can read and write at fine granularity</strong>, like a second tier of accounts.</p>
+
+  <h2>Per-network detail</h2>
+
+  <h3>Filecoin (FIL)</h3>
+  <p>A storage marketplace matching clients to providers via on-chain deals; data is sealed into 32 or 64 GiB sectors. It proves storage with PoRep (a unique replica exists) and PoSt (it still exists, audited daily). The FVM works on chain state, <strong>not</strong> the stored bytes, and retrieval can take seconds or hours depending on whether a provider keeps an unsealed copy. Best for archival, datasets and backups at massive scale; its known challenge is converting committed capacity into paid demand.</p>
+
+  <h3>Arweave (AR)</h3>
+  <p>The "permaweb": pay once and data is stored for 200+ years, funded by an endowment. Miners prove they can access random historical blocks (Proof of Access). Data is served as whole files over HTTP, which is why Solana's Metaplex uses it for NFT media. The flip side of permanence is that it is immutable and not designed for mutable, random-access app state.</p>
+
+  <h3>Walrus (WAL)</h3>
+  <p>Stores erasure-coded slivers across nodes with high durability at about 4.5&times; replication, coordinated by Sui. Move contracts on Sui can check availability and manage blob lifecycles, so it is "programmable" at the blob level, though still whole-blob retrieval rather than byte-level random reads. Newer and smaller than Filecoin and Arweave, with a relatively concentrated node set.</p>
+
+  <h3>Xandeum (XAND)</h3>
+  <p>A storage layer that behaves like a second tier of Solana accounts. Provider nodes (<a href="/">pNodes</a>) store data; the network reaches consensus only on Merkle roots each ~15-second pulse, then anchors them every <a href="yuga.html">Yuga</a> (~2.8 days) to Solana and then Bitcoin for tamper-evidence. Its headline feature is <strong>random-access, smart-contract-native storage</strong> so Solana programs read and write data directly, keeping execution lean. Operators earn usage-based <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">STOINC</a> income.</p>
+
+  <h2>Where Xandeum stands out</h2>
+  <ul>
+    <li><b>Contract-native random access for Solana.</b> The thing the others do not target: programs reading and writing stored data at fine granularity, not whole-file retrieval.</li>
+    <li><b>A complementary tier, not a competing chain.</b> It extends Solana rather than asking apps to leave it.</li>
+    <li><b>Bitcoin-anchored proofs</b> for externally verifiable integrity.</li>
+    <li><b>STOINC</b> ties operator rewards to real storage usage.</li>
+  </ul>
+
+  <div class="card warnbox">
+    <p style="margin:0 0 6px"><b>The honest caveat</b></p>
+    <p style="margin:0">Xandeum is roughly 40 to 500 times smaller than these incumbents and only reached mainnet in early 2026. "Exabyte-ready" is an architectural goal, not demonstrated scale. Its pulse-and-anchor design is novel and far less battle-tested than Filecoin's PoRep/PoSt or Arweave's years of Proof of Access. It is a genuinely different tradeoff for a specific job, not a proven "better" across the board. If you need permanent archival, Arweave fits; for cheap cold capacity, Filecoin; for Sui-native blobs, Walrus.</p>
+  </div>
+
+  <div style="margin-top:22px">
+    <a class="btn" href="/">See the live Xandeum network &rarr;</a>
+    <a class="btn ghost" href="run-a-pnode.html">Run a pNode</a>
+  </div>
+
+  <div class="src">
+    Sources: <a href="https://docs.filecoin.io/" target="_blank" rel="noopener">Filecoin Docs</a> &middot;
+    <a href="https://www.arweave.org/" target="_blank" rel="noopener">Arweave</a> &middot;
+    <a href="https://docs.wal.app/" target="_blank" rel="noopener">Walrus Docs</a> &middot;
+    <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot; market data via CoinGecko/CoinMarketCap.
+    <br><br>An independent comparison by Pulsar Network. Figures are June 2026 snapshots and not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+</body>
+</html>
