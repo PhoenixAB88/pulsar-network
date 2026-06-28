@@ -443,7 +443,7 @@
       </div>
       <a class="btn calc-top" href="calculator.html" title="pNode rewards calculator">🧮<span class="ct-label">Calculator</span></a>
       <button class="btn ghost buy-top" type="button" onclick="openSwap()" title="Buy or trade XAND"><span class="led" aria-hidden="true"></span>Buy XAND</button>
-      <a class="btn primary stake-top" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
+      <a class="btn primary stake-top" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener" onclick="copyOurNode(this)">Stake ↗</a>
       <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     </div>
@@ -495,8 +495,9 @@
         </div>
         <div class="proof" id="pulsarProof" style="position:relative;z-index:2"></div>
         <div class="cta" style="justify-content:center;margin-top:14px;position:relative;z-index:2">
-          <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with us ↗</a>
+          <a class="btn primary stake-big" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener" onclick="copyOurNode(this)">Stake with us ↗</a>
         </div>
+        <div style="position:relative;z-index:2;margin-top:10px;font-size:12.5px;color:var(--mut2)">We copy our pNode address for you. In the portal: <b style="color:var(--mut)">Select a pNode &rarr; paste &rarr; Stake</b></div>
       </div>
       <div class="nethero-side">
         <div class="box hbox"><h3>Top nodes by stake</h3><div id="leaderboard"></div></div>
@@ -546,13 +547,13 @@
       <h2>Ready to stake?</h2>
       <p>Delegation is live. Stake your XAND to a Pulsar pNode on the official portal. On qualifying nodes the Foundation may match eligible delegation 1:1 (not a guarantee of doubled rewards), and you earn STOINC at a fair 10% commission.</p>
       <div class="cta" style="justify-content:center">
-        <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake with Pulsar ↗</a>
+        <a class="btn primary" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener" onclick="copyOurNode(this)">Stake with Pulsar ↗</a>
         <a class="btn ghost" href="calculator.html">Estimate rewards</a>
         <button class="btn ghost" type="button" onclick="openContact()">Contact Us</button>
       </div>
       <div style="margin-top:14px;font-size:13px;color:var(--mut)">Don't hold XAND yet? <a href="https://jup.ag/swap/SOL-XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx" onclick="openSwap();return false;" style="color:var(--teal);font-weight:500">Buy / trade XAND</a> <span style="color:var(--mut2);font-size:11.5px">(incl. 1% swap fee)</span></div>
       <div class="snodes" id="stakeNodes"></div>
-      <p style="font-size:12.5px;color:var(--mut2);margin:18px auto 0;max-width:60ch">Our 6 mainnet pNodes - copy a pubkey to find it on the portal. Live staked amounts update automatically.</p>
+      <p style="font-size:12.5px;color:var(--mut2);margin:18px auto 0;max-width:60ch">Our 6 mainnet pNodes. Copy a pubkey and paste it into the portal's "Select a pNode" search to stake with us. Live staked amounts update automatically.</p>
     </div>
   </div>
 </section>
@@ -1235,6 +1236,12 @@
 
   // ---- per-node detail modal ----
   window.copyTxt=t=>{try{navigator.clipboard.writeText(t);}catch(e){}};
+  // Copy one of OUR pNode addresses so the staker can paste it into the portal and stake with us (not another operator).
+  window.copyOurNode=function(el){
+    var n=(window.PULSAR_NODES&&window.PULSAR_NODES[0])?window.PULSAR_NODES[0].pk:'';
+    if(n)copyTxt(n);
+    if(el){var o=el.getAttribute('data-orig')||el.innerHTML;el.setAttribute('data-orig',o);el.innerHTML='✓ Our node copied';setTimeout(function(){el.innerHTML=el.getAttribute('data-orig');},1800);}
+  };
   function fmtDate(t){if(!t)return '—';return new Date(t*1000).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}
   function ago(t){if(!t)return '';const d=Math.floor(Date.now()/1000)-t,day=86400;if(d<day)return 'today';if(d<30*day)return Math.floor(d/day)+'d ago';if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return (d/(365*day)).toFixed(1)+'y ago';}
   function shortAddr(a){return a?a.slice(0,4)+'…'+a.slice(-4):'—';}
