@@ -142,7 +142,7 @@
 
   <div class="banner">
     <span>&#9888;&#65039;</span>
-    <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's weight and the "what-if" figures are exact, and the <b>network total is now live</b> (computed from real per-node storage, stake and uptime). One value is still a <b>scenario you set</b>: the wSOL pool per Yuga, which isn't known until a Yuga closes. Per-node boost isn't public either, so the live total is boost-agnostic.</span>
+    <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's weight and the "what-if" figures are exact, and the <b>network total is now live</b> (computed from real per-node storage and on-chain stake). One value is still a <b>scenario you set</b>: the wSOL pool per Yuga, which isn't known until a Yuga closes. Per-node performance and boost aren't public, so they fold into your own inputs.</span>
   </div>
 
   <div class="livebar" id="livebar">
@@ -220,7 +220,7 @@
       <div class="field">
         <label for="net">Network total weight <span id="netLive" style="color:var(--good);font-weight:600;font-size:12px"></span></label>
         <input type="number" id="net" min="0" step="1e9" value="500000000000">
-        <span class="hint">&Sigma;(storage &times; performance &times; stake) across the network, computed <b style="color:var(--good)">live</b> from per-node data. Per-node boost isn't public, so this is boost-agnostic; edit to explore.</span>
+        <span class="hint">&Sigma;(storage &times; stake) across the network, computed <b style="color:var(--good)">live</b> from per-node storage and on-chain stake. Per-node performance and boost aren't public, so they fold into your inputs; edit to explore.</span>
       </div>
       <div class="scenario">
         <fieldset>
@@ -278,7 +278,7 @@
     <details open><summary>How are rewards calculated?</summary><p>Each pNode earns a share of the per-Yuga STOINC pool based on its <strong>contribution weight = storage &times; performance score &times; active stake &times; boost factor</strong>. Your share is your weight divided by the total network weight. <strong>90%</strong> of the wSOL pool each Yuga goes to operators, 5% to Xandeum Platform Corporation and 5% to the Foundation.</p></details>
     <details><summary>What is STOINC and a Yuga?</summary><p>STOINC (Storage Income) turns real storage activity into wSOL fee pools for operators. It settles once per <a href="yuga.html">Yuga</a>, roughly every 2.8 days. So a year holds about 130 Yugas.</p></details>
     <details><summary>What is the boost factor?</summary><p>A multiplier on your weight. It combines your purchase-era boost with up to two NFT boosts that multiply together. A 1.2&times; and a 1.5&times; NFT give a 1.8&times; NFT boost; multiply that by your era boost for the total.</p></details>
-    <details><summary>What's live vs a scenario?</summary><p>The <b>network total weight is live</b> now: we sum storage &times; performance &times; stake across every node from self-sourced per-node data (the same feed that powers the dashboard's Storage column). The only remaining scenario is the <b>wSOL pool per Yuga</b>, which isn't known until a Yuga closes. Per-node boost factors aren't public, so the live total is boost-agnostic; your own boost still multiplies your share.</p></details>
+    <details><summary>What's live vs a scenario?</summary><p>The <b>network total weight is live</b> now: we sum storage &times; stake across every node from self-sourced per-node data (the same feed that powers the dashboard's Storage column). The only remaining scenario is the <b>wSOL pool per Yuga</b>, which isn't known until a Yuga closes. Per-node performance and boost aren't public, so they fold into your own inputs (which adjust your share relative to the network).</p></details>
   </section>
 
   <div class="src">
@@ -390,37 +390,29 @@
   });
 
   function fillLive(){
+    // All same-origin (generated data files) — the podcredits API is not CORS-open to the browser.
     try{
-      if(typeof window.CUR_YUGA!=='undefined'&&window.CUR_YUGA)g('lvYuga').textContent=window.CUR_YUGA;
-      if(typeof window.STAKE_TOTAL!=='undefined'&&window.STAKE_TOTAL)g('lvStake').textContent=fmt(window.STAKE_TOTAL,0);
+      if(window.CUR_YUGA)g('lvYuga').textContent=window.CUR_YUGA;
+      if(window.STAKE_TOTAL)g('lvStake').textContent=fmt(window.STAKE_TOTAL,0);
+      var NS=(window.__NS&&window.__NS.mainnet)||null;
+      if(NS){ if(NS.nodes)g('lvNodes').textContent=NS.nodes; if(NS.active!=null)g('lvActive').textContent=NS.active; g('lvUpd').textContent='live'; }
+      // Live network denominator = Σ(storageGB × stake) across the network (per-node storage + on-chain stake).
+      var CXm=(window.CX&&window.CX.mainnet)||{}, ST=window.STAKE||{}, W=0, cnt=0;
+      Object.keys(CXm).forEach(function(pk){
+        var stoGB=(CXm[pk].storage||0)/1e9, stk=ST[pk]?ST[pk].stake:0, w=stoGB*stk;
+        if(w>0){W+=w;cnt++;}
+      });
+      var nl=g('netLive');
+      if(W>0){ if(!netFromUrl)g('net').value=Math.round(W); if(nl)nl.textContent='· live ('+cnt+' nodes)'; }
     }catch(e){}
   }
 
   loadURL();
-  render();
   fillLive();
+  render();
   fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum,solana&vs_currencies=usd')
     .then(function(r){return r.json();})
     .then(function(j){if(j&&j.solana)SOLUSD=j.solana.usd;if(j&&j.xandeum)XANDUSD=j.xandeum.usd;render();})
-    .catch(function(){});
-  fetch('https://podcredits.xandeum.network/api/mainnet-pod-credits')
-    .then(function(r){return r.json();})
-    .then(function(j){
-      var a=(j&&j.pods_credits)||[];
-      var active=a.filter(function(x){return (x.credits||0)>0;}).length;
-      if(a.length){g('lvNodes').textContent=a.length;g('lvActive').textContent=active;g('lvUpd').textContent='live';}
-      // Live network denominator: sum(storageGB * performance * stake) across all nodes, self-sourced.
-      try{
-        var creds={},max=0;a.forEach(function(x){if(x.pod_id){creds[x.pod_id]=x.credits||0;if(x.credits>max)max=x.credits;}});
-        var CXm=(window.CX&&window.CX.mainnet)||{}, ST=window.STAKE||{}, W=0, cnt=0;
-        Object.keys(CXm).forEach(function(pk){
-          var stoGB=(CXm[pk].storage||0)/1e9, perf=max>0?(creds[pk]||0)/max:0, stk=ST[pk]?ST[pk].stake:0, w=stoGB*perf*stk;
-          if(w>0){W+=w;cnt++;}
-        });
-        var nl=g('netLive');
-        if(W>0){ if(!netFromUrl)g('net').value=Math.round(W); if(nl)nl.textContent='· live ('+cnt+' nodes)'; render(); }
-      }catch(e){}
-    })
     .catch(function(){});
 })();
 </script>

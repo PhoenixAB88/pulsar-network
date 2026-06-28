@@ -141,19 +141,10 @@
   try{
     if(typeof window.CUR_YUGA!=='undefined'&&window.CUR_YUGA)g('sYuga').textContent=window.CUR_YUGA;
     if(typeof window.STAKE_TOTAL!=='undefined'&&window.STAKE_TOTAL)g('sStake').textContent=fmt(window.STAKE_TOTAL);
-    if(window.__NS&&window.__NS.mainnet&&window.__NS.mainnet.committed){var S=window.__NS.mainnet;g('sStorage').textContent=fmtBytes(S.committed);g('sStorageSub').textContent=fmtBytes(S.used||0)+' used';}
-  }catch(e){}
-  fetch('https://podcredits.xandeum.network/api/mainnet-pod-credits')
-    .then(function(r){return r.json();})
-    .then(function(j){
-      var a=(j&&j.pods_credits)||[];
-      if(!a.length)return;
-      var active=a.filter(function(x){return (x.credits||0)>0;}).length;
-      g('sNodes').textContent=fmt(a.length);
-      g('sActive').textContent=fmt(active);
-      g('sUpd').textContent='Live, updated just now.';
-    })
-    .catch(function(){ g('sUpd').textContent='Live feed momentarily unavailable; reload to retry.'; });
+    var S=(window.__NS&&window.__NS.mainnet)||null;
+    if(S&&S.committed){g('sStorage').textContent=fmtBytes(S.committed);g('sStorageSub').textContent=fmtBytes(S.used||0)+' used';}
+    if(S){ if(S.nodes)g('sNodes').textContent=fmt(S.nodes); if(S.active!=null)g('sActive').textContent=fmt(S.active); g('sUpd').textContent='Live, from the network gossip layer.'; }
+  }catch(e){ g('sUpd').textContent='Data momentarily unavailable; reload to retry.'; }
 })();
 </script>
 </body>
