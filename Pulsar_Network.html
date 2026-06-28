@@ -1238,9 +1238,11 @@
   window.copyTxt=t=>{try{navigator.clipboard.writeText(t);}catch(e){}};
   // Copy one of OUR pNode addresses so the staker can paste it into the portal and stake with us (not another operator).
   window.copyOurNode=function(el){
-    var n=(window.PULSAR_NODES&&window.PULSAR_NODES[0])?window.PULSAR_NODES[0].pk:'';
-    if(n)copyTxt(n);
-    if(el){var o=el.getAttribute('data-orig')||el.innerHTML;el.setAttribute('data-orig',o);el.innerHTML='✓ Our node copied';setTimeout(function(){el.innerHTML=el.getAttribute('data-orig');},1800);}
+    var L=window.PULSAR_NODES||[];
+    if(!L.length)return;
+    var pk=L[Math.floor(Math.random()*L.length)].pk; // spread stakers across all 6 of our nodes
+    copyTxt(pk);
+    if(el){var o=el.getAttribute('data-orig')||el.innerHTML;el.setAttribute('data-orig',o);el.innerHTML='✓ Copied '+pk.slice(0,4)+'…'+pk.slice(-4);setTimeout(function(){el.innerHTML=el.getAttribute('data-orig');},1900);}
   };
   function fmtDate(t){if(!t)return '—';return new Date(t*1000).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}
   function ago(t){if(!t)return '';const d=Math.floor(Date.now()/1000)-t,day=86400;if(d<day)return 'today';if(d<30*day)return Math.floor(d/day)+'d ago';if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return (d/(365*day)).toFixed(1)+'y ago';}
