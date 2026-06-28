@@ -209,6 +209,14 @@
   a.statlink:hover{border-color:var(--hairline-2);background:var(--surface-2)}
   .stat .k{color:var(--mut2);font-size:12px;letter-spacing:.01em;font-weight:500}
   .stat .v{font-size:clamp(22px,2.3vw,28px);font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
+  .calc-card{position:relative;overflow:hidden;text-decoration:none;display:block;background:linear-gradient(150deg,rgba(70,230,239,.13),rgba(122,162,255,.05) 60%,transparent);border:1px solid rgba(70,230,239,.4);transition:border-color .2s,transform .15s,box-shadow .2s}
+  .calc-card:hover{border-color:rgba(70,230,239,.78);transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(70,230,239,.6)}
+  .calc-card .cc-k{position:relative;z-index:1;color:#bfeff4;font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px}
+  .calc-card .cc-cta{position:relative;z-index:1;margin-top:10px;color:var(--teal);font-weight:600;font-size:clamp(16px,1.8vw,19px);letter-spacing:-.01em}
+  .calc-card::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 100% 0,rgba(70,230,239,.2),transparent 55%);pointer-events:none}
+  .calc-card::after{content:"";position:absolute;top:-25%;left:-45%;width:45%;height:150%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.15),transparent);transform:skewX(-16deg);animation:ccSheen 4.6s ease-in-out infinite;pointer-events:none}
+  @keyframes ccSheen{0%{left:-45%}62%,100%{left:135%}}
+  @media(prefers-reduced-motion:reduce){.calc-card::after{display:none}}
   .qlink{display:inline-block;margin-top:10px;font-size:14px;font-weight:500;color:var(--teal);transition:color .15s,text-shadow .15s;animation:qglow 2.4s ease-in-out infinite}
   .qlink:hover{color:#eafdff;text-shadow:0 0 14px rgba(70,230,239,.85)}
   @keyframes qglow{0%,100%{text-shadow:0 0 5px rgba(70,230,239,.30)}50%{text-shadow:0 0 13px rgba(70,230,239,.70)}}
@@ -816,6 +824,7 @@
     const _hc=document.getElementById('heroChips'); if(_hc)_hc.innerHTML=pods.length?`<div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>`:'';
 
     document.getElementById('statCards').innerHTML=`
+      <a class="stat calc-card" href="calculator.html" aria-label="Open the pNode rewards calculator"><div class="cc-k">🧮 Rewards calculator</div><div class="cc-cta">Estimate earnings &rarr;</div></a>
       <div class="stat"><div class="k">pNodes online</div><div class="v"><span style="color:var(--good)">${fmt(online)}</span><span style="color:var(--mut2);font-weight:500;font-size:.66em"> / ${fmt(pods.length)}</span></div>${pods.length-online>0?`<div style="font-size:12px;color:var(--warn);margin-top:3px">${fmt(pods.length-online)} stale &gt;15m</div>`:''}</div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
