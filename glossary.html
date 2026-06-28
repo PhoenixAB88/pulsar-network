@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum Glossary: pNode, Yuga, STOINC & More | Pulsar</title>
+<meta name="description" content="A plain-English Xandeum glossary: pNode, vNode, Yuga, STOINC, Bucket, sedApp, boost factor, Atlas and more. Every term you will meet on the Xandeum network, defined.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/glossary.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum Glossary: pNode, Yuga, STOINC & More">
+<meta property="og:description" content="Plain-English definitions of every Xandeum term: pNode, vNode, Yuga, STOINC, Bucket, sedApp, boost factor, Atlas and more.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/glossary.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Xandeum glossary by Pulsar Network">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum Glossary: pNode, Yuga, STOINC & More">
+<meta name="twitter:description" content="Plain-English definitions of every Xandeum term.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:44px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut2);margin:34px 0 6px}
+  p{color:var(--mut);margin:0 0 16px}
+  .lead{font-size:18px;color:var(--ink)}
+  dl{margin:0}
+  dt{font-size:18px;font-weight:600;color:var(--ink);margin:20px 0 4px;scroll-margin-top:20px}
+  dt .alt{font-size:13px;font-weight:400;color:var(--mut2);margin-left:8px}
+  dd{margin:0 0 4px;color:var(--mut)}
+  .entry{border-top:1px solid var(--hairline);padding-top:6px}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+  .toc a{background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--mut)}
+  .toc a:hover{color:var(--ink);border-color:var(--teal);text-decoration:none}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin:8px 8px 0 0}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--hairline-2)}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"DefinedTermSet","name":"Xandeum Glossary","url":"https://pulsarnetwork.xyz/glossary.html","hasDefinedTerm":[
+{"@type":"DefinedTerm","name":"pNode","description":"A Xandeum provider node: the storage machine that holds network data and earns STOINC. Anyone can run one."},
+{"@type":"DefinedTerm","name":"vNode","description":"A Xandeum validator node that supervises the network and coordinates proofs and reward settlement, distinct from the storage-providing pNodes."},
+{"@type":"DefinedTerm","name":"STOINC","description":"Storage Income: Xandeum's system that turns real storage usage into wSOL fees paid to pNode operators, settled each Yuga."},
+{"@type":"DefinedTerm","name":"Yuga","description":"Xandeum's storage epoch, roughly 2.8 days, the period over which STOINC rewards are tallied and settled."},
+{"@type":"DefinedTerm","name":"Bucket","description":"A Xandeum storage container that smart contracts read from and write to, like a file in a file system."},
+{"@type":"DefinedTerm","name":"sedApp","description":"A storage-enabled dApp: a Solana application that uses Xandeum to store and access large or mutable data."}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Xandeum Glossary","item":"https://pulsarnetwork.xyz/glossary.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is a pNode?","acceptedAnswer":{"@type":"Answer","text":"A pNode (provider node) is the storage machine that holds Xandeum network data and earns STOINC rewards. Anyone can run one on a small server; boost NFTs and stake increase the rewards."}},
+{"@type":"Question","name":"What is the difference between a pNode and a vNode?","acceptedAnswer":{"@type":"Answer","text":"pNodes provide storage and hold the data. vNodes are validator nodes that supervise the network and coordinate proofs and reward settlement. They are different roles."}},
+{"@type":"Question","name":"What is STOINC?","acceptedAnswer":{"@type":"Answer","text":"STOINC (Storage Income) is Xandeum's reward system that converts real storage activity into wSOL fees paid to pNode operators, settled once per Yuga (about every 2.8 days)."}},
+{"@type":"Question","name":"What is a sedApp?","acceptedAnswer":{"@type":"Answer","text":"A sedApp is a storage-enabled dApp: a Solana application that uses Xandeum's storage layer to read and write large or mutable data that would not fit cheaply in normal Solana accounts."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Glossary</span>
+  <h1>Xandeum glossary</h1>
+  <p class="lead">Every term you will run into on the Xandeum network, in plain English. Bookmark it, or deep-link any term.</p>
+
+  <div class="toc">
+    <a href="#pnode">pNode</a><a href="#vnode">vNode</a><a href="#yuga">Yuga</a><a href="#stoinc">STOINC</a><a href="#bucket">Bucket</a><a href="#sedapp">sedApp</a><a href="#primitives">peek / poke / prove</a><a href="#boost">Boost factor</a><a href="#xfdp">XFDP</a><a href="#atlas">Atlas</a><a href="#pulse">Pulse</a><a href="#prpc">pRPC</a><a href="#xandsol">xandSOL</a><a href="#xand">XAND</a>
+  </div>
+
+  <h2>Network roles</h2>
+  <dl>
+    <dt id="pnode" class="entry">pNode <span class="alt">provider node</span></dt>
+    <dd>The storage machine that holds Xandeum data and earns <a href="#stoinc">STOINC</a>. Anyone can run one on a small server; see our <a href="run-a-pnode.html">how to run a pNode</a> guide. Rewards scale with the storage you commit, your stake, and your <a href="#boost">boost factor</a>.</dd>
+
+    <dt id="vnode" class="entry">vNode <span class="alt">validator node</span></dt>
+    <dd>A validator node that supervises the network and coordinates proofs and reward settlement. Different role from the storage-providing <a href="#pnode">pNodes</a>.</dd>
+  </dl>
+
+  <h2>Storage concepts</h2>
+  <dl>
+    <dt id="bucket" class="entry">Bucket</dt>
+    <dd>A Xandeum storage container that smart contracts read from and write to, like a file in a file system. Buckets are how a Solana program addresses its stored data.</dd>
+
+    <dt id="sedapp" class="entry">sedApp <span class="alt">storage-enabled dApp</span></dt>
+    <dd>A Solana app that uses Xandeum to store and access large or mutable data that would be too expensive to keep in normal Solana accounts (decentralized social, media, big app state).</dd>
+
+    <dt id="primitives" class="entry">peek / poke / prove</dt>
+    <dd>Xandeum's core primitives: <strong>peek</strong> reads stored data, <strong>poke</strong> writes it, and <strong>prove</strong> verifies it cryptographically. Together they give Solana programs random-access, contract-native storage.</dd>
+
+    <dt id="atlas" class="entry">Atlas</dt>
+    <dd>The network's coordinator. In the current alpha it is run centrally by the Foundation, with a stated plan to decentralize it to <a href="#pnode">pNodes</a> in beta.</dd>
+
+    <dt id="pulse" class="entry">Pulse</dt>
+    <dd>The roughly 15-second interval at which Xandeum finalizes a Merkle root of stored state, before anchoring it each <a href="#yuga">Yuga</a> to Solana and then Bitcoin for tamper-evidence.</dd>
+
+    <dt id="prpc" class="entry">pRPC</dt>
+    <dd>The pNode RPC interface (port 6000) used to query a node for stats and roster data. Foundation guidance is to keep it private (localhost) unless you have a reason to expose it.</dd>
+  </dl>
+
+  <h2>Rewards &amp; staking</h2>
+  <dl>
+    <dt id="stoinc" class="entry">STOINC <span class="alt">Storage Income</span></dt>
+    <dd>Xandeum's system that turns real storage usage into wSOL fees paid to pNode operators, settled each <a href="#yuga">Yuga</a>. The large majority of each pool goes to operators. Estimate yours with the <a href="calculator.html">rewards calculator</a>.</dd>
+
+    <dt id="yuga" class="entry">Yuga</dt>
+    <dd>Xandeum's storage epoch, about 2.8 days. Rewards are tallied and settled once per Yuga. Full explainer: <a href="yuga.html">what is a Yuga</a>.</dd>
+
+    <dt id="boost" class="entry">Boost factor</dt>
+    <dd>A multiplier on a pNode's rewards. It combines your purchase-era boost with up to two NFT boosts, which multiply together (for example 1.2&times; &times; 1.5&times; = 1.8&times;). No NFT means 1.0&times;.</dd>
+
+    <dt id="xfdp" class="entry">XFDP <span class="alt">Xandeum Foundation Delegation Program</span></dt>
+    <dd>On qualifying nodes, the Foundation can match eligible community delegation 1:1, adding backing stake to your node. It increases backing; it is not a guarantee of doubled rewards.</dd>
+
+    <dt id="xandsol" class="entry">xandSOL</dt>
+    <dd>Xandeum's liquid staking token, letting holders stake while keeping a tradable, liquid position.</dd>
+
+    <dt id="xand" class="entry">XAND</dt>
+    <dd>Xandeum's token on Solana, used for staking to pNodes and governance. Mint: <code style="font-size:12px;color:#cfe0ff">XANDuUoVoUqniKkpcKhrxmvYJybpJvUxJLr21Gaj3Hx</code>.</dd>
+  </dl>
+
+  <div style="margin-top:24px">
+    <a class="btn" href="/">See the live network &rarr;</a>
+    <a class="btn ghost" href="run-a-pnode.html">Run a pNode</a>
+  </div>
+
+  <div class="src">
+    Sources: <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot;
+    <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">STOINC</a>.
+    <br><br>An independent glossary by Pulsar Network, a community operator. Not official Xandeum documentation; terms evolve as the network does.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+</body>
+</html>
