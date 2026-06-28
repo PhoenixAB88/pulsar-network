@@ -142,7 +142,7 @@
 
   <div class="banner">
     <span>&#9888;&#65039;</span>
-    <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's contribution weight and the relative "what-if" figures are exact. Two values are <b>scenarios you set</b>, not live measurements: the wSOL pool per Yuga and the network's total weight, because neither is known until a Yuga closes. Absolute earnings scale with those two. Live network totals are on our roadmap.</span>
+    <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's weight and the "what-if" figures are exact, and the <b>network total is now live</b> (computed from real per-node storage, stake and uptime). One value is still a <b>scenario you set</b>: the wSOL pool per Yuga, which isn't known until a Yuga closes. Per-node boost isn't public either, so the live total is boost-agnostic.</span>
   </div>
 
   <div class="livebar" id="livebar">
@@ -217,19 +217,19 @@
         </div>
       </fieldset>
 
+      <div class="field">
+        <label for="net">Network total weight <span id="netLive" style="color:var(--good);font-weight:600;font-size:12px"></span></label>
+        <input type="number" id="net" min="0" step="1e9" value="500000000000">
+        <span class="hint">&Sigma;(storage &times; performance &times; stake) across the network, computed <b style="color:var(--good)">live</b> from per-node data. Per-node boost isn't public, so this is boost-agnostic; edit to explore.</span>
+      </div>
       <div class="scenario">
         <fieldset>
-          <legend>Network scenario &middot; you set these</legend>
+          <legend>Network scenario &middot; you set this</legend>
           <div class="field">
             <label for="pool">STOINC pool this Yuga (wSOL)</label>
             <input type="number" id="pool" min="0" step="1" value="50">
             <div class="presets"><button type="button" data-pool="10">Low 10</button><button type="button" data-pool="50">Mid 50</button><button type="button" data-pool="200">High 200</button></div>
             <span class="hint">Illustrative. The real pool isn't known until the Yuga closes.</span>
-          </div>
-          <div class="field">
-            <label for="net">Estimated network total weight</label>
-            <input type="number" id="net" min="0" step="1e9" value="500000000000">
-            <span class="hint">Sum of storage&times;performance&times;stake&times;boost across all online nodes. An estimate until we wire it live.</span>
           </div>
         </fieldset>
       </div>
@@ -278,7 +278,7 @@
     <details open><summary>How are rewards calculated?</summary><p>Each pNode earns a share of the per-Yuga STOINC pool based on its <strong>contribution weight = storage &times; performance score &times; active stake &times; boost factor</strong>. Your share is your weight divided by the total network weight. <strong>90%</strong> of the wSOL pool each Yuga goes to operators, 5% to Xandeum Platform Corporation and 5% to the Foundation.</p></details>
     <details><summary>What is STOINC and a Yuga?</summary><p>STOINC (Storage Income) turns real storage activity into wSOL fee pools for operators. It settles once per <a href="yuga.html">Yuga</a>, roughly every 2.8 days. So a year holds about 130 Yugas.</p></details>
     <details><summary>What is the boost factor?</summary><p>A multiplier on your weight. It combines your purchase-era boost with up to two NFT boosts that multiply together. A 1.2&times; and a 1.5&times; NFT give a 1.8&times; NFT boost; multiply that by your era boost for the total.</p></details>
-    <details><summary>Why are two inputs "scenarios"?</summary><p>The exact wSOL pool and the network's total weight aren't known until a Yuga closes, so no calculator can measure them in advance. We compute your node's weight and all relative effects exactly, and let you set those two to explore ranges. We will wire live network totals as we decode the on-chain STOINC data.</p></details>
+    <details><summary>What's live vs a scenario?</summary><p>The <b>network total weight is live</b> now: we sum storage &times; performance &times; stake across every node from self-sourced per-node data (the same feed that powers the dashboard's Storage column). The only remaining scenario is the <b>wSOL pool per Yuga</b>, which isn't known until a Yuga closes. Per-node boost factors aren't public, so the live total is boost-agnostic; your own boost still multiplies your share.</p></details>
   </section>
 
   <div class="src">
@@ -291,11 +291,13 @@
 
 <footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
 
+<script src="net_storage_mainnet.js"></script>
+<script src="node_storage_mainnet.js"></script>
 <script src="stake_data.js"></script>
 <script>
 (function(){
   var YPM=30.4375/2.8, YPY=365.25/2.8, OPPOOL=0.90, CAP=1e7;
-  var SOLUSD=null, XANDUSD=null;
+  var SOLUSD=null, XANDUSD=null, netFromUrl=false;
   var ids=['storage','unit','perf','stake','deleg','match','era','nft1','nft2','comm','cost','pool','net'];
   function g(id){return document.getElementById(id);}
   function n(id){return parseFloat(g(id).value)||0;}
@@ -374,6 +376,7 @@
     location.hash.slice(1).split('&').forEach(function(kv){
       var p=kv.split('='),id=p[0],v=decodeURIComponent(p[1]||'');
       if(ids.indexOf(id)<0)return;var el=g(id);if(!el)return;
+      if(id==='net')netFromUrl=true;
       if(el.type==='checkbox')el.checked=(v==='1'||v==='true');else el.value=v;
     });
   }
@@ -406,6 +409,17 @@
       var a=(j&&j.pods_credits)||[];
       var active=a.filter(function(x){return (x.credits||0)>0;}).length;
       if(a.length){g('lvNodes').textContent=a.length;g('lvActive').textContent=active;g('lvUpd').textContent='live';}
+      // Live network denominator: sum(storageGB * performance * stake) across all nodes, self-sourced.
+      try{
+        var creds={},max=0;a.forEach(function(x){if(x.pod_id){creds[x.pod_id]=x.credits||0;if(x.credits>max)max=x.credits;}});
+        var CXm=(window.CX&&window.CX.mainnet)||{}, ST=window.STAKE||{}, W=0, cnt=0;
+        Object.keys(CXm).forEach(function(pk){
+          var stoGB=(CXm[pk].storage||0)/1e9, perf=max>0?(creds[pk]||0)/max:0, stk=ST[pk]?ST[pk].stake:0, w=stoGB*perf*stk;
+          if(w>0){W+=w;cnt++;}
+        });
+        var nl=g('netLive');
+        if(W>0){ if(!netFromUrl)g('net').value=Math.round(W); if(nl)nl.textContent='· live ('+cnt+' nodes)'; render(); }
+      }catch(e){}
     })
     .catch(function(){});
 })();

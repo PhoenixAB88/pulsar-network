@@ -51,7 +51,7 @@
   h2{font-size:20px;font-weight:600;margin:36px 0 12px}
   p{color:var(--mut);margin:0 0 16px}
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:24px 0 6px}
-  @media(min-width:620px){.grid{grid-template-columns:repeat(4,1fr)}}
+  @media(min-width:620px){.grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
   .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px}
   .stat .k{font-size:12px;color:var(--mut2);letter-spacing:.03em;text-transform:uppercase}
   .stat .v{font-size:clamp(26px,4vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:6px;line-height:1}
@@ -102,6 +102,7 @@
     <div class="stat"><div class="k">Active now</div><div class="v good" id="sActive">&mdash;</div><div class="s">reporting recently</div></div>
     <div class="stat"><div class="k">XAND staked</div><div class="v" id="sStake">&mdash;</div><div class="s">across all nodes</div></div>
     <div class="stat"><div class="k">Current Yuga</div><div class="v" id="sYuga">&mdash;</div><div class="s">~2.8 days each</div></div>
+    <div class="stat"><div class="k">Network storage</div><div class="v" id="sStorage" style="color:var(--teal)">&mdash;</div><div class="s" id="sStorageSub">committed</div></div>
   </div>
   <div class="upd" id="sUpd"></div>
 
@@ -111,9 +112,9 @@
   </div>
 
   <h2>About these numbers</h2>
-  <p><strong>pNodes</strong> and <strong>active now</strong> come from Xandeum's official mainnet credits feed; a node counts as active if it has reported recently. <strong>XAND staked</strong> and the <strong>current Yuga</strong> are decoded straight from the on-chain staking program on Solana. For the full node-by-node view (uptime, health, location, per-node stake and storage), open the <a href="/">live dashboard</a>.</p>
+  <p><strong>pNodes</strong> and <strong>active now</strong> come from Xandeum's official mainnet credits feed; a node counts as active if it has reported recently. <strong>XAND staked</strong> and the <strong>current Yuga</strong> are decoded straight from the on-chain staking program on Solana. <strong>Network storage</strong> is summed live from each pNode's gossip-reported committed storage. For the full node-by-node view (uptime, health, location, per-node stake and storage), open the <a href="/">live dashboard</a>.</p>
   <div class="card">
-    <p style="margin:0">Note on network-wide storage: most pNodes keep their stats port private, so a complete, real-time storage total for the whole network is not yet publicly available (it lives in Xandeum's Atlas service). We show the metrics that are fully verifiable on-chain or from the official feed, and avoid guessing the rest.</p>
+    <p style="margin:0"><strong>Network storage</strong> is the total capacity committed across every pNode, read live from the network's gossip layer (each node reports its committed and used storage). <strong>Used is near zero</strong> today because the network's storage is only just starting to be consumed, which is also why STOINC payouts are still small.</p>
   </div>
 
   <h2>FAQ</h2>
@@ -130,14 +131,17 @@
 
 <footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
 
+<script src="net_storage_mainnet.js"></script>
 <script src="stake_data.js"></script>
 <script>
 (function(){
   function g(id){return document.getElementById(id);}
   function fmt(x){return (x==null||!isFinite(x))?'—':Math.round(x).toLocaleString('en-US');}
+  function fmtBytes(b){if(b==null)return '—';var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
   try{
     if(typeof window.CUR_YUGA!=='undefined'&&window.CUR_YUGA)g('sYuga').textContent=window.CUR_YUGA;
     if(typeof window.STAKE_TOTAL!=='undefined'&&window.STAKE_TOTAL)g('sStake').textContent=fmt(window.STAKE_TOTAL);
+    if(window.__NS&&window.__NS.mainnet&&window.__NS.mainnet.committed){var S=window.__NS.mainnet;g('sStorage').textContent=fmtBytes(S.committed);g('sStorageSub').textContent=fmtBytes(S.used||0)+' used';}
   }catch(e){}
   fetch('https://podcredits.xandeum.network/api/mainnet-pod-credits')
     .then(function(r){return r.json();})
