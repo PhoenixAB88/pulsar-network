@@ -816,9 +816,7 @@
     const _hc=document.getElementById('heroChips'); if(_hc)_hc.innerHTML=pods.length?`<div class="chip"><span class="dotpulse"></span><div><b>${fmt(pods.length)}</b><small>pNodes in gossip</small></div></div>`:'';
 
     document.getElementById('statCards').innerHTML=`
-      <div class="stat"><div class="k">pNodes in gossip</div><div class="v">${fmt(pods.length)}</div></div>
-      <div class="stat"><div class="k">Online</div><div class="v" style="color:var(--good)">${fmt(online)}</div></div>
-      <div class="stat"><div class="k">Stale (&gt;15m)</div><div class="v" style="color:${pods.length-online?'var(--warn)':'var(--good)'}">${fmt(pods.length-online)}</div></div>
+      <div class="stat"><div class="k">pNodes online</div><div class="v"><span style="color:var(--good)">${fmt(online)}</span><span style="color:var(--mut2);font-weight:500;font-size:.66em"> / ${fmt(pods.length)}</span></div>${pods.length-online>0?`<div style="font-size:12px;color:var(--warn);margin-top:3px">${fmt(pods.length-online)} stale &gt;15m</div>`:''}</div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
       <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
       ${(function(){const hv=pods.map(p=>healthOf(p.pubkey,active)).filter(x=>x!=null);if(!hv.length)return '';const a=Math.round(hv.reduce((x,y)=>x+y,0)/hv.length);const c=a>=90?'var(--good)':a>=75?'var(--teal)':'var(--warn)';return '<div class="stat"><div class="k">Avg health</div><div class="v" style="color:'+c+'" title="Mean composite health across '+hv.length+' nodes">'+a+'</div></div>';})()}
