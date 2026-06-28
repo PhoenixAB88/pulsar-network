@@ -261,6 +261,10 @@
   @keyframes ledblink{0%,49.9%{opacity:1}50%,100%{opacity:.1}}
   @media(prefers-reduced-motion:reduce){.buy-top .led{animation:none}}
   @media(max-width:560px){.nav .right .stake-top,.nav .right .buy-top{display:none}}
+  .nav .right .calc-top{background:rgba(70,230,239,.12);border:1px solid rgba(70,230,239,.5);color:#bfeff4;font-weight:600;box-shadow:0 0 14px -6px rgba(70,230,239,.6)}
+  .nav .right .calc-top:hover{background:rgba(70,230,239,.2);border-color:rgba(70,230,239,.8)}
+  .calc-top .ct-label{margin-left:6px}
+  @media(max-width:560px){.calc-top .ct-label{display:none}.nav .right .calc-top{padding:9px 11px;font-size:16px}}
   @media(max-width:480px){
     .nav{gap:10px}.nav .right{gap:8px}
     section{padding:44px 0}
@@ -415,7 +419,7 @@
       <span class="name"><b>PULSAR</b><span>NETWORK</span></span>
     </a>
     <nav class="links">
-      <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="calculator.html">Calculator</a><a href="run-a-pnode.html">Run a node</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+      <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="run-a-pnode.html">Run a node</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
       <div class="navsearch" id="navSearch">
@@ -427,6 +431,7 @@
         <button data-net="devnet" role="tab" aria-selected="false" aria-controls="network" tabindex="-1">Devnet</button>
         <button data-net="mainnet" class="on" role="tab" aria-selected="true" aria-controls="network" tabindex="0">Mainnet</button>
       </div>
+      <a class="btn calc-top" href="calculator.html" title="pNode rewards calculator">🧮<span class="ct-label">Calculator</span></a>
       <button class="btn ghost buy-top" type="button" onclick="openSwap()" title="Buy or trade XAND"><span class="led" aria-hidden="true"></span>Buy XAND</button>
       <a class="btn primary stake-top" href="https://xand-staking.xandeum.network/" target="_blank" rel="noopener">Stake ↗</a>
       <a class="btn ghost xhide" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X</a>
@@ -435,7 +440,7 @@
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="calculator.html">Calculator</a><a href="run-a-pnode.html">Run a node</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+  <a href="#network">Network</a><a href="#why">Why storage</a><a href="#stake">Stake</a><a href="run-a-pnode.html">Run a node</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
   <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X ↗</a>
 </div>
 
