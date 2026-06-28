@@ -49,6 +49,12 @@
   p{color:var(--mut);margin:0 0 16px}
   .banner{display:flex;gap:12px;background:rgba(247,169,59,.08);border:1px solid rgba(247,169,59,.3);border-radius:var(--r-lg);padding:14px 16px;margin:20px 0 6px;font-size:14px;color:var(--mut)}
   .banner b{color:var(--ink)}
+  .livebar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 14px;margin:14px 0 6px;font-size:13px;color:var(--mut)}
+  .livebar b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:lvp 1.8s ease-in-out infinite}
+  @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
+  .lv-upd{color:var(--mut2);font-size:12px;margin-left:auto}
+  @media (prefers-reduced-motion:reduce){.live-dot{animation:none}}
   .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:24px;align-items:start}
   @media(max-width:840px){.grid{grid-template-columns:1fr}}
   .panel{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px 22px}
@@ -137,6 +143,16 @@
   <div class="banner">
     <span>&#9888;&#65039;</span>
     <span><b>These are formula-based estimates</b>, in Xandeum's own words. Your node's contribution weight and the relative "what-if" figures are exact. Two values are <b>scenarios you set</b>, not live measurements: the wSOL pool per Yuga and the network's total weight, because neither is known until a Yuga closes. Absolute earnings scale with those two. Live network totals are on our roadmap.</span>
+  </div>
+
+  <div class="livebar" id="livebar">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span>Live network:</span>
+    <span><b id="lvNodes">&mdash;</b> pNodes</span>
+    <span><b id="lvActive">&mdash;</b> active now</span>
+    <span>Yuga <b id="lvYuga">&mdash;</b></span>
+    <span><b id="lvStake">&mdash;</b> XAND staked</span>
+    <span class="lv-upd" id="lvUpd"></span>
   </div>
 
   <div class="grid">
@@ -275,6 +291,7 @@
 
 <footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
 
+<script src="stake_data.js"></script>
 <script>
 (function(){
   var YPM=30.4375/2.8, YPY=365.25/2.8, OPPOOL=0.90, CAP=1e7;
@@ -369,11 +386,27 @@
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(ok,ok);}else ok();
   });
 
+  function fillLive(){
+    try{
+      if(typeof window.CUR_YUGA!=='undefined'&&window.CUR_YUGA)g('lvYuga').textContent=window.CUR_YUGA;
+      if(typeof window.STAKE_TOTAL!=='undefined'&&window.STAKE_TOTAL)g('lvStake').textContent=fmt(window.STAKE_TOTAL,0);
+    }catch(e){}
+  }
+
   loadURL();
   render();
+  fillLive();
   fetch('https://api.coingecko.com/api/v3/simple/price?ids=xandeum,solana&vs_currencies=usd')
     .then(function(r){return r.json();})
     .then(function(j){if(j&&j.solana)SOLUSD=j.solana.usd;if(j&&j.xandeum)XANDUSD=j.xandeum.usd;render();})
+    .catch(function(){});
+  fetch('https://podcredits.xandeum.network/api/mainnet-pod-credits')
+    .then(function(r){return r.json();})
+    .then(function(j){
+      var a=(j&&j.pods_credits)||[];
+      var active=a.filter(function(x){return (x.credits||0)>0;}).length;
+      if(a.length){g('lvNodes').textContent=a.length;g('lvActive').textContent=active;g('lvUpd').textContent='live';}
+    })
     .catch(function(){});
 })();
 </script>
