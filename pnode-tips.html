@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum pNode Tips &amp; Troubleshooting: Real Operator Gotchas | Pulsar</title>
+<meta name="description" content="Hard-won tips and fixes for running a Xandeum pNode: backing up your identity key, updating without breaking it, keeping pRPC private, self-monitoring, ports and security. From operators running a fleet of 12.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/pnode-tips.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum pNode Tips &amp; Troubleshooting: Real Operator Gotchas">
+<meta property="og:description" content="A living troubleshooting hub for Xandeum pNode operators: key backups, updates, pRPC, ports, security and monitoring, from real fleet experience.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/pnode-tips.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Xandeum pNode tips and troubleshooting">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum pNode Tips &amp; Troubleshooting">
+<meta name="twitter:description" content="Real operator gotchas and fixes for running a Xandeum pNode.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:44px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,42px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:44px 0 4px;padding-top:8px}
+  h3{font-size:17px;font-weight:600;margin:26px 0 6px;scroll-margin-top:20px}
+  h3 .num{color:var(--teal);font-weight:600;margin-right:8px}
+  h3 a.anchor{color:var(--mut2);font-weight:400;font-size:14px;margin-left:8px;opacity:0;text-decoration:none}
+  h3:hover a.anchor{opacity:1}
+  p{color:var(--mut);margin:0 0 14px}
+  .lead{font-size:18px;color:var(--ink)}
+  ul{color:var(--mut);padding-left:22px;margin:0 0 14px}li{margin:6px 0}
+  strong{color:var(--ink)}
+  code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#d6e4f7}
+  pre{background:#0c1830;border:1px solid var(--hairline);border-radius:var(--r-lg);padding:14px 16px;overflow-x:auto;margin:12px 0;font-size:13px;line-height:1.6}
+  pre code{background:none;border:0;padding:0;color:#cfe0f5;white-space:pre}
+  .toc{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:16px 20px;margin:24px 0}
+  .toc b{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut2)}
+  .toc ol{margin:10px 0 0;columns:2;column-gap:24px;padding-left:20px;color:var(--mut)}
+  .toc li{margin:5px 0}
+  .card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin:20px 0}
+  .warnbox{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.3)}
+  .warnbox b{color:var(--orange)}
+  .keybox{background:rgba(70,230,239,.06);border:1px solid rgba(70,230,239,.28)}
+  .keybox b{color:var(--teal)}
+  .why{font-size:14px;color:var(--mut2);border-left:2px solid var(--hairline-2);padding-left:12px;margin:8px 0 14px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin:6px 8px 6px 0}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--hairline-2)}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Xandeum pNode Tips & Troubleshooting: Real Operator Gotchas","description":"Hard-won tips and fixes for running a Xandeum pNode: key backups, updates, pRPC, ports, security and monitoring, from operators running a fleet of 12.","image":"https://pulsarnetwork.xyz/og-image.png","author":{"@type":"Organization","name":"Pulsar Network"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"mainEntityOfPage":"https://pulsarnetwork.xyz/pnode-tips.html"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"pNode Tips & Troubleshooting","item":"https://pulsarnetwork.xyz/pnode-tips.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How do I back up my Xandeum pNode identity key?","acceptedAnswer":{"@type":"Answer","text":"Your pNode keypair lives at /local/keypairs/pnode-keypair.json. It is the only thing tying your node's earnings and standing to you, so copy it to a safe off-server place (a USB stick, password manager, or encrypted backup) before doing anything else, and certainly before any update. If you lose this file you lose the node permanently; it cannot be regenerated to the same identity."}},
+{"@type":"Question","name":"I ran the pNode updater but the version didn't change. Why?","acceptedAnswer":{"@type":"Answer","text":"If you pinned the package with 'apt-mark hold pod' to control versions, apt keeps the held package, so the installer's upgrade option looks like it worked but 'pod --version' stays old. Unhold first: run 'apt-mark unhold pod', then the installer, then 'apt-mark hold pod' again."}},
+{"@type":"Question","name":"How do I update a Xandeum pNode without losing my identity?","acceptedAnswer":{"@type":"Answer","text":"Use the installer's non-interactive update with the --default-keypair flag so it reuses your existing key instead of generating a new one. Generating a new keypair gives the node a new identity and detaches your stake and standing. After every update, verify your public key is unchanged against your own records."}},
+{"@type":"Question","name":"Should my pNode pRPC be public or private?","acceptedAnswer":{"@type":"Answer","text":"Private. The installer's example command hardcodes --prpc-mode public (binding pRPC to 0.0.0.0, exposed to the internet), which is easy to copy by accident. Set --prpc-mode private so pRPC binds to 127.0.0.1, and verify with: systemctl cat pod.service | grep -- --rpc-ip"}},
+{"@type":"Question","name":"Why doesn't my node appear in its own get-pods response?","acceptedAnswer":{"@type":"Answer","text":"A node omits itself from its own get-pods roster, so querying get-pods on your own node will not show your node. That is expected. Confirm your node is gossiping by checking it from another node or on the official pNodes portal."}},
+{"@type":"Question","name":"My pNode storage shows almost no usage. Is something wrong?","acceptedAnswer":{"@type":"Answer","text":"No. You commit storage (Dedicate and Earn) but on an early network usage stays near zero, so STOINC rewards are near zero too. That is normal supply-ahead-of-demand behaviour, not a misconfiguration. Just confirm storage is actually dedicated."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Operator knowledge base</span>
+  <h1>Xandeum pNode tips &amp; troubleshooting</h1>
+  <p class="lead">Running a Xandeum pNode is mostly smooth, but a handful of gotchas can cost you real time (or your node). These are the hard-won fixes we hit while running a fleet of 12 pNodes, written down so you do not have to learn them the hard way. Each tip has its own link, so you can share a direct answer to anyone's question.</p>
+
+  <div class="card keybox">
+    <p style="margin:0"><b>This is a living page.</b> Hit a problem that is not here, or have a better fix? Tell us on <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">X</a> or via <a href="/#community">our community links</a> and we will add it, then send you the direct link to the answer.</p>
+  </div>
+
+  <div class="toc">
+    <b>Jump to a fix</b>
+    <ol>
+      <li><a href="#backup-keys">Back up your identity key</a></li>
+      <li><a href="#held-update">Update did nothing (held package)</a></li>
+      <li><a href="#preserve-identity">Keep your identity on update</a></li>
+      <li><a href="#prpc-private">Keep pRPC private</a></li>
+      <li><a href="#verify">Verify after every change</a></li>
+      <li><a href="#self-omit">Node missing from get-pods</a></li>
+      <li><a href="#self-monitor">Self-monitor with pRPC</a></li>
+      <li><a href="#dont-mix">Don't mix devnet &amp; mainnet</a></li>
+      <li><a href="#storage-usage">Storage shows ~0% used</a></li>
+      <li><a href="#ports-security">Ports, SSH &amp; security</a></li>
+      <li><a href="#gui-tunnel">Reach the GUI safely</a></li>
+    </ol>
+  </div>
+
+  <h2>Setup &amp; identity</h2>
+
+  <h3 id="backup-keys"><span class="num">1.</span>Back up your identity key before anything else <a class="anchor" href="#backup-keys">#</a></h3>
+  <p>Your pNode's keypair lives at <code>/local/keypairs/pnode-keypair.json</code>. This file <strong>is</strong> your node's identity, it ties every reward and your standing to you. Copy it somewhere safe and off the server (a USB stick, a password manager, an encrypted backup) the moment the node is up, and again before any update.</p>
+  <div class="why">Real story from the operator community: someone changed laptops, never copied this file, and the old laptop got recycled. The key was gone for good, and so was the node's identity. There is no way to regenerate the same key.</div>
+
+  <h3 id="prpc-private"><span class="num">2.</span>Keep your pRPC private, not public <a class="anchor" href="#prpc-private">#</a></h3>
+  <p>The installer's <em>example</em> command hardcodes <code>--prpc-mode public</code> (which binds pRPC to <code>0.0.0.0</code> and exposes it to the open internet). It is very easy to copy that example by accident and quietly run your node with a public pRPC. Run it private instead:</p>
+  <pre><code>bash install.sh --non-interactive --update --default-keypair \
+  --prpc-mode private --atlas-cluster devnet --operator-revenue 1000</code></pre>
+  <p>Then confirm it is bound to localhost:</p>
+  <pre><code>systemctl cat pod.service | grep -- '--rpc-ip'
+# you want: --rpc-ip 127.0.0.1</code></pre>
+
+  <h2>Updating without breaking things</h2>
+
+  <h3 id="held-update"><span class="num">3.</span>Your update "worked" but the version didn't change <a class="anchor" href="#held-update">#</a></h3>
+  <p>If you pinned the pod package with <code>apt-mark hold pod</code> (a good way to control when you upgrade), the installer's "upgrade / accept defaults" path will look like it succeeded, but <code>pod --version</code> stays on the old version, because apt is keeping the held package. You have to unhold first:</p>
+  <pre><code>apt-mark unhold pod
+wget -O install.sh "https://raw.githubusercontent.com/xandeum/xandminer-installer/refs/heads/master/install.sh" && chmod +x install.sh
+bash install.sh --non-interactive --update --default-keypair --prpc-mode private --atlas-cluster devnet --operator-revenue 1000
+apt-mark hold pod</code></pre>
+  <div class="why">Use <code>--atlas-cluster mainnet-alpha</code> instead of <code>devnet</code> for a mainnet node. This silent no-op is the single most confusing pNode update gotcha.</div>
+
+  <h3 id="preserve-identity"><span class="num">4.</span>Don't let an update regenerate your key <a class="anchor" href="#preserve-identity">#</a></h3>
+  <p>The installer can offer to "generate a new keypair." If you say yes, your node gets a <strong>new identity</strong> and your existing stake and standing detach from it. Always update with <code>--default-keypair</code> (it reuses the key you already have), and after the update, check that your public key is unchanged against your own records.</p>
+
+  <h3 id="verify"><span class="num">5.</span>Verify after every change <a class="anchor" href="#verify">#</a></h3>
+  <p>Updates touch the install, so it pays to run a quick checklist afterwards rather than assuming it worked:</p>
+  <pre><code>pod --version                                              # right version?
+systemctl cat pod.service | grep -oE -- '--(devnet|mainnet-alpha)|--rpc-ip [0-9.]+'  # right cluster + private?
+systemctl is-active pod.service                            # active?</code></pre>
+  <ul>
+    <li>Public key <strong>unchanged</strong> vs your records.</li>
+    <li>Node is gossiping (it shows on the official <a href="https://pnodes.xandeum.network" target="_blank" rel="noopener">pNodes portal</a>) and storage is still dedicated.</li>
+  </ul>
+
+  <h2>Monitoring &amp; data</h2>
+
+  <h3 id="self-omit"><span class="num">6.</span>Your node is "missing" from get-pods <a class="anchor" href="#self-omit">#</a></h3>
+  <p>A node <strong>omits itself</strong> from its own <code>get-pods</code> roster. So if you query <code>get-pods</code> on your own machine and don't see your node, that is expected, not a fault. Confirm it is gossiping by checking from another node or on the portal.</p>
+
+  <h3 id="self-monitor"><span class="num">7.</span>You can self-monitor over pRPC (no third party needed) <a class="anchor" href="#self-monitor">#</a></h3>
+  <p>Your own node will answer pRPC calls on localhost. The most useful method is <code>get-pods-with-stats</code>, which returns the full gossip roster <strong>with per-node storage</strong> (committed and used), uptime and version. It works on both devnet and mainnet pods:</p>
+  <pre><code>curl -s -X POST http://127.0.0.1:6000/rpc \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"get-pods-with-stats","id":1}' | jq</code></pre>
+  <div class="why">Other methods: <code>get-pods</code> (roster) and <code>get-stats</code>. This is how you build your own monitoring without depending on anyone else's infrastructure, it is exactly what powers our live network numbers.</div>
+
+  <h3 id="dont-mix"><span class="num">8.</span>Don't mix devnet and mainnet builds <a class="anchor" href="#dont-mix">#</a></h3>
+  <p>Devnet and mainnet run on different pod versions and clusters. Pin your mainnet node's version with <code>apt-mark hold pod</code> and never push a devnet build onto a mainnet node (or vice versa). After any update, double-check the cluster flag (<code>--devnet</code> or <code>--mainnet-alpha</code>) so a node didn't quietly switch sides.</p>
+
+  <h2>Storage &amp; rewards</h2>
+
+  <h3 id="storage-usage"><span class="num">9.</span>Storage shows almost no usage, and that's fine <a class="anchor" href="#storage-usage">#</a></h3>
+  <p>You commit storage with the <strong>"Dedicate and Earn"</strong> button, but on an early network the <em>used</em> portion stays near zero, so STOINC payouts are near zero too. That is normal supply-ahead-of-demand behaviour, not a misconfiguration. Just make sure storage is actually dedicated. To see what rewards could look like as usage grows, try our <a href="calculator.html">rewards calculator</a>.</p>
+
+  <h2>Networking &amp; security</h2>
+
+  <h3 id="ports-security"><span class="num">10.</span>Open only the ports you need, and lock down SSH <a class="anchor" href="#ports-security">#</a></h3>
+  <p>A pNode uses a small, known set of ports (per the docs): <strong>TCP 6000</strong> (pRPC) and <strong>7000</strong> (ingest); <strong>UDP 5000</strong>, <strong>7001</strong>, <strong>7002</strong>, <strong>9001</strong> (gossip / atlas). Run a default-deny firewall that allows only those plus SSH, use <strong>key-only SSH</strong> (disable password login), and add <strong>fail2ban</strong>.</p>
+  <div class="why">A weak SSH password is how nodes get owned. In our experience the one box left on a password login got hit by a crypto-miner, while the key-only, firewalled boxes were untouched. Harden first, not after.</div>
+
+  <h3 id="gui-tunnel"><span class="num">11.</span>Reach the GUI safely (don't expose 3000/4000) <a class="anchor" href="#gui-tunnel">#</a></h3>
+  <p>The xandminer GUI (port <code>3000</code>) and its API (port <code>4000</code>) should not be open to the internet. Keep them closed at the firewall and reach them over an SSH tunnel instead:</p>
+  <pre><code>ssh -i &lt;your-key&gt; -L 3000:localhost:3000 -L 4000:localhost:4000 root@&lt;your-node&gt; -N
+# then open http://localhost:3000 in your browser</code></pre>
+
+  <div class="card" style="margin-top:30px">
+    <p style="margin:0 0 6px"><b>New to running a node?</b></p>
+    <p style="margin:0">Start with our step-by-step <a href="run-a-pnode.html">guide to running a Xandeum pNode</a>, then come back here when you hit a snag. Want to know what a node earns? See the <a href="calculator.html">rewards calculator</a>.</p>
+  </div>
+
+  <div style="margin-top:22px">
+    <a class="btn" href="run-a-pnode.html">Run a pNode &rarr;</a>
+    <a class="btn ghost" href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Ask us a question</a>
+  </div>
+
+  <div class="src">
+    Written from real experience running a fleet of 12 Xandeum pNodes, cross-checked against the official
+    <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum docs</a>. Flags and paths reflect pod 1.4.x; always confirm against the current docs and installer. An independent community resource by Pulsar Network, not affiliated with or endorsed by the Xandeum Foundation. Not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+</body>
+</html>
