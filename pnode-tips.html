@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
 <title>Xandeum pNode Tips &amp; Troubleshooting: Real Operator Gotchas | Pulsar</title>
-<meta name="description" content="Hard-won tips and fixes for running a Xandeum pNode: backing up your identity key, updating without breaking it, keeping pRPC private, self-monitoring, ports and security. From operators running a fleet of 12.">
+<meta name="description" content="Hard-won tips and fixes for running a Xandeum pNode: backing up your identity key, updating without breaking it, keeping pRPC private, dedicating storage, claiming rewards, portal RPC issues, self-monitoring, ports and security. From operators running a fleet of 12.">
 <link rel="canonical" href="https://pulsarnetwork.xyz/pnode-tips.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Pulsar Network">
@@ -85,7 +85,13 @@
 {"@type":"Question","name":"How do I update a Xandeum pNode without losing my identity?","acceptedAnswer":{"@type":"Answer","text":"Use the installer's non-interactive update with the --default-keypair flag so it reuses your existing key instead of generating a new one. Generating a new keypair gives the node a new identity and detaches your stake and standing. After every update, verify your public key is unchanged against your own records."}},
 {"@type":"Question","name":"Should my pNode pRPC be public or private?","acceptedAnswer":{"@type":"Answer","text":"Private. The installer's example command hardcodes --prpc-mode public (binding pRPC to 0.0.0.0, exposed to the internet), which is easy to copy by accident. Set --prpc-mode private so pRPC binds to 127.0.0.1, and verify with: systemctl cat pod.service | grep -- --rpc-ip"}},
 {"@type":"Question","name":"Why doesn't my node appear in its own get-pods response?","acceptedAnswer":{"@type":"Answer","text":"A node omits itself from its own get-pods roster, so querying get-pods on your own node will not show your node. That is expected. Confirm your node is gossiping by checking it from another node or on the official pNodes portal."}},
-{"@type":"Question","name":"My pNode storage shows almost no usage. Is something wrong?","acceptedAnswer":{"@type":"Answer","text":"No. You commit storage (Dedicate and Earn) but on an early network usage stays near zero, so STOINC rewards are near zero too. That is normal supply-ahead-of-demand behaviour, not a misconfiguration. Just confirm storage is actually dedicated."}}
+{"@type":"Question","name":"My pNode storage shows almost no usage. Is something wrong?","acceptedAnswer":{"@type":"Answer","text":"No. You commit storage (Dedicate and Earn) but on an early network usage stays near zero, so STOINC rewards are near zero too. That is normal supply-ahead-of-demand behaviour, not a misconfiguration. Just confirm storage is actually dedicated."}},
+{"@type":"Question","name":"How do I claim Xandeum pNode rewards, and where are they?","acceptedAnswer":{"@type":"Answer","text":"There are several streams. STOINC (storage income) is paid in wSOL to stakers and claimed on the staking portal under the Claim tab. DAO/merkle pNode rewards are paid in XAND per node and live in the merkle distributor, not the Realms governance page, so they will not appear on the DAO view even though they exist. XFDP is stake the Foundation delegates to eligible pNodes; you qualify with a licensed devnet+mainnet pair, reliable uptime, and update compliance."}},
+{"@type":"Question","name":"How do I dedicate storage on my Xandeum pNode?","acceptedAnswer":{"@type":"Answer","text":"Use the GUI 'Dedicate and Earn' button on port 3000, or POST to the xandminerd API on port 4000 at /drive/dedicate with the space in GB and a path. If you never dedicate storage the node is online but contributes nothing and cannot earn, so re-check it after any rebuild or update."}},
+{"@type":"Question","name":"The Xandeum owner portal won't load my nodes. How do I fix it?","acceptedAnswer":{"@type":"Answer","text":"The portal reads on-chain data through an RPC endpoint and the default RPC is often flaky, so the owner view fails to load. Point the portal at a reliable mainnet RPC (for example a Helius endpoint) instead of the default. It is almost always an RPC problem, not a problem with your node."}},
+{"@type":"Question","name":"Why do I get 'Expected Signer mismatch' when binding a pNode key?","acceptedAnswer":{"@type":"Answer","text":"You are signing from the wrong machine. The action must be signed by the keypair it concerns: to change a devnet key, do it from the devnet node via an SSH tunnel; for a mainnet key, the mainnet node. Match the signer to the node and the error clears."}},
+{"@type":"Question","name":"If I rebuild my Xandeum pNode, do I keep my identity?","acceptedAnswer":{"@type":"Answer","text":"Only if you restore your saved keypair to /local/keypairs/pnode-keypair.json before the pod reinstall. Otherwise the reinstall generates a new identity and you must re-register and re-stake, and rewards already allocated to the old key can be stranded and need admin re-attribution. This is why backing up the key first matters."}},
+{"@type":"Question","name":"How do I know the pNode installer finished?","acceptedAnswer":{"@type":"Answer","text":"It prints completion messages such as 'setup completed successfully', 'upgrade completed successfully', 'xandminerd service running on port 4000', and 'service restart completed'. Then verify the version in the GUI on port 3000 over your SSH tunnel and confirm storage is still dedicated."}}
 ]}
 </script>
 </head>
@@ -118,6 +124,12 @@
       <li><a href="#storage-usage">Storage shows ~0% used</a></li>
       <li><a href="#ports-security">Ports, SSH &amp; security</a></li>
       <li><a href="#gui-tunnel">Reach the GUI safely</a></li>
+      <li><a href="#rewards">Know your reward streams</a></li>
+      <li><a href="#dedicate">Dedicate your storage</a></li>
+      <li><a href="#portal-rpc">Portal won't load (RPC)</a></li>
+      <li><a href="#signer-mismatch">"Expected Signer mismatch"</a></li>
+      <li><a href="#rebuild">Rebuilding? Restore the key</a></li>
+      <li><a href="#install-done">When the installer is done</a></li>
     </ol>
   </div>
 
@@ -188,6 +200,39 @@ systemctl is-active pod.service                            # active?</code></pre
   <p>The xandminer GUI (port <code>3000</code>) and its API (port <code>4000</code>) should not be open to the internet. Keep them closed at the firewall and reach them over an SSH tunnel instead:</p>
   <pre><code>ssh -i &lt;your-key&gt; -L 3000:localhost:3000 -L 4000:localhost:4000 root@&lt;your-node&gt; -N
 # then open http://localhost:3000 in your browser</code></pre>
+
+  <h2>Rewards &amp; claiming</h2>
+
+  <h3 id="rewards"><span class="num">12.</span>Know your reward streams, and where each one lives <a class="anchor" href="#rewards">#</a></h3>
+  <p>A pNode can earn from more than one place, and they show up on different screens, which is where most "where are my rewards?" confusion comes from:</p>
+  <ul>
+    <li><strong>STOINC</strong> (storage income): paid in <strong>wSOL</strong> to stakers (the operator takes a commission). Claim it on the staking portal (<code>xand-staking.xandeum.network</code>) under the <strong>Claim</strong> tab. On an early network it is near zero.</li>
+    <li><strong>DAO / merkle pNode rewards</strong>: paid in <strong>XAND</strong>, per pNode. These live in the <strong>merkle distributor</strong>, not the Realms governance page, so they will <strong>not</strong> show on the DAO / Realms view even though they exist.</li>
+    <li><strong>XFDP (Foundation Delegation Program)</strong>: stake the Foundation delegates to eligible pNodes ("stake follows signal"), usually the biggest lever. You qualify by running a licensed pNode (a devnet + mainnet pair) with reliable uptime over several <a href="yuga.html">Yugas</a> and staying update-compliant.</li>
+  </ul>
+  <div class="why">The classic trap is the DAO / merkle one: the XAND is there, it just isn't on the page people expect to find it.</div>
+
+  <h3 id="dedicate"><span class="num">13.</span>Dedicate your storage, or you earn nothing <a class="anchor" href="#dedicate">#</a></h3>
+  <p>Having the node online is not enough, you have to <strong>commit storage</strong>. Do it from the GUI with the <strong>"Dedicate and Earn"</strong> button (port 3000), or via the xandminerd API on port 4000:</p>
+  <pre><code>curl -s -X POST http://127.0.0.1:4000/drive/dedicate \
+  -H "Content-Type: application/json" -d '{"space":&lt;GB&gt;,"path":"/"}'</code></pre>
+  <p>If you never dedicate, the node runs but contributes zero storage, so it cannot earn. Re-check it after any rebuild or update.</p>
+
+  <h2>Managing your node in the portal</h2>
+
+  <h3 id="portal-rpc"><span class="num">14.</span>The owner portal won't load your nodes? Swap the RPC <a class="anchor" href="#portal-rpc">#</a></h3>
+  <p>The owner / staking portal reads on-chain data through an RPC endpoint, and the <strong>default RPC is flaky</strong>, the <code>/owner</code> view often fails to load or shows nothing. If your nodes or balances won't appear, point the portal at a <strong>reliable mainnet RPC</strong> (a Helius endpoint, for example) instead of the default. It is almost always an RPC problem, not your node.</p>
+
+  <h3 id="signer-mismatch"><span class="num">15.</span>"Expected Signer mismatch" when binding a key <a class="anchor" href="#signer-mismatch">#</a></h3>
+  <p>If you try to bind or change a key in the portal and get <strong>"Expected Signer mismatch,"</strong> you are signing from the wrong machine. The action has to be signed by the keypair it concerns: to change a <strong>devnet</strong> key, do it from (an SSH tunnel to) the <strong>devnet</strong> node; for a <strong>mainnet</strong> key, the <strong>mainnet</strong> node. Match the signer to the node and the error clears.</p>
+
+  <h2>Recovery &amp; install</h2>
+
+  <h3 id="rebuild"><span class="num">16.</span>Rebuilding a node? Restore the key, or it's a new node <a class="anchor" href="#rebuild">#</a></h3>
+  <p>If you ever wipe and rebuild a box (OS reinstall, moving hosts, recovering from a compromise), the pod reinstall <strong>generates a brand-new identity</strong> unless you put your saved keypair back at <code>/local/keypairs/pnode-keypair.json</code> first. A new identity means re-registering and re-staking from scratch, and any rewards already allocated to the old key can get <strong>stranded</strong> (recovering them becomes a support / admin task, not something you can do yourself). This is the real reason <a href="#backup-keys">tip 1</a> matters: restore the key, and the rebuilt node is the same node.</p>
+
+  <h3 id="install-done"><span class="num">17.</span>Know when the installer actually finished <a class="anchor" href="#install-done">#</a></h3>
+  <p>The installer runs for several minutes. It is done when you see messages like <strong>"setup completed successfully,"</strong> <strong>"upgrade completed successfully,"</strong> <strong>"xandminerd service running on port 4000,"</strong> and <strong>"service restart completed."</strong> Then confirm the version in the GUI (port 3000 over your tunnel) and check storage is still dedicated. Don't assume it finished just because the terminal scrolled.</p>
 
   <div class="card" style="margin-top:30px">
     <p style="margin:0 0 6px"><b>New to running a node?</b></p>
