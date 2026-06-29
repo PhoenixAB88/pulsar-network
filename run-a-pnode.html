@@ -106,6 +106,8 @@
   <h1>How to run a Xandeum pNode</h1>
   <p class="lead">A practical, independent walkthrough of setting up a Xandeum <strong>pNode</strong>, the storage node that powers Solana's decentralized storage layer. This complements the <a href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">official setup docs</a>; the tips come from running a fleet of 12 pNodes ourselves.</p>
 
+  <div class="card" style="border-left:3px solid var(--teal);background:rgba(70,230,239,.06)"><strong>Stuck installing, updating, or hosting?</strong> Our growing <a href="pnode-tips.html">pNode tips &amp; troubleshooting</a> hub collects the real gotchas we hit, and how to fix them.</div>
+
   <div class="card">
     <p style="margin:0"><span class="pill">In short</span> &nbsp;Rent a small Ubuntu 24.04 server, run one install command, pick a network, back up your key, dedicate some disk, and register. Running the software is <strong>free</strong>. The only required cost is the server, about $5 to $10 a month.</p>
   </div>
@@ -177,7 +179,7 @@
 
   <h2>Keeping it running</h2>
   <ul>
-    <li><b>Updating:</b> re-run the same installer command and choose <b>option 2 (upgrade)</b>, then confirm versions in the UI.</li>
+    <li><b>Updating:</b> re-run the same installer command and choose <b>option 2 (upgrade)</b>, then confirm versions in the UI. If an update seems to do nothing, the package may be version-pinned, see <a href="pnode-tips.html#held-update">tips</a>.</li>
     <li><b>Monitoring:</b> the web UI on port 3000 shows your node; the live <a href="/">Pulsar dashboard</a> shows the whole network.</li>
     <li><b>Earnings:</b> STOINC settles each <a href="yuga.html">Yuga</a> (~2.8 days), and the large majority of each pool goes to operators and stakers. Estimate yours with the <a href="calculator.html">calculator</a>.</li>
   </ul>
@@ -185,6 +187,7 @@
   <div style="margin-top:22px">
     <a class="btn" href="https://pnodes.xandeum.network/" target="_blank" rel="noopener">Official setup portal &#8599;</a>
     <a class="btn ghost" href="calculator.html">Estimate your rewards &rarr;</a>
+    <a class="btn ghost" href="pnode-tips.html">Tips &amp; fixes &rarr;</a>
   </div>
 
   <h2 style="margin-top:46px">FAQ</h2>
