@@ -50,7 +50,7 @@ ssh -i ~/.ssh/xandeum root@62.171.187.91 'cd /root/pulsar-network && git add -A 
 
 ## pRPC + data sources
 - pRPC: `POST http://<node-ip>:6000/rpc`, methods `get-pods` / `get-stats` / **`get-pods-with-stats`** (HYPHENS). **`get-pods-with-stats` on ANY node (localhost) returns the full gossip roster WITH per-node storage** — works on devnet 1.4.x AND **mainnet 1.3.3 (mainnet DOES serve pRPC**, contrary to the old note). This self-sources network-wide storage; Atlas is NOT needed for it. (Discovered 2026-06-28 from XanDash `/endpoints`.)
-- Official credits API: `https://podcredits.xandeum.network/api/pods-credits` (public, CORS, no CAPTCHA).
+- Official credits API: `https://podcredits.xandeum.network/api/pods-credits` (devnet) / `/api/mainnet-pod-credits` (mainnet). Works **server-side** (cron uses it) but is **NOT CORS-open to the browser** (client `fetch` = "Failed to fetch", verified 2026-06-29). So client-side pages (calculator.html, network-stats.html) must read the **same-origin generated files** (`window.__NS`, `window.CX`, `window.STAKE`, `credits_data.js`), never `fetch()` podcredits directly. CoinGecko's price API *is* CORS-open (fine to fetch client-side).
 - Do NOT depend on ChillXand (competitor; removed).
 
 ## Security

@@ -1,0 +1,12 @@
+{
+  "updated_utc": "2026-06-29T07:07:00Z",
+  "source": "pulsarnetwork.xyz live dashboard",
+  "pnodes_online": 107,
+  "pnodes_online_range": "107-114",
+  "network_staked_xand": "70.12M",
+  "operators": 88,
+  "network_storage_tb": 194.6,
+  "avg_health": 93,
+  "current_yuga": 37,
+  "note": "First milestone-watch baseline (no prior file). No milestone post fired on first run."
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>What Is Xandeum? Decentralized Storage on Solana, Explained | Pulsar</title>
+<meta name="description" content="What is Xandeum? A plain-language guide to the decentralized storage network for blockchains, live today on Solana. How pNodes, XAND staking and the storage layer work, and how Xandeum compares to Filecoin and Arweave.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/what-is-xandeum.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="What Is Xandeum? Decentralized Storage on Solana, Explained">
+<meta property="og:description" content="A plain-language guide to Xandeum: blockchain-agnostic decentralized storage, live on Solana. How pNodes, XAND and the storage layer work.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/what-is-xandeum.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="What is Xandeum, explained">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="What Is Xandeum? Decentralized Storage on Solana, Explained">
+<meta name="twitter:description" content="A plain-language guide to Xandeum, the decentralized storage network live on Solana.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.7 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:44px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,42px);font-weight:600;letter-spacing:-.03em;margin:0 0 16px;line-height:1.1}
+  h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:40px 0 12px}
+  h3{font-size:17px;font-weight:600;margin:24px 0 6px}
+  p{color:var(--mut);margin:0 0 16px}
+  .lead{font-size:18px;color:var(--ink)}
+  ul{color:var(--mut);padding-left:22px;margin:0 0 16px}li{margin:7px 0}
+  .toc{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:16px 20px;margin:24px 0}
+  .toc b{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut2)}
+  .toc ul{margin:10px 0 0;columns:2;column-gap:24px}
+  .toc li{margin:5px 0}
+  .scroll{overflow-x:auto;margin:18px -4px;border:1px solid var(--hairline);border-radius:var(--r-lg)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--hairline);vertical-align:top}
+  thead th{color:var(--ink);font-weight:600;background:var(--surface-1)}
+  tbody th{color:var(--mut2);font-weight:600;font-size:12px;white-space:nowrap}
+  .xa{color:var(--teal);font-weight:600}
+  td b{color:var(--ink)}
+  .card{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px 20px;margin:20px 0}
+  .warnbox{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.3)}
+  .warnbox b{color:var(--orange)}
+  .keybox{background:rgba(70,230,239,.06);border:1px solid rgba(70,230,239,.28)}
+  .keybox b{color:var(--teal)}
+  .pill{display:inline-block;background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:999px;padding:2px 10px;font-size:12px;color:var(--teal)}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14px;padding:10px 18px;border-radius:var(--r-md);margin:6px 8px 6px 0}
+  .btn:hover{text-decoration:none;background:#ffc06b}
+  .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--hairline-2)}
+  .faq h3{margin-top:20px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:18px}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"What Is Xandeum? Decentralized Storage on Solana, Explained","description":"A plain-language guide to Xandeum, the blockchain-agnostic decentralized storage network live on Solana: how pNodes, XAND staking and the storage layer work, and how it compares to Filecoin and Arweave.","image":"https://pulsarnetwork.xyz/og-image.png","author":{"@type":"Organization","name":"Pulsar Network"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"mainEntityOfPage":"https://pulsarnetwork.xyz/what-is-xandeum.html"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"What Is Xandeum?","item":"https://pulsarnetwork.xyz/what-is-xandeum.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is Xandeum?","acceptedAnswer":{"@type":"Answer","text":"Xandeum is a decentralized storage network that gives blockchains affordable, large-scale storage that smart contracts can read and write directly. It is designed to be blockchain-agnostic, and its first and current integration is with Solana. Storage is provided by independent operators who run provider nodes called pNodes."}},
+{"@type":"Question","name":"Is Xandeum only for Solana?","acceptedAnswer":{"@type":"Answer","text":"No. Xandeum is built as a blockchain-agnostic storage layer that can serve any chain. Solana is simply its first and current integration, so today Solana programs are the ones that can use Xandeum storage directly. Support for other chains is part of the long-term design."}},
+{"@type":"Question","name":"What is a Xandeum pNode?","acceptedAnswer":{"@type":"Answer","text":"A pNode (provider node) is a computer run by an independent operator that pledges storage space to the Xandeum network. Anyone with suitable hardware can run one. Each pNode commits an amount of storage and is backed by staked XAND, and operators earn rewards based on the storage they provide, their performance and uptime, and their stake."}},
+{"@type":"Question","name":"What is the XAND token used for?","acceptedAnswer":{"@type":"Answer","text":"XAND is the native token of the Xandeum network. It is used to stake behind pNodes, which helps secure the network and determines an operator's share of the work and rewards, and it is the unit in which the network's storage economy operates. As of 2026 XAND trades only on Raydium, a Solana exchange, and should be treated as a high-risk, early-stage asset."}},
+{"@type":"Question","name":"How is Xandeum different from Filecoin and Arweave?","acceptedAnswer":{"@type":"Answer","text":"Filecoin is a marketplace for cheap, large cold storage and Arweave is pay-once, store-forever permanent storage, but neither lets a smart contract read the stored bytes directly. Xandeum is built for random-access, contract-native storage so programs can read and write fine-grained data live, more like a database the chain can use than a place to park files."}},
+{"@type":"Question","name":"Is Xandeum live, and how big is the network?","acceptedAnswer":{"@type":"Answer","text":"Xandeum reached mainnet in early 2026. As of mid-2026 there are roughly 113 provider nodes live on mainnet with more than 355 TB of storage committed, though almost none of that capacity is used yet. That supply-ahead-of-demand pattern is normal for an early network: capacity is built first and demand follows."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Explainer</span>
+  <h1>What is Xandeum?</h1>
+  <p class="lead">Xandeum is a decentralized storage network that gives blockchains affordable, large-scale storage that smart contracts can read and write directly. It is designed to be blockchain-agnostic, and it is live today through an integration with Solana. This is a plain-language guide to what Xandeum is, how it works, and how it compares to other decentralized storage. No hype.</p>
+
+  <div class="toc">
+    <b>On this page</b>
+    <ul>
+      <li><a href="#problem">The problem it solves</a></li>
+      <li><a href="#how">How Xandeum works</a></li>
+      <li><a href="#pnode">What a pNode is</a></li>
+      <li><a href="#xand">What XAND is for</a></li>
+      <li><a href="#solana">Is it only for Solana?</a></li>
+      <li><a href="#vs">vs Filecoin &amp; Arweave</a></li>
+      <li><a href="#use">What you can build</a></li>
+      <li><a href="#now">Where it stands today</a></li>
+      <li><a href="#involved">How to get involved</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+
+  <h2 id="problem">The problem Xandeum solves</h2>
+  <p>Blockchains are great at storing tiny things, like who owns which token. They are bad at storing big things, like files, because every validator has to keep a copy of everything forever. That makes on-chain storage tiny and expensive by design.</p>
+  <p>So if you build an app on a chain like Solana and want to store real data, think images, documents, user content, game state or AI datasets, you face two poor options today. You can cram it on-chain at very high cost, or you can push it to a normal cloud provider like Amazon S3 and give up the decentralization that brought you to a blockchain in the first place.</p>
+  <p>Xandeum's pitch is a third option: a storage layer that is large, affordable, and still decentralized, that smart contracts can use directly. It is part of a category sometimes called <strong>DePIN</strong> (decentralized physical infrastructure), where ordinary people supply real hardware to a network instead of a single company owning the servers. Xandeum's stated long-term goal is <strong>exabyte-scale</strong> storage. An exabyte is a billion gigabytes.</p>
+
+  <h2 id="how">How does Xandeum work?</h2>
+  <p>At a high level, Xandeum is made of three parts: the operators who supply storage, the token that backs them, and the link that lets a blockchain actually use the storage.</p>
+
+  <h3>1. Provider nodes supply the storage</h3>
+  <p>Storage comes from <strong>pNodes</strong>, provider nodes run by independent operators around the world. Each one pledges disk space to the network. Today there are roughly 113 pNodes live on Xandeum mainnet. Because the hardware is spread across many independent operators in many places, no single company controls the data.</p>
+
+  <h3>2. Storage and stake decide each operator's share</h3>
+  <p>Every pNode commits an amount of storage and is backed by staked <strong>XAND</strong>, the network's token. More committed storage and more stake means a larger share of the work the network hands out, and a larger share of the rewards. Operators are paid through a usage-based reward system Xandeum calls <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">STOINC</a>, which weighs how much storage you provide, your performance and uptime, and your stake.</p>
+
+  <h3>3. The blockchain link makes the storage usable</h3>
+  <p>The piece that makes Xandeum more than "another place to put files" is how it connects to a blockchain. Rather than have every validator store everything, the network reaches consensus only on compact fingerprints of the data (Merkle roots) on a short, roughly 15-second pulse. It then anchors those fingerprints every <a href="yuga.html">Yuga</a> (about 2.8 days) onto Solana, and onward to Bitcoin, so the integrity of the stored data is externally verifiable. The result is that a Solana program can read and write data held by Xandeum at fine granularity, almost like a second tier of accounts, without bloating the chain itself.</p>
+
+  <div class="card keybox">
+    <p style="margin:0 0 6px"><b>In one line</b></p>
+    <p style="margin:0">Xandeum turns a crowd of independent storage operators into something a smart contract can use like a giant, shared, tamper-evident hard drive.</p>
+  </div>
+
+  <h2 id="pnode">What is a Xandeum pNode?</h2>
+  <p>A <strong>pNode</strong> (provider node) is the basic building block of the network. It is just a computer, run by a person or team, that has agreed to store data for Xandeum. Anyone with suitable hardware and a bit of technical comfort can run one. In exchange for providing reliable storage, the operator earns a share of network rewards. The health of the whole network is simply the sum of all these pNodes: how many are online, how much storage they have committed, and how reliably they stay up. You can watch every pNode live on the <a href="/">Pulsar Network dashboard</a>.</p>
+
+  <h2 id="xand">What is the XAND token used for?</h2>
+  <p>XAND is the native token of Xandeum. Its main jobs are to be <strong>staked</strong> behind pNodes, which helps secure the network and sets an operator's share of the work and rewards, and to act as the unit of the network's storage economy. You do not have to run hardware to take part: holders can stake XAND with an existing operator and share in the rewards that operator earns. As of 2026, XAND is an early-stage, micro-cap token that trades only on <strong>Raydium</strong>, a Solana exchange. As with anything this early in crypto, treat it as high risk and do your own research.</p>
+
+  <h2 id="solana">Is Xandeum only for Solana?</h2>
+  <p>No. This is a common misunderstanding. Xandeum is designed as a <strong>blockchain-agnostic</strong> storage layer, meaning the storage network itself is not tied to any single chain. Solana is simply its <strong>first and current integration</strong>, so today it is Solana programs that can use Xandeum storage directly. Supporting additional blockchains is part of the long-term design rather than a separate product. In other words: the storage is general-purpose, and Solana is where it went live first.</p>
+
+  <h2 id="vs">How is Xandeum different from Filecoin, Arweave, and Walrus?</h2>
+  <p>All of these are decentralized storage, but they aim at different jobs:</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Network</th><th>Best for</th><th>Can a contract read the data?</th></tr></thead>
+      <tbody>
+        <tr><th>Filecoin</th><td>Cheap, large cold storage</td><td>No, whole-file deals</td></tr>
+        <tr><th>Arweave</th><td>Permanent, pay-once archives</td><td>No, whole-file over HTTP</td></tr>
+        <tr><th>Walrus</th><td>Large files for web3 apps (Sui)</td><td>Availability only, not bytes</td></tr>
+        <tr><th class="xa">Xandeum</th><td class="xa">Live, mutable app storage</td><td class="xa"><b>Yes, random access</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The short version: Filecoin and Arweave are mature and huge, but their stored data is not something a smart contract reads directly. Xandeum's narrower, sharper aim is storage that programs can read and write live, more like a database the chain can use than a place to park files. That is a genuinely different tradeoff, not simply "better." For a full, honest breakdown, see <a href="xandeum-vs-filecoin-arweave-walrus.html">Xandeum vs Filecoin, Arweave &amp; Walrus</a>.</p>
+
+  <h2 id="use">What can you build or do with Xandeum?</h2>
+  <p>Because contracts can read and write the data directly, Xandeum is aimed at uses that on-chain storage cannot handle affordably:</p>
+  <ul>
+    <li><b>Data-heavy apps:</b> social platforms, marketplaces or games that need to store real user content on-chain logic, not just a token balance.</li>
+    <li><b>AI and large datasets:</b> keeping big training or reference data in a decentralized place a program can query.</li>
+    <li><b>Richer NFTs and media:</b> storing the actual files behind tokens rather than pointing off to a private server.</li>
+    <li><b>App state that changes:</b> mutable records a contract updates over time, which permanent-storage networks are not built for.</li>
+  </ul>
+  <p>New terms in this space add up fast. If a word here is unfamiliar, the plain-English <a href="glossary.html">Xandeum glossary</a> defines pNodes, Yugas, STOINC, staking and the rest.</p>
+
+  <h2 id="now">Where does Xandeum stand today?</h2>
+  <p>It is early, and honesty matters more than hype. Here are the real numbers, from data we track live on the network:</p>
+  <ul>
+    <li>Xandeum reached <b>mainnet in early 2026</b>.</li>
+    <li>About <b>113 provider nodes</b> are live on mainnet.</li>
+    <li>The network has more than <b>355 TB of storage committed</b>.</li>
+    <li>Almost none of that storage is <b>used</b> yet.</li>
+  </ul>
+  <p>That last point sounds bad but is normal for an early network. The capacity is built first, and the demand, meaning real apps storing real data, comes after. Think of it as a new highway with plenty of lanes and not many cars on it yet. The honest open questions are whether Xandeum can turn that committed capacity into paid usage, and whether its newer pulse-and-anchor design proves out at scale. If you want a balanced look at the risks and the team, see <a href="is-xandeum-legit.html">Is Xandeum legit?</a></p>
+
+  <div class="card warnbox">
+    <p style="margin:0 0 6px"><b>A fair warning</b></p>
+    <p style="margin:0">Xandeum is a young, micro-cap project. "Exabyte-ready" describes the architecture's goal, not demonstrated scale, and its design is far less battle-tested than older storage networks. Nothing here is financial advice. Do your own research before staking, buying XAND, or committing hardware.</p>
+  </div>
+
+  <h2 id="involved">How can you get involved?</h2>
+  <p>There are three easy levels, from watching to taking part:</p>
+  <ul>
+    <li><b>Watch the network.</b> See every pNode, its storage, stake, uptime and health, live and free, on the <a href="/">Pulsar Network dashboard</a>. No login.</li>
+    <li><b>Stake XAND.</b> Back a pNode operator with your XAND to earn a share of rewards without running any hardware yourself.</li>
+    <li><b>Run a pNode.</b> If you have a machine and some technical comfort, you can provide storage and earn directly. Our step-by-step <a href="run-a-pnode.html">guide to running a pNode</a> walks through it.</li>
+  </ul>
+
+  <h2 id="faq" class="faq">Frequently asked questions</h2>
+  <div class="faq">
+    <h3>What is Xandeum in simple terms?</h3>
+    <p>It is a decentralized way to give blockchains real storage. Instead of one company's servers, many independent operators around the world supply disk space, and smart contracts can read and write that data directly. It is built to work with any blockchain and is live today on Solana.</p>
+    <h3>Is Xandeum only for Solana?</h3>
+    <p>No. The storage layer is blockchain-agnostic by design. Solana is its first and current integration, so for now Solana programs are the ones that can use it directly.</p>
+    <h3>What is a pNode?</h3>
+    <p>A provider node: a computer run by an independent operator that pledges storage to Xandeum and earns rewards for keeping it online and reliable. Anyone with suitable hardware can run one.</p>
+    <h3>What is XAND used for?</h3>
+    <p>It is the network's token, staked behind pNodes to help secure the network and set each operator's share of work and rewards. It currently trades only on Raydium and should be treated as a high-risk, early-stage asset.</p>
+    <h3>How is Xandeum different from Filecoin and Arweave?</h3>
+    <p>Those store whole files that a contract cannot read directly. Xandeum offers random-access, contract-native storage, so programs can read and write fine-grained data live. See the <a href="xandeum-vs-filecoin-arweave-walrus.html">full comparison</a>.</p>
+    <h3>Is Xandeum live yet?</h3>
+    <p>Yes. It reached mainnet in early 2026, with roughly 113 nodes and 355+ TB committed as of mid-2026, though usage is still very early.</p>
+  </div>
+
+  <div style="margin-top:26px">
+    <a class="btn" href="/">See the live Xandeum network &rarr;</a>
+    <a class="btn ghost" href="glossary.html">Glossary of terms</a>
+  </div>
+
+  <div class="src">
+    Sources: <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot;
+    <a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum</a> &middot;
+    live network figures self-sourced by Pulsar Network from the Xandeum gossip layer; token data via CoinGecko / Raydium.
+    <br><br>An independent explainer by Pulsar Network. Pulsar runs Xandeum pNodes but is not affiliated with or endorsed by the Xandeum Foundation. Figures are mid-2026 snapshots and not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 Pulsar Network &middot; Built on Xandeum</div></footer>
+</body>
+</html>
