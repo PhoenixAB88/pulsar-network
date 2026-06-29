@@ -1,0 +1,29 @@
+# Pulsar Network
+
+> Pulsar Network (pulsarnetwork.xyz) is a free, open, real-time monitor of the Xandeum pNode network — decentralized storage for blockchains, live on Solana. Built and run by two independent operators; not affiliated with or endorsed by the Xandeum Foundation. No login, no wallet.
+
+Pulsar self-sources live data straight from the Xandeum gossip layer: every provider node (pNode), its committed and used storage, staked XAND, uptime, health and software version. The site also hosts plain-language explainers, an open pNode rewards calculator, an operator troubleshooting hub, and independent research. Mainnet currently has ~113 pNodes with 355+ TB of storage committed.
+
+## Core pages
+- [Live network dashboard](https://pulsarnetwork.xyz/): real-time map and table of every Xandeum pNode — storage, stake, uptime, health and version, updated continuously.
+- [What is Xandeum?](https://pulsarnetwork.xyz/what-is-xandeum.html): plain-language explainer of Xandeum, decentralized storage that smart contracts can read and write directly. Blockchain-agnostic by design, live first on Solana. Covers pNodes, the XAND token, STOINC rewards, and how it differs from Filecoin, Arweave and Walrus.
+- [Network stats](https://pulsarnetwork.xyz/network-stats.html): live pNode count, active nodes, total XAND staked, network-wide storage, and the current Yuga.
+- [pNode rewards calculator](https://pulsarnetwork.xyz/calculator.html): estimate Xandeum pNode STOINC earnings per Yuga, month and year, in wSOL and USD, from a live network denominator. Free, open, no login.
+
+## For operators
+- [How to run a Xandeum pNode](https://pulsarnetwork.xyz/run-a-pnode.html): step-by-step setup guide — hardware, install, devnet vs mainnet, costs and tips — written from running a fleet of 12 pNodes.
+- [pNode tips & troubleshooting](https://pulsarnetwork.xyz/pnode-tips.html): real operator fixes — backing up the identity key, updating without breaking the node, keeping pRPC private, dedicating storage, claiming rewards, portal RPC issues, ports and security.
+
+## Reference & research
+- [Xandeum vs Filecoin, Arweave & Walrus](https://pulsarnetwork.xyz/xandeum-vs-filecoin-arweave-walrus.html): honest comparison of decentralized storage networks (architecture, proofs, data access, scale).
+- [Is Xandeum legit?](https://pulsarnetwork.xyz/is-xandeum-legit.html): independent, data-backed review of the XAND project, its real risks and the team.
+- [Xandeum glossary](https://pulsarnetwork.xyz/glossary.html): pNode, vNode, Yuga, STOINC, bucket, boost factor and more, defined in plain English.
+- [What is a Yuga?](https://pulsarnetwork.xyz/yuga.html): the ~2.8-day settlement cycle on which STOINC rewards settle.
+- [Insights](https://pulsarnetwork.xyz/insights.html): referenced articles on decentralized storage, DePIN, Solana and AI infrastructure.
+
+## About
+- [Trust & operators](https://pulsarnetwork.xyz/trust.html): who runs Pulsar — two independent operators, 6 European pNode pairs, a fair 10% commission, open source — plus the verifiable mainnet node public keys.
+
+## Notes
+- Pulsar Network is an independent community project, not affiliated with or endorsed by the Xandeum Foundation.
+- Figures shown are live or recent snapshots and are not financial advice.
