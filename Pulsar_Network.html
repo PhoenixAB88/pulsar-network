@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<!-- Leaflet/map removed; the live node map is replaced by the lightweight country widget (renderGeo) - no external map CSS/JS/tiles -->
 <style>
   :root{
     --canvas:#0a1426; --bg:#0a1426; --bg2:#0c1830;
@@ -305,14 +305,27 @@
 
   .net-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;align-items:start}
   @media(max-width:880px){.net-grid{grid-template-columns:1fr}}
-  #map{height:200px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--hairline);background:var(--surface-1);z-index:1}
   #mapsec{padding-top:0}
-  .mapmini{max-width:460px;margin:0 auto;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:12px}
-  .mapmini-cap{font-size:12px;color:var(--mut);margin-bottom:8px;letter-spacing:.03em;text-align:center}
-  .leaflet-container{background:var(--surface-1);font:13px inherit}
-  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface-2);color:var(--ink);box-shadow:0 6px 20px rgba(0,0,0,.4)}
-  .leaflet-popup-content{font:12.5px/1.45 inherit}
-  .leaflet-bar a{background:var(--surface-1);color:var(--ink);border-color:var(--hairline)}
+  .geocard{max-width:460px;margin:0 auto;background:#172c52;border:1px solid var(--hairline);border-radius:var(--r-lg);padding:16px 18px;position:relative;overflow:hidden}
+  .geocard-cap{font-size:13px;color:var(--mut);letter-spacing:.03em;display:flex;align-items:center;gap:8px;font-weight:600;position:relative;z-index:2}
+  .geocard-cap .gdot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:gbeat 2.4s ease-in-out infinite}
+  .geosub{font-size:12.5px;color:var(--mut2);margin:3px 0 6px;position:relative;z-index:2}
+  .geosub b{color:var(--ink);font-weight:600}
+  #geoStars{position:absolute;inset:0;z-index:1}
+  #geoStars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#cfe0ff;opacity:.5;animation:gtw 3s ease-in-out infinite}
+  .bubbles{position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;padding:16px 4px 6px;min-height:230px}
+  .bub{position:relative;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:gfloat 6s ease-in-out infinite;transition:transform .18s}
+  .bub::before{content:'';position:absolute;top:11%;left:18%;width:38%;height:30%;border-radius:50%;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.6),rgba(255,255,255,0) 68%);pointer-events:none}
+  .bub:hover{transform:scale(1.07)}
+  .bub .fl{line-height:1;position:relative;z-index:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+  .bub .ct{font-weight:700;color:#fff;line-height:1;margin-top:2px;position:relative;z-index:2;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .bub .nm{position:absolute;bottom:-15px;font-size:9.5px;color:var(--mut2);white-space:nowrap;opacity:0;transition:.2s}
+  .bub:hover .nm{opacity:1}
+  .geo-more{font-size:12px;color:var(--mut2);margin-top:14px;text-align:center;position:relative;z-index:2}
+  @keyframes gfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes gbeat{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.6}}
+  @keyframes gtw{0%,100%{opacity:.2}50%{opacity:.7}}
+  @media(prefers-reduced-motion:reduce){.bub,.geocard-cap .gdot,#geoStars i{animation:none}}
 
   /* per-node detail modal */
   .modal-overlay{position:fixed;inset:0;z-index:var(--z-overlay);background:rgba(5,10,20,.7);display:none;align-items:flex-start;justify-content:center;padding:42px 16px;overflow:auto}
@@ -613,9 +626,12 @@
 
 <section id="mapsec">
   <div class="wrap">
-    <div class="mapmini reveal">
-      <div class="mapmini-cap">Live node map</div>
-      <div id="map"></div>
+    <div class="geocard reveal">
+      <div class="stars" id="geoStars"></div>
+      <div class="geocard-cap"><span class="gdot"></span>Where the network lives</div>
+      <div class="geosub" id="geoSub"></div>
+      <div class="bubbles" id="geoBubbles"></div>
+      <div class="geo-more" id="geoMore"></div>
     </div>
   </div>
 </section>
@@ -725,7 +741,7 @@
 <script src="node_stats_p1main.js" onerror="window.__noStM=1"></script>
 <script src="node_stats_p1dev.js" onerror="window.__noStD=1"></script>
 <!-- Jupiter swap plugin is lazy-loaded on first swap open (see openSwap), to reduce initial JS, privacy contact points, and supply-chain surface. -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- (Leaflet JS removed - no map) -->
 <script>
   const root=document.documentElement; root.setAttribute('data-theme','dark');
   const mb=document.getElementById('menuBtn'),mm=document.getElementById('mobileMenu');
@@ -851,7 +867,7 @@
     sel.value=[...sel.options].some(o=>o.value===cur)?cur:'';
 
     renderRoster();
-    plotMap();
+    renderGeo();
     renderStakeNodes();
     renderLeaderboard();
     renderMyNodes();
@@ -1067,25 +1083,7 @@
     }).join('');
   }
 
-  function baseUrl(){return 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png';}
-  function labelUrl(){return 'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png';}
-  const LABEL_ZOOM=4;  // country/city names only once zoomed in
-  function syncLabels(){
-    if(!window.__map||!window.__labels)return;
-    const show=window.__map.getZoom()>=LABEL_ZOOM, has=window.__map.hasLayer(window.__labels);
-    if(show&&!has)window.__labels.addTo(window.__map); else if(!show&&has)window.__map.removeLayer(window.__labels);
-  }
-  function initMap(){
-    if(typeof L==='undefined'||!document.getElementById('map'))return;
-    const B=[[-85,-180],[85,180]];
-    window.__map=L.map('map',{attributionControl:false,scrollWheelZoom:false,worldCopyJump:false,
-      minZoom:2,maxZoom:8,maxBounds:B,maxBoundsViscosity:1}).setView([30,5],2);
-    window.__tile=L.tileLayer(baseUrl(),{noWrap:true,bounds:B,subdomains:'abcd'}).addTo(window.__map);
-    window.__labels=L.tileLayer(labelUrl(),{noWrap:true,bounds:B,subdomains:'abcd'});
-    window.__markers=L.layerGroup().addTo(window.__map);
-    window.__map.on('zoomend',syncLabels); syncLabels();
-    setTimeout(()=>window.__map&&window.__map.invalidateSize(),400);
-  }
+  // (Leaflet map + tile/label helpers removed - replaced by the live "Where the network lives" country widget; see renderGeo)
   function initBeacon(){
     // Decorative "pulsar beacon": a rotating beam sweeps and lights up dots that
     // represent the live pNode count. Replaces the old decorative Leaflet map (one
@@ -1127,17 +1125,35 @@
     document.addEventListener('visibilitychange',function(){if(!document.hidden&&onscreen)start();else stop();});
     if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){onscreen=e.isIntersecting;if(onscreen&&!document.hidden)start();else stop();});},{threshold:0.02}).observe(card);}else{onscreen=true;start();}
   }
-  function plotMap(){
-    if(!window.__map||!window.__markers)return;
-    window.__markers.clearLayers();
-    const S=SETS[active],ref=S.ref;
-    S.pods.forEach(p=>{
-      if(p.lat==null||p.lon==null)return;
-      const on=(ref-ts(p))<=900;
-      L.circleMarker([p.lat,p.lon],{radius:5,weight:1,color:'#0a1320',fillColor:on?'#34e0a8':'#ff5d6c',fillOpacity:.85})
-        .bindPopup(`<b>${esc(shortpk(p.pubkey))}</b><br>${flag(p.cc)} ${esc(p.city||'')}<br>${esc(shortver(p.version))} · ${on?'online':'stale'}<br><a href="#node=${b58(p.pubkey)}">Details ↗</a>`)
-        .addTo(window.__markers);
+  // "Where the network lives": glowing flag-bubble cluster, sized by node count per country.
+  // Pure CSS/JS (no map, no external tiles). Reads the live active-set pods.
+  function renderGeo(){
+    var box=document.getElementById('geoBubbles'); if(!box)return;
+    var S=SETS[active], pods=(S&&S.pods)||[];
+    var m={}, total=0;
+    pods.forEach(function(p){var cc=(p.cc||'').toString().toUpperCase(); if(!cc)return; m[cc]=(m[cc]||0)+1; total++;});
+    var arr=Object.keys(m).map(function(cc){return {cc:cc,c:m[cc]};}).sort(function(a,b){return b.c-a.c;});
+    var sub=document.getElementById('geoSub');
+    if(sub)sub.innerHTML=arr.length?('<b>'+total+'</b> node'+(total===1?'':'s')+' across <b>'+arr.length+'</b> countr'+(arr.length===1?'y':'ies')):'Locating nodes…';
+    var top=arr.slice(0,9), max=top.length?top[0].c:1;
+    var pal=['70,230,239','56,189,248','106,163,255','52,224,168','167,139,250','247,169,59','244,114,182','94,234,212','129,140,248'];
+    var rn=null; try{rn=new Intl.DisplayNames(['en'],{type:'region'});}catch(e){}
+    box.innerHTML='';
+    top.forEach(function(d,i){
+      var col=pal[i%pal.length], sz=Math.round(46+(d.c/max)*54), name=d.cc;
+      try{if(rn)name=rn.of(d.cc)||d.cc;}catch(e){}
+      var el=document.createElement('div'); el.className='bub';
+      el.style.width=el.style.height=sz+'px';
+      el.style.background='radial-gradient(circle at 36% 30%, rgba('+col+',.34) 0%, rgba(16,30,56,.55) 74%)';
+      el.style.boxShadow='inset 0 0 0 1.5px rgba('+col+',.95), inset 0 -7px 14px -6px rgba(0,0,0,.45), 0 0 15px -4px rgba('+col+',.85)';
+      el.style.animationDelay=(i*0.4)+'s';
+      el.innerHTML='<span class="fl" style="font-size:'+Math.round(sz*0.33)+'px">'+flag(d.cc)+'</span><span class="ct" style="font-size:'+Math.round(sz*0.23)+'px">'+d.c+'</span><span class="nm">'+esc(name)+'</span>';
+      box.appendChild(el);
     });
+    var more=document.getElementById('geoMore');
+    if(more){var rest=arr.length-top.length; more.style.display=rest>0?'':'none'; more.textContent=rest>0?('+ '+rest+' more countr'+(rest===1?'y':'ies')):'';}
+    var st=document.getElementById('geoStars');
+    if(st&&!st.childElementCount){for(var k=0;k<26;k++){var s=document.createElement('i');s.style.left=(Math.random()*100)+'%';s.style.top=(Math.random()*100)+'%';s.style.animationDelay=(Math.random()*3)+'s';st.appendChild(s);}}
   }
 
   document.getElementById('search').addEventListener('input',renderRoster);
@@ -1204,7 +1220,6 @@
     const btn=th.querySelector('.sortbtn');
     (btn||th).addEventListener('click',trigger);
   });
-  initMap();
   initBeacon();
   renderNetwork();
 
