@@ -295,7 +295,7 @@
     #network table td::before{content:attr(data-label);color:var(--mut2);font-weight:500;font-size:12px;text-align:left}
     #network table td:first-child{justify-content:flex-start;gap:8px;font-weight:600;border-bottom:1px solid var(--hairline);padding-bottom:9px;margin-bottom:5px}
     #network table td:first-child::before{content:none}
-    #network tbody tr:nth-of-type(n+11):not(.showall){display:none}
+    #network .scroll.roster-scroll{max-height:62vh;border:1px solid var(--hairline);border-radius:var(--r-lg);overflow-y:auto;-webkit-overflow-scrolling:touch}
   }
   .proof{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 auto 30px;max-width:780px}
   @media(max-width:720px){.proof{grid-template-columns:repeat(3,1fr)}}
@@ -814,9 +814,8 @@
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     const isMobile=window.matchMedia&&window.matchMedia('(max-width:600px)').matches;
-    const cap=(isMobile&&!window.__rosterAll)?10:rows.length;
-    const shown=rows.slice(0,cap);
-    meta.textContent=cap<rows.length?(cap+' of '+rows.length):(rows.length+' of '+pods.length);
+    const shown=rows;
+    meta.textContent=rows.length+' of '+pods.length;
     body.innerHTML=shown.map((p,i)=>{const pk=b58(p.pubkey);return `<tr tabindex="0" onclick="openNode('${pk}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNode('${pk}')}">
       <td><button type="button" class="star ${isFav(p.pubkey)?'on':''}" title="Star / favourite" aria-label="${isFav(p.pubkey)?'Unstar node':'Star node'}" aria-pressed="${isFav(p.pubkey)?'true':'false'}" onclick="toggleFav('${pk}',event)">${isFav(p.pubkey)?'★':'☆'}</button> ${i+1}</td><td class="addr hide-sm" data-label="Address">${p.address?esc(p.address):'—'}</td>
       <td class="addr hide-sm" data-label="Pubkey" title="${pk}">${esc(shortpk(p.pubkey))}</td>
@@ -828,8 +827,16 @@
       <td class="snum" data-label="Health">${healthCell(p.pubkey,active)}</td>
       <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`;}).join('')
-      +((isMobile&&rows.length>cap)?`<tr class="showall"><td colspan="11" style="text-align:center;padding:14px"><button class="btn ghost" style="font-size:13px" onclick="window.__rosterAll=true;renderRoster()">Show all ${rows.length} nodes ↓</button></td></tr>`:'')
       ||`<tr><td colspan="11" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
+    // Mobile: show ~5 cards then scroll within the list (replaces the old 10-cap + broken "show all")
+    const sc=document.querySelector('#network .scroll');
+    if(sc){
+      if(isMobile&&rows.length>5){
+        const cards=body.querySelectorAll('tr');let h=0;
+        for(let i=0;i<5&&i<cards.length;i++){h+=cards[i].offsetHeight+10;}
+        sc.classList.add('roster-scroll');sc.style.maxHeight=h>40?Math.min(h+6,Math.round(window.innerHeight*0.8))+'px':'';
+      }else{sc.classList.remove('roster-scroll');sc.style.maxHeight='';}
+    }
   }
 
   function renderNetwork(){
