@@ -367,6 +367,12 @@
   .scrollcue svg{color:var(--teal);margin-bottom:6px;filter:drop-shadow(0 0 5px rgba(70,230,239,.95)) drop-shadow(0 0 1px rgba(70,230,239,.85));animation:cuebob 1.4s ease-in-out infinite}
   @keyframes cuebob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
   @media(prefers-reduced-motion:reduce){.scrollcue svg{animation:none}}
+  #network .scroll{scrollbar-width:none}
+  #network .scroll::-webkit-scrollbar{width:0;height:0}
+  .scrolltrack{position:absolute;top:8px;bottom:8px;right:4px;width:6px;border-radius:6px;background:rgba(126,162,216,.13);display:none;z-index:5;pointer-events:none}
+  .scrolltrack.show{display:block}
+  .scrollthumb{position:absolute;left:0;top:0;width:6px;min-height:26px;border-radius:6px;background:linear-gradient(180deg,#7af0f7,var(--teal));box-shadow:0 0 8px rgba(70,230,239,.9),0 0 3px rgba(70,230,239,.85);cursor:grab;pointer-events:auto;will-change:transform}
+  .scrollthumb:active{cursor:grabbing}
   .scroll::-webkit-scrollbar{width:10px;height:10px}.scroll::-webkit-scrollbar-thumb{background:var(--hairline-2);border-radius:8px}
   table{width:100%;border-collapse:collapse}
   th,td{padding:12px 15px;text-align:left;white-space:nowrap;font-size:13px;border-bottom:1px solid var(--hairline)}
@@ -541,6 +547,7 @@
           </table>
         </div>
         <div class="scrollcue" id="scrollCue" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 12 14 19 8"></polyline><polyline points="5 13 12 19 19 13"></polyline></svg></div>
+        <div class="scrolltrack" id="scrollTrack" aria-hidden="true"><div class="scrollthumb" id="scrollThumb"></div></div>
         </div>
       </div>
     </div>
@@ -847,7 +854,37 @@
       }else{sc.classList.remove('roster-scroll');sc.style.maxHeight='';}
       const cue=document.getElementById('scrollCue');
       if(cue)cue.classList.toggle('show',sc.scrollHeight-sc.clientHeight>8);
+      syncScrollbar();
     }
+  }
+
+  // Custom always-visible glowing scroll indicator for the roster (native bars auto-hide on macOS/iOS)
+  function syncScrollbar(){
+    const sc=document.querySelector('#network .scroll'),
+          tr=document.getElementById('scrollTrack'),
+          th=document.getElementById('scrollThumb');
+    if(!sc||!tr||!th)return;
+    const upd=()=>{
+      const sh=sc.scrollHeight, ch=sc.clientHeight;
+      if(sh-ch<=8){tr.classList.remove('show');return;}
+      tr.classList.add('show');
+      const trackH=tr.clientHeight;
+      const thH=Math.max(26,Math.round(ch/sh*trackH));
+      const maxTop=trackH-thH;
+      const top=Math.round(sc.scrollTop/(sh-ch)*maxTop);
+      th.style.height=thH+'px'; th.style.transform='translateY('+top+'px)';
+    };
+    if(!th.dataset.wired){
+      th.dataset.wired='1';
+      sc.addEventListener('scroll',upd,{passive:true});
+      window.addEventListener('resize',upd);
+      let drag=false,sy=0,st=0;
+      th.addEventListener('pointerdown',e=>{drag=true;sy=e.clientY;st=sc.scrollTop;try{th.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+      th.addEventListener('pointermove',e=>{if(!drag)return;const sh=sc.scrollHeight,ch=sc.clientHeight,maxTop=tr.clientHeight-th.offsetHeight;sc.scrollTop=st+(e.clientY-sy)*(sh-ch)/(maxTop||1);});
+      const end=e=>{drag=false;try{th.releasePointerCapture(e.pointerId);}catch(_){}};
+      th.addEventListener('pointerup',end);th.addEventListener('pointercancel',end);
+    }
+    upd();
   }
 
   function renderNetwork(){
