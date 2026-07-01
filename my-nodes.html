@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex, follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>My Nodes · Pulsar Network</title>
+<meta name="description" content="Your personal Xandeum pNode command center: saved nodes, live stats, health, uptime and anomaly alerts. Private to your browser.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="My Nodes · Pulsar Network">
+<meta property="og:description" content="Your saved Xandeum pNodes with live stats and anomaly alerts.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/my-nodes.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--surface-3:#172c52;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--warn:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--purple:#8b7bff;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16px/1.6 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--hairline);position:sticky;top:0;z-index:20;background:rgba(10,20,38,.82);backdrop-filter:blur(10px)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:700;font-size:15px}.brand>span{display:block;line-height:1}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:30px 0 70px;position:relative}
+  /* hero */
+  .hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:lvp 1.8s ease-in-out infinite}
+  h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:-.03em;margin:0;line-height:1.05}
+  h1 .g{background:linear-gradient(100deg,var(--teal),var(--purple) 60%,var(--orange));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{font-size:15.5px;color:var(--mut);margin:8px 0 0;max-width:640px}
+  .synced{font-size:12.5px;color:var(--mut2);white-space:nowrap;display:flex;align-items:center;gap:7px}
+  /* summary tiles */
+  .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:8px 0 26px}
+  @media(max-width:900px){.tiles{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:600px){.tiles{grid-template-columns:repeat(2,1fr)}}
+  .tile{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:14px 15px;position:relative;overflow:hidden}
+  .tile .k{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut2);font-weight:600}
+  .tile .v{font-size:23px;font-weight:700;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile .v small{font-size:13px;color:var(--mut2);font-weight:500}
+  .tile.alert.on{border-color:rgba(255,93,108,.55);background:linear-gradient(180deg,rgba(255,93,108,.12),var(--surface-1))}
+  .tile.alert.on .v{color:var(--bad)}
+  .tile.alert.on::after{content:"";position:absolute;inset:0;border-radius:var(--r-lg);box-shadow:0 0 0 1px rgba(255,93,108,.4),0 0 22px -6px rgba(255,93,108,.7);animation:alr 1.8s ease-in-out infinite;pointer-events:none}
+  .tile.clear .v{color:var(--good)}
+  /* panels */
+  .panel{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-xl);padding:20px 22px;margin-bottom:22px}
+  .panel-cap{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--mut);margin:0 0 14px}
+  .panel-cap .n{margin-left:auto;font-size:12px;color:var(--mut2);text-transform:none;letter-spacing:0;font-weight:500}
+  /* anomalies */
+  .anom{display:flex;gap:13px;align-items:flex-start;padding:13px 14px;border:1px solid var(--hairline);border-left-width:3px;border-radius:var(--r-md);background:var(--surface-2);margin-bottom:10px}
+  .anom:last-child{margin-bottom:0}
+  .anom.s3{border-left-color:var(--bad)}.anom.s2{border-left-color:var(--warn)}.anom.s1{border-left-color:var(--teal)}
+  .anom .ic{font-size:17px;line-height:1.3;flex-shrink:0}
+  .anom .who{font-weight:600;color:var(--ink);font-size:14.5px}
+  .anom .what{color:var(--mut);font-size:13.5px;margin-top:1px}
+  .anom .what b{color:var(--ink);font-weight:600}
+  .anom .fix{color:var(--mut2);font-size:12.5px;margin-top:4px}
+  .allclear{display:flex;align-items:center;gap:12px;color:var(--mut)}
+  .allclear .big{font-size:22px}
+  .allclear b{color:var(--good)}
+  /* node cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:linear-gradient(180deg,var(--surface-3),var(--surface-1));border:1px solid var(--hairline);border-radius:var(--r-xl);padding:16px 17px;position:relative;opacity:0;transform:translateY(10px);animation:rise .5s cubic-bezier(.22,.7,.3,1) forwards}
+  .card::before{content:"";position:absolute;inset:0;border-radius:var(--r-xl);padding:1px;background:linear-gradient(140deg,rgba(70,230,239,.5),transparent 40%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.5;pointer-events:none}
+  .card.gone{opacity:.62}
+  .card-head{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+  .star{background:none;border:0;color:var(--orange);cursor:pointer;font-size:18px;line-height:1;padding:0;filter:drop-shadow(0 0 6px rgba(247,169,59,.55))}
+  .star:hover{transform:scale(1.12)}
+  .lbl{font-weight:700;font-size:15.5px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .badge{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px solid var(--hairline-2);color:var(--mut2);flex-shrink:0}
+  .badge.main{color:var(--teal);border-color:rgba(70,230,239,.4)}
+  .status{font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
+  .status.on{color:var(--good)}.status.off{color:var(--bad)}.status.gone{color:var(--mut2)}
+  .loc{font-size:13px;color:var(--mut);margin:-4px 0 12px;padding-left:1px}
+  .cbody{display:flex;gap:14px;align-items:center}
+  .ring{flex-shrink:0;position:relative;width:74px;height:74px}
+  .ring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .rv b{font-size:19px;font-weight:700;line-height:1}
+  .ring .rv i{font-size:9px;color:var(--mut2);font-style:normal;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+  .stats{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:7px 14px}
+  .st .k{font-size:11px;color:var(--mut2);letter-spacing:.02em}
+  .st .v{font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.2}
+  .st .v.g{color:var(--good)}.st .v.t{color:var(--teal)}.st .v.w{color:var(--warn)}.st .v.b{color:var(--bad)}.st .v.m{color:var(--mut2);font-weight:500}
+  .pill{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--surface-2);border:1px solid var(--hairline);color:var(--mut)}
+  .sparkw{margin:13px 0 4px}
+  .sparkw .sc{font-size:11px;color:var(--mut2);margin-bottom:3px}
+  .abadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .abadge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  .abadge.s3{background:rgba(255,93,108,.14);color:#ff8b96;border:1px solid rgba(255,93,108,.35)}
+  .abadge.s2{background:rgba(247,169,59,.13);color:var(--orange);border:1px solid rgba(247,169,59,.32)}
+  .abadge.s1{background:rgba(70,230,239,.11);color:var(--teal);border:1px solid rgba(70,230,239,.3)}
+  .acts{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:13px;border-top:1px solid var(--hairline)}
+  .lbtn{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:var(--r-sm);padding:6px 11px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+  .lbtn:hover{color:var(--ink);border-color:var(--teal);text-decoration:none}
+  .lbtn.rm:hover{border-color:var(--bad);color:var(--bad)}
+  .lbtn.prime{background:var(--teal);border-color:var(--teal);color:#03252b;font-weight:600}
+  .lbtn.prime:hover{background:#7af0f7;color:#03252b}
+  /* empty */
+  .empty{text-align:center;padding:60px 20px;max-width:520px;margin:0 auto}
+  .empty .es{font-size:56px;display:inline-block;filter:drop-shadow(0 0 18px rgba(247,169,59,.55));animation:fl 3.4s ease-in-out infinite}
+  .empty h2{font-size:24px;font-weight:700;margin:14px 0 8px;letter-spacing:-.02em}
+  .empty p{color:var(--mut);margin:0 0 22px}
+  .empty .steps{text-align:left;display:inline-block;color:var(--mut);font-size:14.5px;line-height:2;margin:0 0 24px}
+  .empty .steps b{color:var(--ink)}
+  .cta{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:15px;padding:12px 24px;border-radius:var(--r-md)}
+  .cta:hover{background:#ffc06b;text-decoration:none}
+  /* alerts row */
+  .alertbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:4px}
+  .alert-toggle{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:999px;padding:8px 15px;font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+  .alert-toggle:hover{border-color:var(--teal);color:var(--ink)}
+  .alert-toggle.on{background:rgba(52,224,168,.13);border-color:rgba(52,224,168,.5);color:var(--good)}
+  .alert-note{font-size:12px;color:var(--mut2)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+  footer a{color:var(--mut)}
+  @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes alr{0%,100%{opacity:1}50%{opacity:.45}}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @media(prefers-reduced-motion:reduce){.live-dot,.tile.alert.on::after,.empty .es{animation:none}.card{animation:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Back to dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <div class="hero">
+    <div>
+      <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Personal command center</span>
+      <h1><span class="g">My Nodes</span></h1>
+      <p class="lead">Your saved Xandeum pNodes with live stats, health and automatic anomaly checks. Private to this browser, no login.</p>
+    </div>
+    <div class="synced" id="synced"></div>
+  </div>
+
+  <div id="content"><!-- rendered --></div>
+
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Saved nodes live only in your browser &middot; Built on Xandeum</div></footer>
+
+<script src="network_data.js" onerror="window.__noData=1"></script>
+<script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
+<script src="net_storage_mainnet.js" onerror="window.__noNSm=1"></script>
+<script src="net_storage_devnet.js" onerror="window.__noNSd=1"></script>
+<script src="node_storage_mainnet.js" onerror="window.__noCXm=1"></script>
+<script src="node_storage_devnet.js" onerror="window.__noCXd=1"></script>
+<script src="credits_data.js" onerror="window.__noCredits=1"></script>
+<script src="stake_data.js" onerror="window.__noStake=1"></script>
+<script src="network_history.js" onerror="window.__noHist=1"></script>
+<script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
+<script>
+(function(){
+  "use strict";
+  // ---- helpers mirrored from the dashboard so every number matches exactly ----
+  var fmt=function(n){return n==null?'—':n.toLocaleString('en-US');};
+  var fmtC=function(n){return n==null?'—':new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n);};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+  var b58=function(s){return String(s==null?'':s).replace(/[^1-9A-HJ-NP-Za-km-z]/g,'');};
+  var ts=function(p){return p.last_seen_timestamp!=null?p.last_seen_timestamp:(p.lastSeenTimestamp!=null?p.lastSeenTimestamp:0);};
+  var shortver=function(v){return (v||'?').replace(/\.\d{8,}.*$/,'');};
+  var shortpk=function(pk){return pk?pk.slice(0,6)+'…'+pk.slice(-4):'—';};
+  var flag=function(cc){return cc?cc.toUpperCase().replace(/[A-Z]/g,function(c){return String.fromCodePoint(127397+c.charCodeAt(0));}):'';};
+  var nowSec=function(){return Math.floor(Date.now()/1000);};
+  var fmtBytes=function(b){if(b==null)return '—';var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];};
+  var relFrom=function(t,r){if(!t)return '—';var d=r-t;return d<60?d+'s ago':d<3600?Math.floor(d/60)+'m ago':d<86400?Math.floor(d/3600)+'h ago':Math.floor(d/86400)+'d ago';};
+  function mkSet(N,genTs,updated){var pods=(N&&N.result&&N.result.pods)?N.result.pods:[];var ref=pods.length?Math.max.apply(null,[genTs||0].concat(pods.map(ts))):nowSec();return {pods:pods,ref:ref,updated:updated};}
+  function pcMax(){return (window.PODCREDITS&&window.PODCREDITS.max)||0;}
+  function pcMap(){return (window.PODCREDITS&&window.PODCREDITS.creds)||{};}
+  function uptimeOf(pk,net){var U=window['NODE_UPTIME'+(net==='mainnet'?'_MAINNET':'')]||{};return U[pk]==null?null:U[pk];}
+  function healthOf(pk,net){var up=uptimeOf(pk,net);var mx=pcMax(),c=pcMap()[pk],cr=(mx&&c!=null)?c/mx*100:null;if(up!=null&&cr!=null)return Math.round(0.7*up+0.3*cr);if(up!=null)return Math.round(up);if(cr!=null)return Math.round(cr);return null;}
+  function histOf(pk,net){return (window['NODE_HIST'+(net==='mainnet'?'_MAINNET':'')]||{})[pk];}
+  function spark(vals,opts){opts=opts||{};var w=opts.w||150,h=opts.h||30,pad=2,col=opts.color||'#46e6ef';if(!vals||vals.length<2)return '<span style="color:var(--mut2);font-size:12px">building history…</span>';var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=(mx-mn)||1,n=vals.length;var pts=vals.map(function(v,i){var x=pad+i/(n-1)*(w-2*pad);var y=h-pad-((v-mn)/rng)*(h-2*pad);return x.toFixed(1)+','+y.toFixed(1);});var line=pts.join(' '),area=pad+','+(h-pad)+' '+line+' '+(w-pad).toFixed(1)+','+(h-pad);return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="display:block;width:100%;max-width:220px"><polygon points="'+area+'" fill="'+col+'" opacity="0.13"/><polyline points="'+line+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';}
+  function cmpVer(a,b){if(a===b)return 0;return String(a).localeCompare(String(b),undefined,{numeric:true})<0?-1:1;}
+
+  // ---- saved-node store (shared with the dashboard via localStorage) ----
+  var MYK='pulsar:mynodes';
+  function getMy(){try{return JSON.parse(localStorage.getItem(MYK)||'{}')||{};}catch(e){return {};}}
+  function setMy(m){try{localStorage.setItem(MYK,JSON.stringify(m));}catch(e){}}
+  function removeFav(pk){var m=getMy();delete m[pk];setMy(m);render();}
+  function setLabel(pk){var m=getMy();if(!m[pk])m[pk]={label:''};var v=prompt('Label for this node (e.g. "My validator", "Team A"):',m[pk].label||'');if(v!==null){m[pk].label=v.trim();setMy(m);render();}}
+
+  // ---- live data ----
+  var SETS={};
+  function buildSets(){SETS={devnet:mkSet(window.NETWORK,window.NETWORK_GENERATED_TS,window.NETWORK_UPDATED),mainnet:mkSet(window.NETWORK_MAINNET,window.NETWORK_MAINNET_GENERATED_TS,window.NETWORK_MAINNET_UPDATED)};}
+  function findPod(pk){for(var i=0;i<2;i++){var net=i?'devnet':'mainnet';var pods=SETS[net]&&SETS[net].pods||[];for(var j=0;j<pods.length;j++)if(pods[j].pubkey===pk)return {p:pods[j],net:net};}return null;}
+  function newestVer(net){var pods=SETS[net]&&SETS[net].pods||[];var best=null;for(var i=0;i<pods.length;i++){var v=shortver(pods[i].version);if(!v||v==='?')continue;if(best==null||cmpVer(v,best)>0)best=v;}return best;}
+  function labelOf(pk){var m=getMy();var lbl=m[pk]&&m[pk].label;if(lbl)return lbl;var f=findPod(pk);if(f&&f.p.city)return (f.p.cc?flag(f.p.cc)+' ':'')+f.p.city;return shortpk(pk);}
+
+  // ---- anomaly detection (only from data we actually have) ----
+  function anomaliesFor(pk){
+    var out=[];var f=findPod(pk);
+    if(!f){out.push({s:3,ic:'⚠️',t:'Not in the network right now',fix:'No gossip signal at all. Check the machine is on and pod.service is running.'});return out;}
+    var p=f.p,net=f.net,on=(SETS[net].ref-ts(p))<=900;
+    if(!on)out.push({s:3,ic:'🔴',t:'Offline · no signal for over 15 minutes',fix:'Check the server, then restart pod.service if needed.'});
+    var nv=newestVer(net),sv=shortver(p.version);
+    if(nv&&sv&&sv!=='?'&&cmpVer(sv,nv)<0)out.push({s:2,ic:'⬆️',t:'Behind on version ('+esc(sv)+' vs '+esc(nv)+')',fix:'Update the pod software to match the rest of the network.'});
+    var h=healthOf(pk,net);
+    if(h!=null&&h<75)out.push({s:2,ic:'❤️',t:'Low health score ('+h+'/100)',fix:'Usually uptime or credits slipping. Check for recent restarts.'});
+    var u=uptimeOf(pk,net);
+    if(u!=null&&u<95)out.push({s:2,ic:'📉',t:'Low tracked uptime ('+u+'%)',fix:'The node has been missing from gossip in recent checks.'});
+    if(net==='mainnet'&&on){var st=(window.STAKE||{})[pk];if(!st||!(st.stake>0))out.push({s:1,ic:'◎',t:'No on-chain stake yet',fix:'Stake or attract delegation so the node earns reward weight.'});}
+    return out;
+  }
+
+  function ring(h){
+    var c=h==null?'var(--mut2)':h>=90?'var(--good)':h>=75?'var(--teal)':h>=50?'var(--warn)':'var(--bad)';
+    var pct=h==null?0:Math.max(0,Math.min(100,h));var R=32,C=2*Math.PI*R,off=C*(1-pct/100);
+    return '<div class="ring"><svg width="74" height="74" viewBox="0 0 74 74">'
+      +'<circle cx="37" cy="37" r="'+R+'" fill="none" stroke="rgba(126,162,216,.16)" stroke-width="6"/>'
+      +'<circle cx="37" cy="37" r="'+R+'" fill="none" stroke="'+c+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 37 37)"/></svg>'
+      +'<div class="rv"><b style="color:'+c+'">'+(h==null?'—':h)+'</b><i>health</i></div></div>';
+  }
+
+  function nodeCard(pk,idx){
+    var m=getMy(),f=findPod(pk),epk=b58(pk),an=anomaliesFor(pk);
+    var net=f?f.net:'mainnet',p=f?f.p:null;
+    var on=f&&(SETS[net].ref-ts(p))<=900;
+    var statusCls=!f?'gone':(on?'on':'off'),statusTxt=!f?'● not found':(on?'● online':'● stale');
+    var loc=p&&p.city?((p.cc?flag(p.cc)+' ':'')+esc(p.city)):(f?'Location unknown':'Not in current roster');
+    var st=(window.STAKE||{})[pk];
+    var stakeTxt=st&&st.stake>0?'<b>'+fmt(st.stake)+'</b> <small style="color:var(--mut2)">XAND</small>':'<span class="m">—</span>';
+    var comm=st&&st.stake>0?('<div class="k" style="margin-top:1px">'+(st.comm/100)+'% commission</div>'):'';
+    var cx=((window.CX&&window.CX[net])||{})[pk];
+    var sto=cx&&cx.storage!=null?'<b>'+fmtBytes(cx.storage)+'</b>':'<span class="m">—</span>';
+    var u=uptimeOf(pk,net),uCls=u==null?'m':u>=99?'g':u>=95?'t':u>=80?'w':'b';
+    var uTxt=u==null?'—':u+'%';
+    var h=healthOf(pk,net);
+    var ver=p?'<span class="pill">'+esc(shortver(p.version))+'</span>':'<span class="m">—</span>';
+    var seen=p?relFrom(ts(p),SETS[net].ref):'—';
+    var creds=pcMap()[pk];
+    var badges=an.map(function(a){return '<span class="abadge s'+a.s+'">'+a.ic+' '+esc(a.t.split(' · ')[0].replace(/\s*\(.*/,''))+'</span>';}).join('');
+    var h5='<div class="card'+(f?'':' gone')+'" style="animation-delay:'+(idx*60)+'ms">'
+      +'<div class="card-head">'
+        +'<button class="star" title="Remove from My Nodes" aria-label="Remove" onclick="MN.remove(\''+epk+'\')">★</button>'
+        +'<span class="lbl" title="'+esc(labelOf(pk))+'">'+esc(labelOf(pk))+'</span>'
+        +'<span class="badge'+(net==='mainnet'?' main':'')+'">'+(net==='mainnet'?'Mainnet':'Devnet')+'</span>'
+        +'<span class="status '+statusCls+'">'+statusTxt+'</span>'
+      +'</div>'
+      +'<div class="loc">'+loc+' &middot; <span style="color:var(--mut2)">'+esc(shortpk(pk))+'</span></div>'
+      +'<div class="cbody">'+ring(h)
+        +'<div class="stats">'
+          +'<div class="st"><div class="k">Staked</div><div class="v">'+stakeTxt+'</div>'+comm+'</div>'
+          +'<div class="st"><div class="k">Storage</div><div class="v">'+sto+'</div></div>'
+          +'<div class="st"><div class="k">Uptime</div><div class="v '+uCls+'">'+uTxt+'</div></div>'
+          +'<div class="st"><div class="k">Version</div><div class="v">'+ver+'</div></div>'
+          +'<div class="st"><div class="k">Credits</div><div class="v '+(creds!=null?'':'m')+'">'+(creds!=null?fmt(creds):'—')+'</div></div>'
+          +'<div class="st"><div class="k">Last seen</div><div class="v m" style="font-weight:600;color:var(--mut)">'+seen+'</div></div>'
+        +'</div>'
+      +'</div>';
+    var hist=histOf(pk,net);
+    if(hist&&hist.length>=2)h5+='<div class="sparkw"><div class="sc">Uptime trend</div>'+spark(hist,{w:220,h:30})+'</div>';
+    if(badges)h5+='<div class="abadges">'+badges+'</div>';
+    h5+='<div class="acts">'
+      +'<a class="lbtn prime" href="/#node='+epk+'">Full details ↗</a>'
+      +'<button class="lbtn" onclick="MN.copy(\''+epk+'\',this)">Copy key</button>'
+      +'<button class="lbtn" onclick="MN.label(\''+epk+'\')">Label</button>'
+      +'<button class="lbtn rm" onclick="MN.remove(\''+epk+'\')">Remove</button>'
+      +'</div></div>';
+    return h5;
+  }
+
+  function countUp(el,target,f){if(!el)return;target=target||0;var red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;if(red||target===0){el.textContent=f?f(target):Math.round(target);return;}var t0=performance.now(),dur=900;(function s(t){var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3),v=target*e;el.textContent=f?f(v):Math.round(v);if(p<1)requestAnimationFrame(s);})(t0);}
+
+  function render(){
+    buildSets();
+    var m=getMy(),keys=Object.keys(m),C=document.getElementById('content');
+    if(!keys.length){
+      C.innerHTML='<div class="empty">'
+        +'<span class="es">★</span>'
+        +'<h2>No saved nodes yet</h2>'
+        +'<p>My Nodes is your private watchlist. Save any pNode and this page tracks its live stats, health and anomalies for you.</p>'
+        +'<div class="steps">1. Open the <b>dashboard</b> node table.<br>2. Tap the <b>★ star</b> on any node.<br>3. Come back here for its <b>live command center</b>.</div><br>'
+        +'<a class="cta" href="/#network">Browse nodes on the dashboard →</a>'
+        +'</div>';
+      updateAlertUI();return;
+    }
+    // aggregate
+    var online=0,stale=0,gone=0,staked=0,storage=0,hs=[],nodesWithIssues=0,allAn=[];
+    keys.forEach(function(pk){
+      var f=findPod(pk),an=anomaliesFor(pk);
+      if(an.length){nodesWithIssues++;an.forEach(function(a){allAn.push({pk:pk,a:a});});}
+      if(!f){gone++;return;}
+      var on=(SETS[f.net].ref-ts(f.p))<=900;on?online++:stale++;
+      var st=(window.STAKE||{})[pk];if(st&&st.stake>0)staked+=st.stake;
+      var cx=((window.CX&&window.CX[f.net])||{})[pk];if(cx&&cx.storage!=null)storage+=cx.storage;
+      var h=healthOf(pk,f.net);if(h!=null)hs.push(h);
+    });
+    var avgH=hs.length?Math.round(hs.reduce(function(a,b){return a+b;},0)/hs.length):null;
+    allAn.sort(function(x,y){return y.a.s-x.a.s;});
+
+    var tiles='<div class="tiles">'
+      +tile('Saved',keys.length,null)
+      +tile('Online',online+'<small> / '+keys.length+'</small>',online===keys.length?'clear':'')
+      +'<div class="tile alert'+(allAn.length?' on':'')+'"><div class="k">Alerts</div><div class="v" id="tAlert">'+allAn.length+'</div></div>'
+      +tile('Staked',fmtC(staked),null)
+      +tile('Storage',storage?fmtBytes(storage):'—',null)
+      +tile('Avg health',avgH==null?'—':avgH,avgH!=null&&avgH>=90?'clear':'')
+      +'</div>';
+
+    var anomHtml='<div class="panel"><div class="panel-cap">⚡ Anomalies<span class="n">'+(allAn.length?allAn.length+' to review':'live checks')+'</span></div>';
+    if(!allAn.length){
+      anomHtml+='<div class="allclear"><span class="big">✅</span><div><b>All clear.</b> Every saved node is online, current and healthy.</div></div>';
+    }else{
+      anomHtml+=allAn.map(function(x){
+        return '<div class="anom s'+x.a.s+'"><span class="ic">'+x.a.ic+'</span><div><div class="who">'+esc(labelOf(x.pk))+'</div><div class="what">'+x.a.t+'</div><div class="fix">'+esc(x.a.fix)+'</div></div></div>';
+      }).join('');
+    }
+    anomHtml+='</div>';
+
+    var cardsHtml='<div class="panel-cap" style="margin:2px 2px 12px">🛰️ Your nodes<span class="n">tap a card action for full details</span></div><div class="cards">'
+      +keys.map(function(pk,i){return nodeCard(pk,i);}).join('')+'</div>';
+
+    var alerts='<div class="panel" style="margin-top:22px"><div class="panel-cap">🔔 Offline alerts</div>'
+      +'<div class="alertbar"><button id="alertToggle" type="button" class="alert-toggle" onclick="MN.toggleAlerts()">🔔 Alert me if a saved node goes offline</button>'
+      +'<span id="alertNote" class="alert-note"></span></div>'
+      +'<p style="font-size:12.5px;color:var(--mut2);margin:12px 0 0">Free browser notifications while this tab stays open. This page also refreshes the live data every minute on its own.</p></div>';
+
+    C.innerHTML=tiles+anomHtml+cardsHtml+alerts;
+    updateAlertUI();
+  }
+  function tile(k,v,cls){return '<div class="tile'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
+
+  // ---- offline alerts (browser notifications) ----
+  var ALK='pulsar:alerts',ASTK='pulsar:alertstate';
+  function alertsOn(){return localStorage.getItem(ALK)==='1';}
+  function getAState(){try{return JSON.parse(localStorage.getItem(ASTK)||'{}')||{};}catch(e){return {};}}
+  function setAState(s){try{localStorage.setItem(ASTK,JSON.stringify(s));}catch(e){}}
+  function notify(title,pk,body){if(!('Notification'in window)||Notification.permission!=='granted')return;try{var n=new Notification(title,{body:body,icon:'/logo.png',tag:'pn-'+pk});n.onclick=function(){try{window.focus();}catch(e){}location.href='/#node='+pk;n.close();};}catch(e){}}
+  function runAlertCheck(){
+    if(!alertsOn())return;var keys=Object.keys(getMy());if(!keys.length)return;var st=getAState();
+    keys.forEach(function(pk){var f=findPod(pk);var s=f?((SETS[f.net].ref-ts(f.p))<=900?'on':'off'):'off';var prev=st[pk];
+      if(s==='off'&&prev==='on')notify('⚠️ Node offline',pk,labelOf(pk)+' has no signal for over 15 minutes.');
+      else if(s==='on'&&prev==='off')notify('✅ Node back online',pk,labelOf(pk)+' is reporting again.');
+      st[pk]=s;});
+    setAState(st);
+  }
+  function updateAlertUI(){
+    var btn=document.getElementById('alertToggle'),note=document.getElementById('alertNote');if(!btn)return;
+    var supported=('Notification'in window),on=alertsOn()&&supported&&Notification.permission==='granted';
+    btn.textContent=on?'🔔 Alerts on':'🔔 Alert me if a saved node goes offline';btn.classList.toggle('on',on);
+    if(note){if(!supported)note.textContent='Your browser does not support notifications.';else if(Notification.permission==='denied')note.textContent='Notifications are blocked — enable them in your browser settings.';else if(on)note.textContent='On. Keep this tab open.';else note.textContent='';}
+  }
+  function toggleAlerts(){
+    if(alertsOn()){try{localStorage.setItem(ALK,'0');}catch(e){}updateAlertUI();return;}
+    if(!('Notification'in window)){updateAlertUI();return;}
+    var perm=Notification.permission;
+    if(perm!=='granted'){Notification.requestPermission().then(function(pp){if(pp==='granted'){try{localStorage.setItem(ALK,'1');}catch(e){}var st=getAState();Object.keys(getMy()).forEach(function(pk){var f=findPod(pk);st[pk]=f?((SETS[f.net].ref-ts(f.p))<=900?'on':'off'):'off';});setAState(st);}updateAlertUI();});return;}
+    try{localStorage.setItem(ALK,'1');}catch(e){}updateAlertUI();
+  }
+
+  // ---- live refresh: reload the data files as fresh <script>s (no eval, CSP-safe) ----
+  var FILES=['network_data.js','network_data_mainnet.js','net_storage_mainnet.js','net_storage_devnet.js','node_storage_mainnet.js','node_storage_devnet.js','credits_data.js','stake_data.js','network_history.js','network_history_mainnet.js'];
+  function reload(src){return new Promise(function(res){var s=document.createElement('script');s.src=src+'?t='+Date.now();s.onload=function(){s.remove();res(true);};s.onerror=function(){s.remove();res(false);};document.body.appendChild(s);});}
+  var lastSync=Date.now();
+  function refreshData(){return Promise.all(FILES.map(reload)).then(function(){lastSync=Date.now();render();runAlertCheck();});}
+  function tickSynced(){var el=document.getElementById('synced');if(!el)return;var s=Math.max(0,Math.round((Date.now()-lastSync)/1000));var t=s<60?s+'s ago':Math.floor(s/60)+'m ago';el.innerHTML='<span class="live-dot" aria-hidden="true"></span> Live &middot; updated '+t;}
+
+  // ---- expose card actions ----
+  window.MN={
+    remove:removeFav,
+    label:setLabel,
+    toggleAlerts:toggleAlerts,
+    copy:function(pk,btn){var t=b58(pk);function ok(){if(btn){var o=btn.textContent;btn.textContent='✓ Copied';setTimeout(function(){btn.textContent=o;},1300);}}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,ok);else ok();}
+  };
+
+  // ---- init ----
+  buildSets();render();runAlertCheck();
+  tickSynced();setInterval(tickSynced,1000);
+  setInterval(refreshData,60000);
+  window.addEventListener('focus',function(){if(Date.now()-lastSync>30000)refreshData();});
+})();
+</script>
+</body>
+</html>

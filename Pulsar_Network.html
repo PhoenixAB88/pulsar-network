@@ -195,6 +195,36 @@
   .mynode .act{display:flex;gap:6px}
   .mynode .act button{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:var(--r-sm);padding:3px 9px;font-size:11px;cursor:pointer;font-family:inherit;transition:color .15s}
   .mynode .act button:hover{color:var(--ink)}
+  /* animated My Nodes entry widget */
+  .mnwidget{display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;background:linear-gradient(120deg,var(--surface-2),var(--surface-1));border:1px solid var(--hairline);border-radius:16px;padding:16px 20px;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .2s}
+  .mnwidget:hover{border-color:rgba(70,230,239,.45);transform:translateY(-2px);text-decoration:none}
+  .mnwidget::before{content:"";position:absolute;inset:0;background:radial-gradient(440px 120px at 10% 0%,rgba(70,230,239,.14),transparent 70%);pointer-events:none}
+  .mnw-ic{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:2}
+  .mnw-star{position:relative;z-index:2;font-size:26px;color:var(--orange);filter:drop-shadow(0 0 10px rgba(247,169,59,.6));line-height:1}
+  .mnw-orbit{position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);z-index:1;pointer-events:none}
+  .mnw-orbit i{position:absolute;top:50%;left:50%;width:4px;height:4px;margin:-2px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);animation:mnorb 5s linear infinite}
+  .mnw-orbit i:nth-child(2){animation-duration:7s;animation-delay:-2s;background:#8b7bff;box-shadow:0 0 6px #8b7bff}
+  .mnw-orbit i:nth-child(3){animation-duration:9s;animation-delay:-4s;background:var(--orange);box-shadow:0 0 6px var(--orange)}
+  .mnw-main{position:relative;z-index:2;min-width:0;flex:1}
+  .mnw-cap{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+  .mnw-dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:mnpulse 1.8s ease-in-out infinite}
+  .mnw-sum{display:block;font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:3px}
+  .mnw-thin{color:var(--mut2);font-weight:400}
+  .mnw-stats{display:flex;gap:8px;position:relative;z-index:2;flex-shrink:0}
+  .mnw-chip{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .mnw-chip.on{color:var(--good);background:rgba(52,224,168,.12);border:1px solid rgba(52,224,168,.32)}
+  .mnw-chip.ok{color:var(--mut2);background:var(--surface-2);border:1px solid var(--hairline)}
+  .mnw-chip.bad{color:var(--bad);background:rgba(255,93,108,.13);border:1px solid rgba(255,93,108,.4)}
+  .mnw-go{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--teal);position:relative;z-index:2;flex-shrink:0}
+  .mnw-arw{transition:transform .2s}
+  .mnwidget:hover .mnw-arw{transform:translateX(4px)}
+  .mnwidget.alert{border-color:rgba(255,93,108,.4)}
+  .mnwidget.alert .mnw-dot{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+  .mnwidget.alert::after{content:"";position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(255,93,108,.3),0 0 24px -8px rgba(255,93,108,.6);animation:mnpulse 2s ease-in-out infinite;pointer-events:none}
+  @keyframes mnorb{from{transform:rotate(0) translateX(20px) rotate(0)}to{transform:rotate(360deg) translateX(20px) rotate(-360deg)}}
+  @keyframes mnpulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @media(max-width:620px){.mnwidget{flex-wrap:wrap;gap:12px;padding:14px 16px}.mnw-stats{order:3;width:100%}.mnw-go{margin-left:auto}}
+  @media(prefers-reduced-motion:reduce){.mnw-orbit i,.mnw-dot,.mnwidget.alert::after{animation:none}}
 
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .55s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -212,14 +242,25 @@
   a.statlink:hover{border-color:var(--hairline-2);background:var(--surface-2)}
   .stat .k{color:var(--mut2);font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:500}
   .stat .v{font-size:clamp(22px,2.3vw,28px);font-weight:600;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
+  /* two short stat rectangles stacked into one grid cell */
+  .stat-stack{display:flex;flex-direction:column;gap:11px;min-width:0}
+  .stat-stack .stat.mini{flex:1;padding:11px 16px;display:flex;flex-direction:column;justify-content:center}
+  .stat-stack .stat.mini .v{font-size:clamp(18px,1.9vw,23px);margin-top:2px}
   .calc-card{position:relative;overflow:hidden;text-decoration:none;display:block;background:linear-gradient(150deg,rgba(70,230,239,.13),rgba(122,162,255,.05) 60%,transparent);border:1px solid rgba(70,230,239,.4);transition:border-color .2s,transform .15s,box-shadow .2s}
   .calc-card:hover{border-color:rgba(70,230,239,.78);transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(70,230,239,.6)}
   .calc-card .cc-k{position:relative;z-index:1;color:#bfeff4;font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px}
   .calc-card .cc-cta{position:relative;z-index:1;margin-top:10px;color:var(--teal);font-weight:600;font-size:clamp(16px,1.8vw,19px);letter-spacing:-.01em}
   .calc-card::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 100% 0,rgba(70,230,239,.2),transparent 55%);pointer-events:none}
   .calc-card::after{content:"";position:absolute;top:-25%;left:-45%;width:45%;height:150%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.15),transparent);transform:skewX(-16deg);animation:ccSheen 4.6s ease-in-out infinite;pointer-events:none}
+  .mynodes-card{position:relative;overflow:hidden;text-decoration:none;display:block;background:linear-gradient(150deg,rgba(247,169,59,.15),rgba(139,123,255,.06) 60%,transparent);border:1px solid rgba(247,169,59,.42);transition:border-color .2s,transform .15s,box-shadow .2s}
+  .mynodes-card:hover{border-color:rgba(247,169,59,.8);transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(247,169,59,.6);text-decoration:none}
+  .mynodes-card .cc-k{position:relative;z-index:1;color:#ffd9a1;font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px}
+  .mynodes-card .cc-star{filter:drop-shadow(0 0 6px rgba(247,169,59,.7))}
+  .mynodes-card .cc-cta{position:relative;z-index:1;margin-top:10px;color:var(--orange);font-weight:600;font-size:clamp(16px,1.8vw,19px);letter-spacing:-.01em}
+  .mynodes-card::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 100% 0,rgba(247,169,59,.2),transparent 55%);pointer-events:none}
+  .mynodes-card::after{content:"";position:absolute;top:-25%;left:-45%;width:45%;height:150%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.13),transparent);transform:skewX(-16deg);animation:ccSheen 5.2s ease-in-out infinite;pointer-events:none}
   @keyframes ccSheen{0%{left:-45%}62%,100%{left:135%}}
-  @media(prefers-reduced-motion:reduce){.calc-card::after{display:none}}
+  @media(prefers-reduced-motion:reduce){.calc-card::after,.mynodes-card::after{display:none}}
   .qlink{display:inline-block;margin-top:10px;font-size:14px;font-weight:500;color:var(--teal);transition:color .15s,text-shadow .15s;animation:qglow 2.4s ease-in-out infinite}
   .qlink:hover{color:#eafdff;text-shadow:0 0 14px rgba(70,230,239,.85)}
   @keyframes qglow{0%,100%{text-shadow:0 0 5px rgba(70,230,239,.30)}50%{text-shadow:0 0 13px rgba(70,230,239,.70)}}
@@ -281,6 +322,7 @@
     section{padding:44px 0}
     .sec-head{margin-bottom:22px}.sec-head p{font-size:13.5px}
     .cards{grid-template-columns:repeat(3,1fr);gap:8px}.stat{padding:11px 9px}.stat .v{font-size:17px;margin-top:4px;letter-spacing:-.01em}.stat .k{font-size:10px;letter-spacing:0}
+    .stat-stack{gap:8px}.stat-stack .stat.mini{padding:9px 9px}.stat-stack .stat.mini .v{font-size:16px}
     .band{padding:24px 18px}.steps{gap:12px}
     .stake-big{padding:12px 22px;font-size:14px}
   }
@@ -455,7 +497,7 @@
       <span class="name"><b>PULSAR</b><span>NETWORK</span></span>
     </a>
     <nav class="links">
-      <a href="#network">Network</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+      <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
       <div class="navsearch" id="navSearch">
@@ -476,7 +518,7 @@
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#network">Network</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+  <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
   <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X ↗</a>
 </div>
 
@@ -495,14 +537,15 @@
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Pulsar Network - Live Xandeum pNode Monitor</h1>
 <section id="mynodes" style="display:none;padding-bottom:0">
   <div class="wrap">
-    <h2>★ My nodes</h2>
-    <p style="color:var(--mut);font-size:14px;margin:0 0 16px">Your starred nodes - saved in this browser. Star any node in the table, then label or group it here.</p>
-    <div class="alertbar">
-      <button id="alertToggle" type="button" class="alert-toggle" onclick="toggleAlerts()">🔔 Alert me if a saved node goes offline</button>
-      <button type="button" class="alert-toggle" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})" title="Email/Telegram alerts that work even when this tab is closed">🚀 Pro alerts (coming soon) - get notified</button>
-      <span id="alertNote" class="alert-note"></span>
-    </div>
-    <div class="mynodes-grid" id="myNodesGrid"></div>
+    <a class="mnwidget" id="mnWidget" href="my-nodes.html" aria-label="Open your My Nodes command center">
+      <span class="mnw-ic" aria-hidden="true"><span class="mnw-orbit"><i></i><i></i><i></i></span><span class="mnw-star">★</span></span>
+      <span class="mnw-main">
+        <span class="mnw-cap"><span class="mnw-dot"></span>My Nodes &middot; command center</span>
+        <span class="mnw-sum" id="mnwSum">&mdash;</span>
+      </span>
+      <span class="mnw-stats" id="mnwStats"></span>
+      <span class="mnw-go">Open <span class="mnw-arw">&rarr;</span></span>
+    </a>
   </div>
 </section>
 
@@ -904,9 +947,12 @@
       <a class="stat calc-card" href="calculator.html" aria-label="Open the pNode rewards calculator"><div class="cc-k">🧮 Rewards calculator</div><div class="cc-cta">Estimate earnings &rarr;</div></a>
       <div class="stat"><div class="k">pNodes online</div><div class="v"><span style="color:var(--good)">${fmt(online)}</span><span style="color:var(--mut2);font-weight:500;font-size:.66em"> / ${fmt(pods.length)}</span></div>${pods.length-online>0?`<div style="font-size:12px;color:var(--warn);margin-top:3px">${fmt(pods.length-online)} stale &gt;15m</div>`:''}</div>
       <div class="stat"><div class="k">Network staked (XAND)</div><div class="v" style="color:var(--orange)" title="${window.STAKE_TOTAL?fmt(window.STAKE_TOTAL)+' XAND':''}">${window.STAKE_TOTAL?fmtC(window.STAKE_TOTAL):'…'}</div></div>
-      <div class="stat"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
-      ${(function(){const hv=pods.map(p=>healthOf(p.pubkey,active)).filter(x=>x!=null);if(!hv.length)return '';const a=Math.round(hv.reduce((x,y)=>x+y,0)/hv.length);const c=a>=90?'var(--good)':a>=75?'var(--teal)':'var(--warn)';return '<div class="stat"><div class="k">Avg health</div><div class="v" style="color:'+c+'" title="Mean composite health across '+hv.length+' nodes">'+a+'</div></div>';})()}
-      <div class="stat" id="ssTile" style="display:none"><div class="k" id="ssK">Network storage</div><div class="v" id="ssVal" style="color:var(--teal)">…</div><div id="ssSub" style="font-size:12px;color:var(--mut);margin-top:3px"></div></div>`;
+      <div class="stat-stack">
+        <div class="stat mini"><div class="k">Operators</div><div class="v">${window.REG?fmt(new Set(Object.values(window.REG).map(r=>r.owner)).size):'…'}</div></div>
+        ${(function(){const hv=pods.map(p=>healthOf(p.pubkey,active)).filter(x=>x!=null);if(!hv.length)return '';const a=Math.round(hv.reduce((x,y)=>x+y,0)/hv.length);const c=a>=90?'var(--good)':a>=75?'var(--teal)':'var(--warn)';return '<div class="stat mini"><div class="k">Avg health</div><div class="v" style="color:'+c+'" title="Mean composite health across '+hv.length+' nodes">'+a+'</div></div>';})()}
+      </div>
+      <div class="stat" id="ssTile" style="display:none"><div class="k" id="ssK">Network storage</div><div class="v" id="ssVal" style="color:var(--teal)">…</div><div id="ssSub" style="font-size:12px;color:var(--mut);margin-top:3px"></div></div>
+      <a class="stat mynodes-card" href="my-nodes.html" aria-label="Open your saved nodes command center"><div class="cc-k"><span class="cc-star">★</span> My Nodes</div><div class="cc-cta">Track yours &rarr;</div></a>`;
     const _tp=document.getElementById('tbPrice');
     if(_tp){
       const prow=(sym,p,id,dp)=>p?('<a href="https://www.coingecko.com/en/coins/'+id+'" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;display:flex;align-items:center;gap:6px"><span class="pxblink"></span><span class="tbp-sym">'+sym+'</span> <b>$'+p.usd.toFixed(dp)+'</b> <span style="color:'+(p.chg>=0?'var(--good)':'var(--bad)')+';font-size:12px;font-weight:600">'+(p.chg>=0?'+':'')+p.chg.toFixed(1)+'%</span> <span class="tbp-chart">chart ↗</span></a>'):'';
@@ -1043,23 +1089,33 @@
   function setLabel(pk){const m=getMy();if(!m[pk])m[pk]={label:''};const v=prompt('Label or group for this node (e.g. "My validator", "Team A"):',m[pk].label||'');if(v!==null){m[pk].label=v.trim();setMy(m);renderMyNodes();}}
   function removeFav(pk){const m=getMy();delete m[pk];setMy(m);renderMyNodes();renderRoster();}
   function findPod(pk){return (SETS.mainnet.pods||[]).concat(SETS.devnet.pods||[]).find(x=>x.pubkey===pk);}
+  // Light anomaly count for the homepage widget - same rules as my-nodes.html so numbers match.
+  function mnNewestVer(net){var pods=(SETS[net]&&SETS[net].pods)||[],best=null;pods.forEach(function(p){var v=shortver(p.version);if(!v||v==='?')return;if(best==null||v.localeCompare(best,undefined,{numeric:true})>0)best=v;});return best;}
+  function mnAnoms(pk){
+    var p=findPod(pk);if(!p)return 1;
+    var inMain=(SETS.mainnet.pods||[]).some(function(x){return x.pubkey===pk;}),net=inMain?'mainnet':'devnet',ref=SETS[net].ref,on=(ref-ts(p))<=900,n=0;
+    if(!on)n++;
+    var nv=mnNewestVer(net),sv=shortver(p.version);
+    if(nv&&sv&&sv!=='?'&&sv.localeCompare(nv,undefined,{numeric:true})<0)n++;
+    var h=healthOf(pk,net);if(h!=null&&h<75)n++;
+    var U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};if(U[pk]!=null&&U[pk]<95)n++;
+    if(net==='mainnet'&&on){var s=(window.STAKE||{})[pk];if(!s||!(s.stake>0))n++;}
+    return n;
+  }
   function renderMyNodes(){
-    const sec=document.getElementById('mynodes'),grid=document.getElementById('myNodesGrid');if(!grid)return;
-    const m=getMy(),keys=Object.keys(m);
+    var sec=document.getElementById('mynodes'),w=document.getElementById('mnWidget');if(!w)return;
+    var m=getMy(),keys=Object.keys(m);
     if(!keys.length){sec.style.display='none';return;}
     sec.style.display='';
-    grid.innerHTML=keys.map(pk=>{
-      const p=findPod(pk)||{},inMain=(SETS.mainnet.pods||[]).some(x=>x.pubkey===pk),pref=inMain?SETS.mainnet.ref:SETS.devnet.ref;
-      const on=!!p.pubkey&&(pref-ts(p))<=900,st=(window.STAKE||{})[pk];
-      const loc=p.city?((p.cc?flag(p.cc)+' ':'')+p.city):'';
-      const lbl=m[pk].label||loc||shortpk(pk);
-      const status=p.pubkey?(on?'<span class="on" style="font-size:12px;font-weight:600">● online</span>':'<span class="off" style="font-size:12px;font-weight:600">● stale</span>'):'<span style="color:var(--mut2);font-size:12px">not in roster</span>';
-      var epk=b58(pk);
-      return '<div class="mynode"><div class="top"><button type="button" class="star on" title="Remove" aria-label="Remove favourite" onclick="removeFav(\''+epk+'\')">★</button><span class="lbl">'+esc(lbl)+'</span>'+status+'</div>'
-        +'<div class="meta">'+esc(shortpk(pk))+(loc&&m[pk].label?(' · '+esc(loc)):'')+'</div>'
-        +'<div class="row2"><span>'+(st&&st.stake>0?('<b style="color:var(--orange)">'+fmt(st.stake)+'</b> XAND'):'<span style="color:var(--mut2)">— XAND</span>')+'</span>'
-        +'<span class="act"><button onclick="setLabel(\''+epk+'\')">Edit label</button><button onclick="openNode(\''+epk+'\')">Details</button></span></div></div>';
-    }).join('');
+    var online=0,alerts=0;
+    keys.forEach(function(pk){
+      var p=findPod(pk);
+      if(p){var inMain=(SETS.mainnet.pods||[]).some(function(x){return x.pubkey===pk;});var ref=inMain?SETS.mainnet.ref:SETS.devnet.ref;if((ref-ts(p))<=900)online++;}
+      alerts+=mnAnoms(pk);
+    });
+    document.getElementById('mnwSum').innerHTML=keys.length+' node'+(keys.length===1?'':'s')+' tracked <span class="mnw-thin">·</span> '+online+' online';
+    document.getElementById('mnwStats').innerHTML='<span class="mnw-chip on">'+online+'/'+keys.length+' online</span>'+(alerts?('<span class="mnw-chip bad">⚠ '+alerts+' alert'+(alerts===1?'':'s')+'</span>'):'<span class="mnw-chip ok">all clear</span>');
+    w.classList.toggle('alert',alerts>0);
   }
   // ---- Free down-node alerts: browser notifications while this tab is open ----
   const ALK='pulsar:alerts', ASTK='pulsar:alertstate';
