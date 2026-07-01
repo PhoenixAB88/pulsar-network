@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Storage Node Passive Income in 2026: The Realistic Numbers | Pulsar</title>
+<meta name="description" content="What running storage nodes actually pays in 2026: Storj, Filecoin, Arweave, Chia and Xandeum compared honestly by operators, with the one number the marketing always skips.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/storage-node-passive-income.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Storage Node Passive Income in 2026: The Realistic Numbers">
+<meta property="og:description" content="What storage nodes actually pay, from people who run them. The one number the marketing always skips.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/storage-node-passive-income.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Storage Node Passive Income in 2026: The Realistic Numbers">
+<meta name="twitter:description" content="What storage nodes actually pay, from people who run them. The one number the marketing always skips.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .formula{background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:16px 20px;margin:18px 0;text-align:center;font-size:15.5px;color:var(--ink);font-weight:600}
+  .formula small{display:block;font-weight:400;color:var(--mut2);font-size:12.5px;margin-top:6px}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+  th{color:var(--mut2);font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 10px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px;border-bottom:1px solid var(--hairline);color:var(--mut);vertical-align:top}
+  td b{color:var(--ink)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Storage Node Passive Income in 2026: The Realistic Numbers","description":"What running storage nodes actually pays in 2026: Storj, Filecoin, Arweave, Chia and Xandeum compared honestly by operators.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/storage-node-passive-income.html","image":"https://pulsarnetwork.xyz/og-image.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"Storage Node Passive Income","item":"https://pulsarnetwork.xyz/storage-node-passive-income.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is storage node passive income real in 2026?","acceptedAnswer":{"@type":"Answer","text":"Partially. The infrastructure works and payouts happen, but on every major network storage supply vastly exceeds paid demand, so per-node income is small: typically single-digit dollars per terabyte-month on demand-paid networks, and near zero on networks whose usage is still tiny. Most 'income' today is token emissions, which is speculation, not storage revenue."}},
+{"@type":"Question","name":"How much can you earn with a Storj node?","acceptedAnswer":{"@type":"Answer","text":"Storj pays published per-terabyte rates for storage and egress. Operators with a few spare terabytes typically report single-digit to low tens of dollars per month, heavily dependent on how much customer data actually lands on the node. It rewards patience and existing hardware more than new investment."}},
+{"@type":"Question","name":"Is Filecoin worth it for individuals?","acceptedAnswer":{"@type":"Answer","text":"Generally not for hobbyists. Competitive Filecoin storage providing requires sealing hardware, FIL collateral, and datacenter-grade operations. It is a professional business, not a plug-in-a-drive side income."}},
+{"@type":"Question","name":"What is the most honest way to evaluate a DePIN node opportunity?","acceptedAnswer":{"@type":"Answer","text":"Find the demand number the marketing does not lead with: how much of the network's capacity is actually paid for and used. Then compute income at current demand, not projected demand, and treat token emissions as speculation. If the project cannot show you live usage data, that is itself the answer."}},
+{"@type":"Question","name":"Why run a node at all if current income is low?","acceptedAnswer":{"@type":"Answer","text":"Legitimate reasons: very low marginal cost (hardware you already own or a cheap VPS), conviction in a specific network's demand growing, accumulating operational reputation and delegation early, and learning. Treat it as a cheap position on future usage with a small carry cost, not as current yield."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Reality check &middot; updated July 2026</span>
+  <h1>Storage node passive income in 2026: the realistic numbers</h1>
+  <p class="lead">The pitch is everywhere: plug in a hard drive, earn crypto while you sleep. We run 12 storage nodes ourselves, so this is the article we wish existed before we started: <strong>what storage nodes actually pay in 2026, network by network, and the one number the marketing always skips.</strong></p>
+  <p class="byline">By Pulsar Network, operators of 12 Xandeum pNodes. Numbers are approximate, dated July 2026, and hedged where they vary; disclosure at the end.</p>
+
+  <div class="tldr"><b>TL;DR:</b> Storage node income is real but small, because on every major network storage supply massively exceeds paid demand. Demand-paid networks (Storj) pay single-digit dollars per terabyte-month. Professional networks (Filecoin) are businesses, not side income. Early networks (Xandeum) pay near zero today because usage is under 1%. The honest framing: cheap carry cost for a position on future demand, plus learning. Anyone quoting fat APYs is quoting token emissions, which is speculation with extra steps.</div>
+
+  <h2>The only formula that matters</h2>
+  <div class="formula">your income = (network's paid demand) &times; (your share of supply) &minus; (your costs)<small>every storage network, no exceptions</small></div>
+  <p>Node marketing focuses on your share (buy more drives! stake more! boost more!) because that is what you can buy. But the first term, <strong>paid demand</strong>, sets the ceiling for everyone. If a network earns little real revenue, all the supply in the world just splits little revenue into smaller pieces. So for each network below, we lead with the demand reality, not the hardware requirements.</p>
+
+  <h2>Network by network, honestly</h2>
+  <h3>Storj: the demand-paid benchmark</h3>
+  <p>Storj pays operators from actual customer bills at published per-terabyte rates (on the order of a couple of dollars per TB-month stored, plus egress). That honesty cuts both ways: nodes only earn when customer data actually lands on them, and filling a node takes months. Operators with a few spare terabytes typically report <strong>single-digit to low-tens of dollars per month</strong>. On hardware you already own, that is real, slow, honest income. On purpose-bought hardware, payback is long.</p>
+  <h3>Filecoin: a profession, not a side hustle</h3>
+  <p>Filecoin storage providers seal sectors with serious hardware, lock FIL as collateral, and face penalties for downtime. Income combines block rewards and storage deals, and competitive operations look like small datacenters. For an individual with a NAS, <strong>the practical answer is no</strong>: this is a B2B infrastructure business with token exposure, and the professionals are your competition.</p>
+  <h3>Arweave: you pay it, not the other way around</h3>
+  <p>Arweave's model is pay-once storage funded by an endowment; mining it is a specialized pursuit dominated by optimized setups. For nearly everyone, Arweave is a network you <strong>use</strong> (and its permanence is genuinely useful, as we noted in <a href="solana-storage-explained.html">our Solana storage explainer</a>), not one you plug a drive into for income.</p>
+  <h3>Chia: the cautionary tale</h3>
+  <p>The 2021 "farm your spare space" wave: netspace exploded, token price fell, and rewards per plot became negligible while burning through consumer SSDs. Worth remembering whenever a new network promises income for idle space: <strong>supply always shows up faster than demand.</strong></p>
+  <h3>Xandeum: our own case study, with the number that matters</h3>
+  <p>We run 12 Xandeum pNodes, so here is our own network held to the same standard. The demand number: mainnet has about <strong>355 TB committed and well under 1% of it used</strong>, so STOINC fee pools, which follow real usage, currently pay <strong>near zero</strong>. Costs are equally small (a $5 to $10 VPS per node; the software is free), so what operators are really buying is <strong>a position: uptime history, delegation, and cheap-era boosts accumulated before demand arrives</strong>. We published the full math, live data and scenarios in <a href="xandeum-pnode-earnings.html">How much does a pNode earn?</a>, and every claim is checkable on <a href="/">our live dashboard</a>.</p>
+
+  <table>
+    <thead><tr><th>Network</th><th>Demand today</th><th>Typical individual income</th><th>Upfront need</th><th>Honest one-liner</th></tr></thead>
+    <tbody>
+      <tr><td><b>Storj</b></td><td>Real, modest</td><td>$ single digits to low tens /mo</td><td>Spare TBs, static IP</td><td>Slow, honest, use existing hardware</td></tr>
+      <tr><td><b>Filecoin</b></td><td>Real, enterprise</td><td>N/A for hobbyists</td><td>Sealing rig + FIL collateral</td><td>A business, not a side income</td></tr>
+      <tr><td><b>Arweave</b></td><td>Real, archival</td><td>Mining: specialized only</td><td>Optimized mining setup</td><td>Use it, don't expect to earn from it</td></tr>
+      <tr><td><b>Chia</b></td><td>Minimal</td><td>Negligible</td><td>Plotting wear</td><td>The supply-glut cautionary tale</td></tr>
+      <tr><td><b>Xandeum</b></td><td>&lt;1% of capacity (early)</td><td>Near zero now; position play</td><td>$5-10/mo VPS + stake</td><td>Cheap option on future usage</td></tr>
+    </tbody>
+  </table>
+
+  <div class="honest"><b>About token emissions:</b> several networks top up thin fee income with token rewards. That can be rational to collect, but call it what it is: you are being paid in equity-like exposure to the network's future, not storage revenue. If the token falls faster than you farm it, "passive income" becomes active loss.</div>
+
+  <h2>The pattern behind all of it</h2>
+  <p>Across every network, the same three facts repeat:</p>
+  <ol>
+    <li><strong>Supply arrives instantly, demand arrives slowly.</strong> Plugging in drives is easy; convincing apps and enterprises to store paid data takes years. Every storage network lives in this gap.</li>
+    <li><strong>Whales professionalize whatever pays.</strong> The moment per-node income rises, industrial operators add supply until it falls back. Your durable edges are cheap infrastructure, reliability, and being early with reputation, not raw capacity.</li>
+    <li><strong>The real product is often the position.</strong> Early operators accumulate things latecomers cannot buy back: track record, delegation relationships, cheap-era boosts. Whether that pays depends entirely on whether demand ever arrives, which is a judgment call, not a promise.</li>
+  </ol>
+
+  <h2>The five-question checklist before you buy anything</h2>
+  <ol>
+    <li><strong>Can I see the demand number, live?</strong> Paid usage, not capacity, not node count. If the project does not publish it, that is your answer. (It is why <a href="network-stats.html">we publish ours</a>, unflattering as it currently is.)</li>
+    <li><strong>What is my income at current demand?</strong> Not projected demand. Run the number today; treat growth as upside, not baseline.</li>
+    <li><strong>What fraction of rewards is token emissions?</strong> That fraction is speculation, size it like speculation.</li>
+    <li><strong>What are my true costs?</strong> Hardware, power or VPS, your hours, plus wear (ask Chia plotters about SSDs).</li>
+    <li><strong>What is my exit?</strong> Hardware resale value, token liquidity, and whether locked stake or collateral takes time to leave.</li>
+  </ol>
+  <p>If a project survives all five questions with real numbers, run the small version first. A $10 VPS teaches you more than a $1,000 rig you regret.</p>
+
+  <div class="cta">
+    <a class="btn" href="xandeum-pnode-earnings.html">Our full pNode earnings breakdown &rarr;</a>
+    <a class="btn ghost" href="calculator.html">Model a node in the live calculator</a>
+    <a class="btn ghost" href="run-a-pnode.html">How to run a pNode ($5/mo)</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>Is storage node passive income real?</summary><p>Real but small. Payouts happen, yet supply exceeds paid demand on every major network, so income per node is modest: single-digit dollars per TB-month on demand-paid networks, near zero on early networks. Emission-heavy "yields" are token speculation, not storage revenue.</p></details>
+    <details><summary>Which storage network pays the most in 2026?</summary><p>For an individual with spare hardware, demand-paid networks like Storj produce the steadiest small income. Professional operations earn more on Filecoin, with professional costs and risks. Early networks pay in position, not cash.</p></details>
+    <details><summary>Do I need special hardware?</summary><p>Storj: spare drives and a stable connection. Filecoin: datacenter-grade sealing hardware. Xandeum: any $5-10 VPS with 4 cores and an SSD (see <a href="run-a-pnode.html">our setup guide</a>). Matching hardware spend to realistic income is the whole game.</p></details>
+    <details><summary>Why do you run nodes if income is near zero?</summary><p>Low carry cost, conviction in smart-contract-native storage demand arriving, and the early-position assets: uptime history, delegation, cheap-era boosts. We hold that view with our own money and publish the live numbers that would prove us right or wrong.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://www.storj.io/node" target="_blank" rel="noopener">Storj node docs</a> &middot; <a href="https://docs.filecoin.io/storage-providers/basics" target="_blank" rel="noopener">Filecoin storage provider docs</a> &middot; <a href="https://docs.arweave.org/" target="_blank" rel="noopener">Arweave docs</a> &middot; <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum docs</a> &middot; live Xandeum network data on <a href="/">our dashboard</a>. Figures are order-of-magnitude as of July 2026; check each network's current published rates before acting.
+    <br><br>Disclosure: Pulsar Network operates 12 Xandeum pNodes and accepts XAND delegation at 10% commission. We wrote the Xandeum section to the same standard as the others, leading with the demand number. Not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+</body>
+</html>

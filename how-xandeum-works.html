@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>How Xandeum Works: Pods, Gossip and pRPC Under the Hood | Pulsar</title>
+<meta name="description" content="Xandeum architecture from operators who run it: pNodes and the pod service, gossip, the pRPC interface (get-pods-with-stats), buckets and peek/poke, Atlas, and what is decentralized today.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/how-xandeum-works.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="How Xandeum Works: Pods, Gossip and pRPC Under the Hood">
+<meta property="og:description" content="The architecture from operators who run it: pods, gossip, pRPC, buckets, Atlas, and what is decentralized today.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/how-xandeum-works.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="How Xandeum Works: Pods, Gossip and pRPC Under the Hood">
+<meta name="twitter:description" content="The architecture from operators who run it: pods, gossip, pRPC, buckets, Atlas, and what is decentralized today.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .livebar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:11px 15px;margin:18px 0;font-size:13.5px;color:var(--mut)}
+  .livebar b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:lvp 1.8s ease-in-out infinite;flex-shrink:0}
+  @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
+  @media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
+  pre{background:#0b1830;border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.6;color:#d7e4f7;font-family:ui-monospace,Menlo,Consolas,monospace;margin:18px 0}
+  pre .c{color:var(--mut2)}
+  pre .k{color:var(--teal)}
+  pre .s{color:#a8e6b8}
+  code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:14px;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+  th{color:var(--mut2);font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 10px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px;border-bottom:1px solid var(--hairline);color:var(--mut);vertical-align:top}
+  td b{color:var(--ink)}
+  .yes{color:var(--good);font-weight:600}.no{color:var(--bad);font-weight:600}.part{color:var(--orange);font-weight:600}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"How Xandeum Works: Pods, Gossip and pRPC Under the Hood","description":"Xandeum architecture from operators who run it: pNodes and the pod service, gossip, the pRPC interface, buckets and peek/poke, Atlas, and what is decentralized today.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/how-xandeum-works.html","image":"https://pulsarnetwork.xyz/og-image.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"How Xandeum Works","item":"https://pulsarnetwork.xyz/how-xandeum-works.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is a Xandeum pNode (pod)?","acceptedAnswer":{"@type":"Answer","text":"A provider node: a machine running Xandeum's pod service that dedicates disk space to the network. Its identity is an Ed25519 keypair (the pubkey you see in explorers), it joins a cluster (devnet or mainnet), gossips with peers, and serves a local JSON-RPC interface called pRPC on port 6000."}},
+{"@type":"Question","name":"What is pRPC?","acceptedAnswer":{"@type":"Answer","text":"The pNode's own RPC interface (default port 6000). Methods include get-pods (the gossip roster), get-stats (the node's own stats) and get-pods-with-stats, which returns the full network roster together with each node's committed and used storage, uptime and version. Any operator can self-source network-wide data from their own node with it."}},
+{"@type":"Question","name":"How do Xandeum nodes find each other?","acceptedAnswer":{"@type":"Answer","text":"Via gossip: nodes exchange peer lists and liveness data, so each node holds a roster of the network with last-seen timestamps. One practical quirk: a node's own gossip output omits itself, so roster tooling must add the local node back in."}},
+{"@type":"Question","name":"Is Xandeum fully decentralized?","acceptedAnswer":{"@type":"Answer","text":"Not yet, and the honest answer has parts: storage, gossip and pRPC run on independent operators' machines (decentralized), staking and reward settlement are on-chain on Solana (decentralized), while Atlas coordination and the official credits API are Foundation-run today (centralized components, with Atlas slated for removal on the roadmap)."}},
+{"@type":"Question","name":"What are buckets and peek/poke in Xandeum?","acceptedAnswer":{"@type":"Answer","text":"Buckets are the storage unit an application allocates on the network. Peek and poke are the read and write primitives designed to let smart contracts access that storage, with proofs verifying the data. This smart-contract-native access is Xandeum's core design goal and its main difference from pointer-based storage."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Technical deep dive &middot; updated July 2026</span>
+  <h1>How Xandeum works under the hood: pods, gossip and pRPC</h1>
+  <p class="lead">Most Xandeum explainers stop at the whiteboard. We run <strong>12 pNodes</strong> and built a <a href="/">live monitor</a> on the network's own interfaces, so this is the machine-room tour: what actually runs on a pNode, how nodes find each other, what the pRPC interface returns, and what is genuinely decentralized today versus not yet.</p>
+  <p class="byline">By Pulsar Network. Everything below is public protocol behavior, reproducible on any pNode you run yourself.</p>
+
+  <div class="tldr"><b>TL;DR:</b> Xandeum splits the job in two: a blockchain (Solana today) handles trust, staking and reward settlement, while a network of pNodes handles bytes. Each pNode runs the pod service with an Ed25519 keypair identity, gossips a peer roster, and serves pRPC on port 6000, where one call (get-pods-with-stats) returns the whole network's roster with per-node storage, uptime and version. Apps get buckets with peek/poke (read/write) access designed for smart contracts. Coordination via Atlas and the credits feed are still centralized, Foundation-run pieces; storage, gossip and settlement are not.</div>
+
+  <div class="livebar" id="livebar">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span>The network this page describes, live:</span>
+    <span><b id="lvNodes">&mdash;</b> pNodes</span>
+    <span><b id="lvSto">&mdash;</b> committed</span>
+    <span><b id="lvStake">&mdash;</b> XAND staked</span>
+  </div>
+
+  <h2>The two-layer picture</h2>
+  <p>Xandeum's architecture separates concerns that most storage chains bundle:</p>
+  <ul>
+    <li><strong>The trust layer is an existing blockchain.</strong> Staking, node registration, reward settlement (STOINC pools in wSOL, once per <a href="yuga.html">Yuga</a>) live on-chain. Xandeum is blockchain-agnostic by design; Solana is the first, live integration.</li>
+    <li><strong>The byte layer is the pNode network.</strong> Independent operators dedicate disk, prove they hold data, and earn from the fee pools. No single machine holds everything; capacity scales by adding nodes.</li>
+  </ul>
+  <p>On top of both sit <strong>sedApps</strong> (storage-enabled dApps): applications that allocate <strong>buckets</strong> of storage and access them with <strong>peek</strong> (read) and <strong>poke</strong> (write) primitives, with proofs verifying the bytes. That smart-contract-native access is the point of the whole design, and the gap it targets is real, as we showed in <a href="solana-storage-explained.html">our Solana storage explainer</a>: today no mainstream storage option can be touched by on-chain logic.</p>
+
+  <h2>Anatomy of a pNode</h2>
+  <p>Strip one open (ours are ordinary $5-10 VPSes) and you find:</p>
+  <ul>
+    <li><strong>The pod service.</strong> A systemd service (<code>pod.service</code>) installed by the official installer, joined to one cluster: <strong>devnet</strong> (where new versions land first) or <strong>mainnet</strong>.</li>
+    <li><strong>An identity keypair.</strong> An Ed25519 key whose pubkey is the node's permanent identity in gossip, explorers and staking. Lose the key, lose the identity and everything attached to it, which is why <a href="pnode-tips.html#backup-keys">key backup is rule one</a> for operators.</li>
+    <li><strong>Dedicated storage.</strong> Disk the operator commits to the network; committed capacity is what shows up in network stats and reward weight.</li>
+    <li><strong>Registration and stake.</strong> On-chain registration ties the node to an operator wallet; XAND staked to the node multiplies its reward weight (the full economics are in <a href="xandeum-pnode-earnings.html">our earnings breakdown</a>).</li>
+  </ul>
+
+  <h2>Gossip: how the network knows itself</h2>
+  <p>pNodes maintain the network map peer-to-peer: each node exchanges peer lists and liveness with others, converging on a roster of who exists, their address, version, and when they were last seen. Our dashboard's node table is literally this gossip roster, refreshed continuously; a node whose last-seen timestamp goes stale for over 15 minutes gets flagged offline.</p>
+  <p>One quirk we hit in practice: <strong>a node's roster omits the node itself.</strong> Ask your own pNode who exists and everyone answers except it. Monitoring tools have to add the local node back in, a small detail, but the kind you only learn by running the thing.</p>
+
+  <h2>pRPC: the network's data interface</h2>
+  <p>Every pNode serves a JSON-RPC interface, <strong>pRPC</strong>, on port 6000. It is the front door to network data, and the Xandeum team's recommended way to get cluster information is to query <strong>your own node's</strong> pRPC rather than depending on anyone else's infrastructure. Three methods matter:</p>
+  <ul>
+    <li><code>get-pods</code>: the gossip roster (identities, addresses, versions, last-seen).</li>
+    <li><code>get-stats</code>: the local node's own numbers.</li>
+    <li><code>get-pods-with-stats</code>: the roster <strong>with per-node storage and uptime</strong>, the whole network in one call.</li>
+  </ul>
+  <pre><span class="c"># ask your own node about the whole network</span>
+curl -s -X POST <span class="s">http://localhost:6000/rpc</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"jsonrpc":"2.0","method":"get-pods-with-stats","id":1}'</span>
+
+<span class="c"># trimmed response, one pod of ~114:</span>
+{ <span class="k">"pubkey"</span>: <span class="s">"7xKq...Ry2f"</span>,
+  <span class="k">"address"</span>: <span class="s">"203.0.113.7:5000"</span>,
+  <span class="k">"version"</span>: <span class="s">"1.3.3"</span>,
+  <span class="k">"storage_committed"</span>: <span class="s">4398046511104</span>,
+  <span class="k">"storage_used"</span>: <span class="s">578813952</span>,
+  <span class="k">"storage_usage_percent"</span>: <span class="s">0.01</span>,
+  <span class="k">"uptime"</span>: <span class="s">2591999</span>,
+  <span class="k">"is_public"</span>: <span class="s">false</span> }</pre>
+  <p>That one call is how this site self-sources everything: two of our nodes run a cron that queries their own pRPC, aggregates the roster, and publishes the numbers you see on <a href="/">the dashboard</a>, per-node storage columns included. No third-party API, no trust in anyone's indexer, and you can reproduce every number on your own node.</p>
+  <div class="honest"><b>Operator note:</b> pRPC has a public/private mode (<code>is_public</code> in the output). Guidance, ours and the Foundation's: run it <strong>private</strong> (bound to localhost) unless you have a reason not to; you lose nothing, since your own machine can still query it locally. Details in <a href="pnode-tips.html#prpc-private">our tips page</a>.</div>
+
+  <h2>Credits, health and who keeps score</h2>
+  <p>Reward-relevant performance is tracked as <strong>credits</strong>, published per node by the Foundation's official credits API (the feed behind our Health column, blended with our own independent uptime tracking). Scoring is thus a centralized function today, which belongs in the honest architecture table:</p>
+  <table>
+    <thead><tr><th>Component</th><th>Who runs it today</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><b>Storage + gossip + pRPC</b></td><td>Independent operators (114 nodes, 88 operators)</td><td class="yes">Decentralized</td></tr>
+      <tr><td><b>Staking &amp; STOINC settlement</b></td><td>On-chain programs on Solana</td><td class="yes">Decentralized</td></tr>
+      <tr><td><b>Atlas (coordination)</b></td><td>Foundation-run</td><td class="part">Centralized, slated for removal in beta</td></tr>
+      <tr><td><b>Credits scoring</b></td><td>Foundation API</td><td class="part">Centralized today</td></tr>
+      <tr><td><b>Client software</b></td><td>Xandeum team releases (devnet first, then mainnet)</td><td class="part">Single implementation</td></tr>
+    </tbody>
+  </table>
+  <p>We flag the centralized pieces not to dunk on the project we operate in, but because <strong>trust math only works when you know what you are trusting.</strong> The roadmap direction (removing Atlas, decentralizing coordination) is the right one; until it ships, this table is the truth.</p>
+
+  <h2>The lifecycle of a byte (putting it together)</h2>
+  <ol>
+    <li>A sedApp allocates a <strong>bucket</strong> and pays storage fees.</li>
+    <li>Its data is written via <strong>poke</strong>, distributed with redundancy across pNodes.</li>
+    <li>pNodes keep proving they hold the data; performance and credits track who is reliable.</li>
+    <li>Reads come back via <strong>peek</strong>, verifiable by proofs rather than trust in a server.</li>
+    <li>Each Yuga (~2.8 days), collected fees settle as a wSOL pool: 90% to operators by weight (storage &times; performance &times; stake &times; boost), 5% Foundation, 5% platform.</li>
+  </ol>
+  <p>Demand side honesty, as always: committed capacity is ~355 TB and real usage is still under 1%, so step 1 is the step the ecosystem is waiting on. Watch it move on <a href="network-stats.html">network stats</a>.</p>
+
+  <div class="cta">
+    <a class="btn" href="/">See the architecture live &rarr;</a>
+    <a class="btn ghost" href="run-a-pnode.html">Run a pNode yourself</a>
+    <a class="btn ghost" href="glossary.html">Full Xandeum glossary</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>What is a pod / pNode?</summary><p>A provider node: the pod service on an ordinary server, with an Ed25519 keypair identity, dedicated disk, cluster membership (devnet or mainnet), gossip, and a local pRPC interface on port 6000.</p></details>
+    <details><summary>What is pRPC and what can it tell me?</summary><p>The node's JSON-RPC interface. get-pods returns the gossip roster; get-pods-with-stats adds per-node committed and used storage, uptime and version, the whole network from your own machine, no third party needed.</p></details>
+    <details><summary>How do nodes discover each other?</summary><p>Gossip: peer lists and liveness spread node to node until every node holds the network map with last-seen timestamps. Quirk: a node omits itself from its own roster.</p></details>
+    <details><summary>Is Xandeum decentralized?</summary><p>Partly, and precisely: storage, gossip, pRPC and on-chain settlement are decentralized; Atlas coordination and credits scoring are Foundation-run today, with Atlas removal on the roadmap. See the table above.</p></details>
+    <details><summary>What are buckets, peek and poke?</summary><p>Buckets are app-allocated storage; peek reads and poke writes, with proofs, designed so smart contracts can use storage directly. That program-accessible storage is Xandeum's core bet.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot; <a href="https://www.xandeum.network/stoinc" target="_blank" rel="noopener">Xandeum: STOINC</a> &middot; pRPC behavior verified on our own pNodes (reproducible on any node; the sample response is real in shape with placeholder identity) &middot; live data on <a href="/">our dashboard</a>.
+    <br><br>Disclosure: Pulsar Network operates 12 pNodes and accepts XAND delegation at 10% commission. We are independent and not affiliated with the Xandeum Foundation; the decentralization table above is our honest operator's read. Not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+
+<script src="net_storage_mainnet.js"></script>
+<script src="stake_data.js"></script>
+<script>
+(function(){
+  function fmtBytes(b){if(b==null)return null;var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
+  try{
+    var NS=(window.__NS&&window.__NS.mainnet)||null;
+    if(NS){
+      if(NS.nodes)document.getElementById('lvNodes').textContent=NS.nodes.toLocaleString('en-US');
+      if(NS.committed)document.getElementById('lvSto').textContent=fmtBytes(NS.committed);
+    }
+    if(window.STAKE_TOTAL)document.getElementById('lvStake').textContent=new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(window.STAKE_TOTAL);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

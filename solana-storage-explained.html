@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Where Does Data on Solana Actually Live? Storage Explained | Pulsar</title>
+<meta name="description" content="Solana storage explained: how accounts and rent work, why on-chain bytes cost so much, where NFT images really live, and the options (Arweave, IPFS, Shadow Drive, Filecoin, Xandeum).">
+<link rel="canonical" href="https://pulsarnetwork.xyz/solana-storage-explained.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Where Does Data on Solana Actually Live?">
+<meta property="og:description" content="Accounts, rent, and why 1 MB on-chain costs ~7 SOL. Where NFT images really live, and every real storage option compared.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/solana-storage-explained.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Where Does Data on Solana Actually Live?">
+<meta name="twitter:description" content="Accounts, rent, and why 1 MB on-chain costs ~7 SOL. Where NFT images really live, and every real storage option compared.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .bignum{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0}
+  .bn{flex:1 1 200px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:16px 18px;text-align:center}
+  .bn b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--teal)}
+  .bn span{font-size:12.5px;color:var(--mut2)}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+  th{color:var(--mut2);font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 10px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px;border-bottom:1px solid var(--hairline);color:var(--mut);vertical-align:top}
+  td b{color:var(--ink)}
+  .yes{color:var(--good);font-weight:600}.no{color:var(--bad);font-weight:600}.part{color:var(--orange);font-weight:600}
+  code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:14px;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Where Does Data on Solana Actually Live? Solana Storage, Explained","description":"How Solana accounts and rent work, why on-chain bytes are expensive, where NFT media really lives, and the real storage options compared.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/solana-storage-explained.html","image":"https://pulsarnetwork.xyz/og-image.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"Solana Storage Explained","item":"https://pulsarnetwork.xyz/solana-storage-explained.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Where does Solana store data?","acceptedAnswer":{"@type":"Answer","text":"In accounts: every piece of on-chain state lives in an account whose data is replicated by every validator. That makes on-chain bytes fast but expensive, so applications keep only small, hot state on-chain and push everything heavy (images, files, archives) to external storage such as Arweave, IPFS, Shadow Drive, Filecoin or Xandeum."}},
+{"@type":"Question","name":"How much does it cost to store 1 MB on Solana?","acceptedAnswer":{"@type":"Answer","text":"Roughly 6.96 SOL locked as a rent-exempt deposit (about 3,480 lamports per byte-year, charged as a two-year deposit). The deposit is refundable when the account closes, but at typical SOL prices that is hundreds of dollars per megabyte, which is why large data never goes directly on-chain."}},
+{"@type":"Question","name":"Are NFT images stored on Solana?","acceptedAnswer":{"@type":"Answer","text":"No. The on-chain NFT holds ownership and a URI pointer. The metadata JSON and the image itself live off-chain, most commonly on Arweave or IPFS, sometimes on a plain web server. If that off-chain copy disappears, the NFT points at nothing."}},
+{"@type":"Question","name":"What is Solana rent?","acceptedAnswer":{"@type":"Answer","text":"A storage deposit mechanism: an account must hold enough SOL (about two years' worth of the old rent rate) to be rent-exempt. It compensates validators for replicating your bytes forever, and you get the deposit back when you close the account."}},
+{"@type":"Question","name":"Can a Solana program read data stored on IPFS or Arweave?","acceptedAnswer":{"@type":"Answer","text":"Not directly. Programs can only read accounts during a transaction. Data on IPFS, Arweave or S3 is invisible to on-chain logic; apps read it client-side. Making external storage program-accessible is exactly the gap projects like Xandeum are trying to close."}},
+{"@type":"Question","name":"What are the main decentralized storage options for Solana apps?","acceptedAnswer":{"@type":"Answer","text":"Arweave (pay once, permanent archives), IPFS (content addressing, needs pinning), Shadow Drive (Solana-native object storage), Filecoin (contract-based bulk storage) and Xandeum (an early-stage storage layer aiming to be readable and writable from Solana programs)."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Explainer &middot; updated July 2026</span>
+  <h1>Where does data on Solana actually live?</h1>
+  <p class="lead">Mint an NFT, deploy a program, post on a Solana social app, and then ask a simple question: <strong>where are the bytes?</strong> The answer surprises most people. Solana itself stores astonishingly little, charges a fortune for it, and almost everything you think is "on-chain" actually lives somewhere else.</p>
+  <p class="byline">By Pulsar Network. We operate storage infrastructure in the Solana ecosystem and monitor it live; disclosure at the end.</p>
+
+  <div class="tldr"><b>TL;DR:</b> Solana stores state in accounts that every validator replicates, which makes on-chain bytes fast to access but expensive to keep: about 6.96 SOL locked per megabyte. So apps keep only small, hot state on-chain and push everything heavy off-chain to Arweave, IPFS, Shadow Drive, Filecoin, centralized servers, or newer smart-contract-native layers like Xandeum. Each option trades off cost, permanence, and whether a program can actually use the data.</div>
+
+  <h2>How Solana stores data natively: accounts and rent</h2>
+  <p>Everything on Solana lives in <strong>accounts</strong>: your wallet balance, a token's supply, a program's code, an NFT's ownership record. An account is a small container of bytes (up to 10 MiB) that every validator keeps in fast storage, because any transaction might touch it at any moment.</p>
+  <p>That replication is what makes Solana fast, and it is also why on-chain bytes are premium real estate. To create an account you must deposit enough SOL to make it <strong>rent-exempt</strong>: roughly 3,480 lamports per byte-year, charged as a two-year deposit up front. The deposit comes back when you close the account, but while your data exists, the SOL is locked:</p>
+  <div class="bignum">
+    <div class="bn"><b>~0.002 SOL</b><span>rent deposit for a token account (165 bytes)</span></div>
+    <div class="bn"><b>~6.96 SOL</b><span>rent deposit for 1 MB of on-chain data</span></div>
+    <div class="bn"><b>~7,000 SOL</b><span>what a single 1 GB file would require</span></div>
+  </div>
+  <p>At typical SOL prices, a megabyte on-chain ties up hundreds of dollars. Cloud storage charges about <strong>$0.023 per gigabyte-month</strong> (S3 standard). That gap, several orders of magnitude, is not a bug. It reflects what you are buying: bytes that 1,000+ validators replicate and any program can read mid-transaction.</p>
+
+  <h2>So where do the actual files go?</h2>
+  <p>Since nobody sane puts a JPEG in an account, the ecosystem evolved a standard pattern: <strong>keep a pointer on-chain, keep the payload off-chain.</strong> Your NFT is really an on-chain record that says "the metadata is at this URI." The metadata JSON then points to the image. Both usually live on one of these:</p>
+  <h3>Arweave: pay once, store forever</h3>
+  <p>A permanent-storage network where a one-time fee funds an endowment intended to pay for replication indefinitely. Metaplex made it the default home for Solana NFT media, and for archives ("this must never disappear") it is the reference choice. The trade-off: you cannot update or delete, and cost scales with size.</p>
+  <h3>IPFS: content addressing, not storage</h3>
+  <p>IPFS gives content a fingerprint (CID) so anyone can verify they got the right bytes. But IPFS itself does not promise anyone keeps the bytes: something must <strong>pin</strong> the file (your node, a pinning service like Pinata, or Filecoin deals). Unpinned data quietly vanishes. Great addressing layer, commonly misunderstood as a storage guarantee.</p>
+  <h3>Shadow Drive: Solana-native object storage</h3>
+  <p>GenesysGo's storage network, paid in SHDW and built specifically for Solana apps that want fast S3-like storage with on-chain accounting. A pragmatic middle ground used by several Solana projects.</p>
+  <h3>Filecoin: contract-based bulk storage</h3>
+  <p>Storage deals with providers who must keep proving they still hold your data. Strong for large cold datasets; historically weaker on instant retrieval, and it lives outside the Solana execution world entirely.</p>
+  <h3>Plain web servers: the quiet default</h3>
+  <p>A large share of "NFT" media and app data sits on ordinary servers and CDNs behind a URL. It works until the bill stops being paid, the domain lapses, or the project rugs, and then the on-chain pointer points at nothing. Link rot is the silent failure mode of "on-chain" assets.</p>
+
+  <h2>The comparison, honestly</h2>
+  <table>
+    <thead><tr><th>Option</th><th>Model</th><th>Permanence</th><th>Can a Solana program read/write it?</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td><b>Solana accounts</b></td><td>Rent-exempt deposit (~6.96 SOL/MB)</td><td class="part">While deposit locked</td><td class="yes">Yes, natively</td><td>Small hot state: balances, ownership, config</td></tr>
+      <tr><td><b>Arweave</b></td><td>Pay once (endowment)</td><td class="yes">Designed permanent</td><td class="no">No, pointer only</td><td>NFT media, archives, provenance</td></tr>
+      <tr><td><b>IPFS</b></td><td>Free protocol + paid pinning</td><td class="part">Only while pinned</td><td class="no">No, pointer only</td><td>Content addressing, mutable frontends</td></tr>
+      <tr><td><b>Shadow Drive</b></td><td>Pay in SHDW</td><td class="part">While maintained</td><td class="no">No, pointer only</td><td>Fast app storage in the Solana world</td></tr>
+      <tr><td><b>Filecoin</b></td><td>Storage deals, renewable</td><td class="part">Deal duration</td><td class="no">No, different chain</td><td>Big cold datasets</td></tr>
+      <tr><td><b>Centralized (S3/CDN)</b></td><td>Monthly billing</td><td class="no">Whoever pays the bill</td><td class="no">No</td><td>Speed and convenience, accepted fragility</td></tr>
+      <tr><td><b>Xandeum</b></td><td>Storage layer + wSOL fees</td><td class="part">While network stores it</td><td class="part">That is the design goal (early stage)</td><td>Program-accessible app data (emerging)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The gap nobody solved yet: storage a program can use</h2>
+  <p>Look down that fourth column. Every off-chain option shares the same limitation: <strong>the data is invisible to on-chain logic.</strong> A program cannot check an Arweave file's contents inside a transaction, branch on an IPFS document, or update a record on S3. Apps glue it together client-side, which works, but it means the "decentralized" data layer sits outside the trust boundary that makes smart contracts interesting in the first place.</p>
+  <p>That gap is the specific bet <a href="what-is-xandeum.html">Xandeum</a> is making: a storage layer designed to be <strong>read and written from smart contracts</strong> (peek and poke primitives, with proofs), blockchain-agnostic by design and integrated first with Solana. We should be clear about its stage, because we monitor it live: the network today has roughly <strong>114 storage nodes and about 355 TB of committed capacity, of which well under 1% is used</strong>. The supply side is real and growing; the demand side (apps actually storing paid data) is still early. Live numbers, any time, on <a href="/">our dashboard</a>.</p>
+  <div class="honest"><b>Full picture:</b> Solana also relies on off-protocol storage for its own past. Validators keep current state, while the multi-petabyte transaction history is served by archive infrastructure (traditionally centralized warehouse nodes; decentralizing that is exactly what projects like Old Faithful on Filecoin work on). Even the chain's memory has a storage story.</div>
+
+  <h2>What should you actually use?</h2>
+  <ul>
+    <li><strong>Ownership, balances, small state:</strong> Solana accounts. That is what they are for; keep them minimal.</li>
+    <li><strong>NFT media and anything that must outlive you:</strong> Arweave (often via Irys), with the CID/URI on-chain.</li>
+    <li><strong>App content that changes:</strong> Shadow Drive or a pinned-IPFS setup, accepting that permanence equals maintenance.</li>
+    <li><strong>Large cold archives:</strong> Filecoin deals.</li>
+    <li><strong>Data your program logic needs to touch:</strong> today, you compress it into accounts or restructure the app around pointers; this is the frontier Xandeum targets. Watch usage, not promises: <a href="network-stats.html">the used-storage number</a> tells you when that future arrives.</li>
+  </ul>
+
+  <div class="cta">
+    <a class="btn" href="what-is-xandeum.html">What is Xandeum? &rarr;</a>
+    <a class="btn ghost" href="xandeum-vs-filecoin-arweave-walrus.html">Xandeum vs Filecoin, Arweave &amp; Walrus</a>
+    <a class="btn ghost" href="/">Live storage network data</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>Where does Solana store data?</summary><p>In accounts replicated by every validator. That is fast but expensive, so apps keep only small hot state on-chain and put files and archives on external storage (Arweave, IPFS, Shadow Drive, Filecoin, or centralized servers), with an on-chain pointer.</p></details>
+    <details><summary>How much does 1 MB on Solana cost?</summary><p>About 6.96 SOL locked as a refundable rent-exempt deposit (roughly 3,480 lamports per byte-year, two years up front). Hundreds of dollars per megabyte at typical prices, which is why media never goes directly on-chain.</p></details>
+    <details><summary>Are NFT images on-chain?</summary><p>Almost never. The chain holds ownership plus a URI. The JSON and image live off-chain, and if that copy vanishes (unpinned IPFS, dead server), the NFT points at nothing. Arweave-backed media is the sturdier pattern.</p></details>
+    <details><summary>What is rent, exactly?</summary><p>A deposit that compensates validators for replicating your bytes: hold about two years' worth of the rent rate and the account is rent-exempt. Close the account and the SOL comes back.</p></details>
+    <details><summary>Can a program read IPFS or Arweave data?</summary><p>No. Programs only read accounts during execution. External data is fetched client-side, outside the trust boundary. Making storage program-accessible is the open problem layers like Xandeum aim at.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://solana.com/docs/core/accounts" target="_blank" rel="noopener">Solana Docs: Accounts</a> &middot; <a href="https://solana.com/docs/core/fees" target="_blank" rel="noopener">Solana Docs: Fees &amp; Rent</a> &middot; <a href="https://docs.arweave.org/" target="_blank" rel="noopener">Arweave Docs</a> &middot; <a href="https://docs.ipfs.tech/" target="_blank" rel="noopener">IPFS Docs</a> &middot; <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot; live network data on <a href="/">our dashboard</a>.
+    <br><br>Disclosure: Pulsar Network operates 12 Xandeum pNodes and accepts XAND delegation, so we benefit if Xandeum succeeds. That is why the Xandeum section above states its early stage with live numbers instead of hiding them. Not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+</body>
+</html>
