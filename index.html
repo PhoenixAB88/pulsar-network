@@ -361,6 +361,12 @@
   .toolbar input{flex:1;min-width:180px}
   .toolbar .meta{margin-left:auto;color:var(--mut2);font-size:12.5px;align-self:center;font-weight:500}
   .scroll{max-height:78vh;overflow:auto;border:1px solid var(--hairline);border-radius:var(--r-lg)}
+  .rosterwrap{position:relative}
+  .scrollcue{position:absolute;left:0;right:0;bottom:0;height:46px;display:none;align-items:flex-end;justify-content:center;pointer-events:none;z-index:4;border-radius:0 0 var(--r-lg) var(--r-lg);background:linear-gradient(to top,rgba(16,30,56,.94) 14%,rgba(16,30,56,0))}
+  .scrollcue.show{display:flex}
+  .scrollcue svg{color:var(--teal);margin-bottom:6px;filter:drop-shadow(0 0 5px rgba(70,230,239,.95)) drop-shadow(0 0 1px rgba(70,230,239,.85));animation:cuebob 1.4s ease-in-out infinite}
+  @keyframes cuebob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  @media(prefers-reduced-motion:reduce){.scrollcue svg{animation:none}}
   .scroll::-webkit-scrollbar{width:10px;height:10px}.scroll::-webkit-scrollbar-thumb{background:var(--hairline-2);border-radius:8px}
   table{width:100%;border-collapse:collapse}
   th,td{padding:12px 15px;text-align:left;white-space:nowrap;font-size:13px;border-bottom:1px solid var(--hairline)}
@@ -527,11 +533,14 @@
           <span class="meta" id="rosterMeta"></span>
           <span class="meta" id="updatedAt"></span>
         </div>
+        <div class="rosterwrap">
         <div class="scroll">
           <table>
             <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort snum" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort snum hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort snum" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort snum" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
+        </div>
+        <div class="scrollcue" id="scrollCue" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 12 14 19 8"></polyline><polyline points="5 13 12 19 19 13"></polyline></svg></div>
         </div>
       </div>
     </div>
@@ -836,6 +845,8 @@
         for(let i=0;i<5&&i<cards.length;i++){h+=cards[i].offsetHeight+10;}
         sc.classList.add('roster-scroll');sc.style.maxHeight=h>40?Math.min(h+6,Math.round(window.innerHeight*0.8))+'px':'';
       }else{sc.classList.remove('roster-scroll');sc.style.maxHeight='';}
+      const cue=document.getElementById('scrollCue');
+      if(cue)cue.classList.toggle('show',sc.scrollHeight-sc.clientHeight>8);
     }
   }
 
