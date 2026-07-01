@@ -6,7 +6,14 @@
   <atom:link href="https://pulsarnetwork.xyz/rss.xml" rel="self" type="application/rss+xml"/>
   <description>Independent analysis on decentralized storage, DePIN, Solana, node economics, and crypto markets, from the Pulsar Network team.</description>
   <language>en-us</language>
-  <lastBuildDate>Wed, 24 Jun 2026 09:00:00 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 02 Jul 2026 09:00:00 GMT</lastBuildDate>
+  <item>
+    <title>How Much Does a Xandeum pNode Earn? Real 2026 Numbers</title>
+    <link>https://pulsarnetwork.xyz/xandeum-pnode-earnings.html</link>
+    <guid>https://pulsarnetwork.xyz/xandeum-pnode-earnings.html</guid>
+    <pubDate>Thu, 02 Jul 2026 09:00:00 GMT</pubDate>
+    <description>The honest pNode earnings breakdown: how STOINC rewards work, what a typical node makes today with live network data, real costs, and when the math gets interesting.</description>
+  </item>
   <item>
     <title>AI Governance Meets Decentralized Storage</title>
     <link>https://pulsarnetwork.xyz/articles/ai-governance-storage.html</link>
