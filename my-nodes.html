@@ -124,6 +124,26 @@
   .alert-note{font-size:12px;color:var(--mut2)}
   footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
   footer a{color:var(--mut)}
+  /* in-page node detail modal */
+  .addr{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .cpy{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);border-radius:5px;padding:1px 7px;font:inherit;font-size:11px;cursor:pointer}
+  .cpy:hover{color:var(--ink);border-color:var(--teal)}
+  .mn-ov{position:fixed;inset:0;z-index:100;background:rgba(6,12,24,.74);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
+  .mn-ov.open{display:flex}
+  .mn-modal{background:linear-gradient(180deg,var(--surface-3),var(--surface-1));border:1px solid var(--hairline-2);border-radius:var(--r-xl);max-width:520px;width:100%;padding:22px 24px 24px;position:relative;box-shadow:0 30px 90px -24px rgba(0,0,0,.75);animation:mnpop .28s cubic-bezier(.22,.7,.3,1)}
+  .mn-close{position:absolute;top:13px;right:13px;background:var(--surface-2);border:1px solid var(--hairline);color:var(--mut);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1;z-index:2}
+  .mn-close:hover{color:var(--ink);border-color:var(--teal)}
+  .mn-head{display:flex;align-items:center;gap:10px;margin:0 30px 2px 0}
+  .mn-title{font-size:19px;font-weight:700;letter-spacing:-.02em}
+  .mn-sub{font-size:12.5px;color:var(--mut2);margin-top:1px}
+  .mn-sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin:18px 0 6px}
+  .mn-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--hairline);font-size:13.5px;align-items:center}
+  .mn-row:last-child{border-bottom:0}
+  .mn-k{color:var(--mut2);flex-shrink:0}
+  .mn-v{font-weight:600;text-align:right;word-break:break-word;display:flex;align-items:center;gap:7px;justify-content:flex-end}
+  .mn-note{font-size:12.5px;color:var(--mut2);background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-md);padding:10px 12px;margin-top:8px;line-height:1.5}
+  @keyframes mnpop{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.mn-modal{animation:none}}
   @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
   @keyframes alr{0%,100%{opacity:1}50%{opacity:.45}}
   @keyframes rise{to{opacity:1;transform:none}}
@@ -153,6 +173,8 @@
 
 <footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Saved nodes live only in your browser &middot; Built on Xandeum</div></footer>
 
+<div class="mn-ov" id="mnModal" aria-hidden="true"><div class="mn-modal" role="dialog" aria-modal="true" aria-label="Node details"><button class="mn-close" id="mnClose" aria-label="Close">&#10005;</button><div id="mnModalBody"></div></div></div>
+
 <script src="network_data.js" onerror="window.__noData=1"></script>
 <script src="network_data_mainnet.js" onerror="window.__noMain=1"></script>
 <script src="net_storage_mainnet.js" onerror="window.__noNSm=1"></script>
@@ -163,6 +185,8 @@
 <script src="stake_data.js" onerror="window.__noStake=1"></script>
 <script src="network_history.js" onerror="window.__noHist=1"></script>
 <script src="network_history_mainnet.js" onerror="window.__noHistM=1"></script>
+<script src="node_stats_p1main.js" onerror="window.__noStM=1"></script>
+<script src="node_stats_p1dev.js" onerror="window.__noStD=1"></script>
 <script>
 (function(){
   "use strict";
@@ -266,7 +290,7 @@
     if(hist&&hist.length>=2)h5+='<div class="sparkw"><div class="sc">Uptime trend</div>'+spark(hist,{w:220,h:30})+'</div>';
     if(badges)h5+='<div class="abadges">'+badges+'</div>';
     h5+='<div class="acts">'
-      +'<a class="lbtn prime" href="/#node='+epk+'">Full details ↗</a>'
+      +'<button class="lbtn prime" onclick="MN.open(\''+epk+'\')">Full details</button>'
       +'<button class="lbtn" onclick="MN.copy(\''+epk+'\',this)">Copy key</button>'
       +'<button class="lbtn" onclick="MN.label(\''+epk+'\')">Label</button>'
       +'<button class="lbtn rm" onclick="MN.remove(\''+epk+'\')">Remove</button>'
@@ -364,22 +388,55 @@
   }
 
   // ---- live refresh: reload the data files as fresh <script>s (no eval, CSP-safe) ----
-  var FILES=['network_data.js','network_data_mainnet.js','net_storage_mainnet.js','net_storage_devnet.js','node_storage_mainnet.js','node_storage_devnet.js','credits_data.js','stake_data.js','network_history.js','network_history_mainnet.js'];
+  var FILES=['network_data.js','network_data_mainnet.js','net_storage_mainnet.js','net_storage_devnet.js','node_storage_mainnet.js','node_storage_devnet.js','credits_data.js','stake_data.js','network_history.js','network_history_mainnet.js','node_stats_p1main.js','node_stats_p1dev.js'];
   function reload(src){return new Promise(function(res){var s=document.createElement('script');s.src=src+'?t='+Date.now();s.onload=function(){s.remove();res(true);};s.onerror=function(){s.remove();res(false);};document.body.appendChild(s);});}
   var lastSync=Date.now();
   function refreshData(){return Promise.all(FILES.map(reload)).then(function(){lastSync=Date.now();render();runAlertCheck();});}
   function tickSynced(){var el=document.getElementById('synced');if(!el)return;var s=Math.max(0,Math.round((Date.now()-lastSync)/1000));var t=s<60?s+'s ago':Math.floor(s/60)+'m ago';el.innerHTML='<span class="live-dot" aria-hidden="true"></span> Live &middot; updated '+t;}
+
+  // ---- in-page node detail modal (so "Full details" never leaves this page) ----
+  function fmtDate(t){if(!t)return '—';return new Date(t*1000).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}
+  function ago(t){if(!t)return '';var d=Math.floor(Date.now()/1000)-t,day=86400;if(d<day)return 'today';if(d<30*day)return Math.floor(d/day)+'d ago';if(d<365*day)return Math.floor(d/(30*day))+'mo ago';return (d/(365*day)).toFixed(1)+'y ago';}
+  function shortAddr(a){return a?a.slice(0,4)+'…'+a.slice(-4):'—';}
+  function dRow(k,v){return '<div class="mn-row"><span class="mn-k">'+k+'</span><span class="mn-v">'+v+'</span></div>';}
+  function openDetail(pk){
+    var f=findPod(pk),epk=b58(pk),net=f?f.net:'mainnet',inMain=net==='mainnet',p=f?f.p:null;
+    var on=f&&(SETS[net].ref-ts(p))<=900,sol=function(a){return 'https://solscan.io/account/'+a;};
+    var statusCls=!f?'gone':(on?'on':'off'),statusTxt=!f?'● not found':(on?'● online':'● stale');
+    var h='<div class="mn-head"><div><div class="mn-title">'+esc(labelOf(pk))+'</div><div class="mn-sub">'+(f?((inMain?'Mainnet':'Devnet')+' pNode'):'Not in the current roster')+'</div></div><span class="status '+statusCls+'" style="margin-left:auto">'+statusTxt+'</span></div>';
+    h+='<div class="mn-sec">Identity</div>'+dRow('Pubkey','<span class="addr">'+esc(shortpk(pk))+'</span> <button class="cpy" onclick="MN.copy(\''+epk+'\',this)">copy</button> <a href="'+sol(epk)+'" target="_blank" rel="noopener">↗</a>');
+    if(p)h+=dRow('Gossip address',p.address?esc(p.address):'—')+dRow('Software','<span class="pill">'+esc(shortver(p.version))+'</span>')+dRow('Last seen',relFrom(ts(p),SETS[net].ref));
+    var u=uptimeOf(pk,net),hh=healthOf(pk,net),cr=pcMap()[pk],hist=histOf(pk,net);
+    if(u!=null||hh!=null||cr!=null){h+='<div class="mn-sec">Performance</div>';if(u!=null)h+=dRow('Uptime (tracked)',u+'%');if(hist&&hist.length>=2)h+=dRow('Recent trend',spark(hist,{w:150,h:24}));if(cr!=null)h+=dRow('Credits (official)',fmt(cr));if(hh!=null)h+=dRow('Health score',hh+' / 100');}
+    if(p)h+='<div class="mn-sec">Location</div>'+dRow('Country',p.cc?(flag(p.cc)+' '+esc(p.cc)):'—')+dRow('City',p.city?esc(p.city):'—')+dRow('Coordinates',(p.lat!=null&&p.lon!=null)?(p.lat.toFixed(2)+', '+p.lon.toFixed(2)):'—');
+    var st=(window.STAKE||{})[pk],rg=(window.REG||{})[pk];
+    h+='<div class="mn-sec">On-chain · Xandeum staking</div>';
+    if(st)h+=dRow('Staked','<b>'+fmt(st.stake)+' XAND</b>')+dRow('Commission',(st.comm/100)+'%')+dRow('Operator',rg?('<span class="addr">'+esc(shortAddr(rg.owner))+'</span> <a href="'+sol(b58(rg.owner))+'" target="_blank" rel="noopener">↗</a>'):'—')+dRow('Registered',rg?(fmtDate(rg.ts)+' · '+ago(rg.ts)):'—')+dRow('Current yuga',window.CUR_YUGA||'—')+dRow('Last settled yuga',(st.settledYuga>0)?st.settledYuga:'—');
+    else h+='<div class="mn-note">No on-chain stake record. Staking is on mainnet; devnet and unstaked nodes have none.</div>';
+    var cx=((window.CX&&window.CX[net])||{})[pk];
+    if(cx&&cx.storage!=null)h+='<div class="mn-sec">Storage</div>'+dRow('Committed',fmtBytes(cx.storage))+(cx.health!=null?dRow('Network health',cx.health+'%'):'');
+    var stt=(window.NODE_STATS||{})[pk];
+    if(stt)h+='<div class="mn-sec">Node telemetry · live</div>'+dRow('Storage committed',stt.committed!=null?Math.round(stt.committed/1073741824)+' GiB':'—')+dRow('Data stored',stt.stored!=null?(stt.stored/1073741824).toFixed(2)+' GiB':'—')+dRow('CPU',stt.cpu!=null?stt.cpu.toFixed(1)+'%':'—')+dRow('RAM',(stt.ramUsed!=null&&stt.ramTotal)?((stt.ramUsed/1073741824).toFixed(1)+' / '+(stt.ramTotal/1073741824).toFixed(1)+' GB'):'—')+dRow('Active streams',stt.streams!=null?stt.streams:'—')+dRow('Current index',stt.index!=null?fmt(stt.index):'—');
+    if(!f)h+='<div class="mn-note" style="margin-top:12px">This saved node isn\'t in the current gossip roster right now. It may be offline or removed; the figures above are the last we could see.</div>';
+    document.getElementById('mnModalBody').innerHTML=h;
+    document.getElementById('mnModal').classList.add('open');document.body.style.overflow='hidden';
+  }
+  function closeDetail(){document.getElementById('mnModal').classList.remove('open');document.body.style.overflow='';}
 
   // ---- expose card actions ----
   window.MN={
     remove:removeFav,
     label:setLabel,
     toggleAlerts:toggleAlerts,
+    open:openDetail,
     copy:function(pk,btn){var t=b58(pk);function ok(){if(btn){var o=btn.textContent;btn.textContent='✓ Copied';setTimeout(function(){btn.textContent=o;},1300);}}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,ok);else ok();}
   };
 
   // ---- init ----
   buildSets();render();runAlertCheck();
+  document.getElementById('mnClose').onclick=closeDetail;
+  document.getElementById('mnModal').addEventListener('click',function(e){if(e.target.id==='mnModal')closeDetail();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDetail();});
   tickSynced();setInterval(tickSynced,1000);
   setInterval(refreshData,60000);
   window.addEventListener('focus',function(){if(Date.now()-lastSync>30000)refreshData();});
