@@ -13,14 +13,14 @@
 <meta property="og:title" content="Where Does Data on Solana Actually Live?">
 <meta property="og:description" content="Accounts, rent, and why 1 MB on-chain costs ~7 SOL. Where NFT images really live, and every real storage option compared.">
 <meta property="og:url" content="https://pulsarnetwork.xyz/solana-storage-explained.html">
-<meta property="og:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-solana-storage.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@PulsarNodes">
 <meta name="twitter:title" content="Where Does Data on Solana Actually Live?">
 <meta name="twitter:description" content="Accounts, rent, and why 1 MB on-chain costs ~7 SOL. Where NFT images really live, and every real storage option compared.">
-<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-image.png">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-solana-storage.jpg">
 <meta name="theme-color" content="#0a1426">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/logo.png">
@@ -45,6 +45,7 @@
   h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
   .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
   .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  .hero-img{display:block;width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--hairline);margin:4px 0 26px}
   h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
   h3{font-size:17px;font-weight:600;margin:26px 0 8px}
   p{color:var(--mut);margin:0 0 16px}
@@ -82,7 +83,7 @@
   footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"Where Does Data on Solana Actually Live? Solana Storage, Explained","description":"How Solana accounts and rent work, why on-chain bytes are expensive, where NFT media really lives, and the real storage options compared.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/solana-storage-explained.html","image":"https://pulsarnetwork.xyz/og-image.png"}
+{"@context":"https://schema.org","@type":"Article","headline":"Where Does Data on Solana Actually Live? Solana Storage, Explained","description":"How Solana accounts and rent work, why on-chain bytes are expensive, where NFT media really lives, and the real storage options compared.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/solana-storage-explained.html","image":"https://pulsarnetwork.xyz/og-solana-storage.jpg"}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"Solana Storage Explained","item":"https://pulsarnetwork.xyz/solana-storage-explained.html"}]}
@@ -109,6 +110,8 @@
   <h1>Where does data on Solana actually live?</h1>
   <p class="lead">Mint an NFT, deploy a program, post on a Solana social app, and then ask a simple question: <strong>where are the bytes?</strong> The answer surprises most people. Solana itself stores astonishingly little, charges a fortune for it, and almost everything you think is "on-chain" actually lives somewhere else.</p>
   <p class="byline">By Pulsar Network. We operate storage infrastructure in the Solana ecosystem and monitor it live; disclosure at the end.</p>
+
+  <img class="hero-img" src="solana-storage-hero.jpg" width="1600" height="893" alt="Blockchain blocks streaming data down into rows of storage nodes, with the Solana logo" fetchpriority="high">
 
   <div class="tldr"><b>TL;DR:</b> Solana stores state in accounts that every validator replicates, which makes on-chain bytes fast to access but expensive to keep: about 6.96 SOL locked per megabyte. So apps keep only small, hot state on-chain and push everything heavy off-chain to Arweave, IPFS, Shadow Drive, Filecoin, centralized servers, or newer smart-contract-native layers like Xandeum. Each option trades off cost, permanence, and whether a program can actually use the data.</div>
 

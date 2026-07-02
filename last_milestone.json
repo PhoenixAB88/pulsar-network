@@ -1,12 +1,11 @@
 {
-  "updated_utc": "2026-06-29T07:07:00Z",
+  "updated_utc": "2026-07-02T07:10:00Z",
   "source": "pulsarnetwork.xyz live dashboard",
-  "pnodes_online": 107,
-  "pnodes_online_range": "107-114",
-  "network_staked_xand": "70.12M",
+  "pnodes_online": 113,
+  "pnodes_online_range": "111-114",
+  "network_staked_xand": "75.53M",
   "operators": 88,
-  "network_storage_tb": 194.6,
+  "network_storage": "61.2 MB used (dashboard storage metric reset/changed display)",
   "avg_health": 93,
-  "current_yuga": 37,
-  "note": "First milestone-watch baseline (no prior file). No milestone post fired on first run."
+  "note": "Milestone fired this run: network stake crossed 75M XAND (70.12M -> 75.53M since 2026-06-29). Draft post pending user approval. Node count 107 -> 113, no round-number crossing."
 }
