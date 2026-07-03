@@ -1438,13 +1438,13 @@
       +row('City',p.city?esc(p.city):'—')
       +row('Coordinates',(p.lat!=null&&p.lon!=null)?(p.lat.toFixed(2)+', '+p.lon.toFixed(2)):'—');
     h+='<div class="msec">On-chain · Xandeum staking</div>';
+    h+=(function(){var e=eraOf(pk);if(e==null)return '';var b=ERA_BOOST[e];
+      if(b>1)return row('Boost era','<b style="color:var(--orange)">'+b+'× Deep South</b> <span style="color:var(--mut2);font-size:12px">(on-chain)</span>');
+      if(b===1)return row('Boost era','<span style="color:var(--mut2)">1× baseline</span>');
+      return row('Boost era','<span style="color:var(--mut2)" title="'+(ERA_NOTE[e]||'')+'">code '+e+', not yet verified</span>');})();
     if(st){
       h+=row('Staked',`<b>${fmt(st.stake)} XAND</b>`)
         +row('Commission',(st.comm/100)+'%')
-        +(function(){var e=eraOf(pk);if(e==null)return '';var b=ERA_BOOST[e];
-          if(b>1)return row('Boost era','<b style="color:var(--orange)">'+b+'× Deep South</b> <span style="color:var(--mut2);font-size:12px">(on-chain)</span>');
-          if(b===1)return row('Boost era','<span style="color:var(--mut2)">1× baseline</span>');
-          return row('Boost era','<span style="color:var(--mut2)" title="'+(ERA_NOTE[e]||'')+'">code '+e+', not yet verified</span>');})()
         +row('Operator',rg?`<span class="addr">${esc(shortAddr(rg.owner))}</span> <a href="${sol(b58(rg.owner))}" target="_blank" rel="noopener">↗</a>`:'—')
         +row('Registered',rg?(fmtDate(rg.ts)+' · '+ago(rg.ts)):'—')
         +row('Current yuga',window.CUR_YUGA||'—')
