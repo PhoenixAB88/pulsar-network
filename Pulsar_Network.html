@@ -150,6 +150,7 @@
   .lr-c{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .lr-s{color:var(--orange);font-weight:600;font-variant-numeric:tabular-nums}
   #network:not(.has-storage) th[data-k="storage"],#network:not(.has-storage) td[data-label="Storage"]{display:none}
+  #network:not(.has-boost) th[data-k="boost"],#network:not(.has-boost) td[data-label="Boost"]{display:none}
   .herocard{position:relative;overflow:hidden;border-radius:var(--r-xl);border:1px solid var(--hairline);background:#070d18;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:300px;padding:clamp(18px,2.2vw,30px) 22px}
   .herocard .sec-head{margin-bottom:18px}
   .herocard .proof{margin-bottom:14px}
@@ -585,7 +586,7 @@
         <div class="rosterwrap">
         <div class="scroll">
           <table>
-            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort snum" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort snum hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort snum" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort snum" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
+            <thead><tr><th>#</th><th class="sort hide-sm" data-k="address" aria-sort="none"><button type="button" class="sortbtn">Address</button></th><th class="hide-sm">Pubkey</th><th class="sort" data-k="loc" aria-sort="none"><button type="button" class="sortbtn">Location</button></th><th class="sort hide-sm" data-k="version" aria-sort="none"><button type="button" class="sortbtn">Version</button></th><th class="sort snum" data-k="stake" aria-sort="none"><button type="button" class="sortbtn">Staked</button></th><th class="sort snum" data-k="boost" aria-sort="none"><button type="button" class="sortbtn">Boost</button></th><th class="sort snum hide-sm" data-k="storage" aria-sort="none"><button type="button" class="sortbtn">Storage</button></th><th class="sort snum" data-k="uptime" aria-sort="none"><button type="button" class="sortbtn">Uptime</button></th><th class="sort snum" data-k="health" aria-sort="none"><button type="button" class="sortbtn">Health</button></th><th class="sort hide-xs" data-k="seen" data-dir="desc" aria-sort="descending"><button type="button" class="sortbtn">Last seen</button></th><th class="sort" data-k="status" aria-sort="none"><button type="button" class="sortbtn">Status</button></th></tr></thead>
             <tbody id="rosterBody"></tbody>
           </table>
         </div>
@@ -851,11 +852,20 @@
   function pcMap(){return (window.PODCREDITS&&window.PODCREDITS.creds)||{};}
   function healthOf(pk,net){var up=(window['NODE_UPTIME'+(net==='mainnet'?'_MAINNET':'')]||{})[pk];var mx=pcMax(),c=pcMap()[pk],cr=(mx&&c!=null)?c/mx*100:null;if(up!=null&&cr!=null)return Math.round(0.7*up+0.3*cr);if(up!=null)return Math.round(up);if(cr!=null)return Math.round(cr);return null;}
   function healthCell(pk,net){var h=healthOf(pk,net);if(h==null)return '<span style="color:var(--mut2)">—</span>';var c=h>=90?'var(--good)':h>=75?'var(--teal)':h>=50?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'" title="Composite health: 70% tracked uptime + 30% credits vs network max. See Trust page.">'+h+'</b>';}
-  // NOTE (2026-07-08): the on-chain "Boost" column was removed. It read registration-account offset 88,
-  // which was believed to be the purchase-era code but is actually the settled yuga (a value that ticks up
-  // over time). Ground truth: our 6 Deep South (16x) nodes read 38 on 2026-07-03 only because the settled
-  // yuga happened to be 38 that day; they now read 39. A full raw-account scan found no stable per-node
-  // boost field on-chain — per-node boost lives off-chain (Atlas / NFT-boost accounts), not here.
+  // Per-node boost = 16x Deep South ERA base × on-chain NFT multipliers.
+  // The era base is NOT on-chain (the official Xandeum portal hardcodes 16 too; per-node era is unpublished).
+  // The NFT part IS on-chain: the generator reads the pNode registry (program CZ9bXL6D…) per-node NFT slots,
+  // resolves each mint's Metaplex name → tier, and writes window.NODE_BOOST = {node:{m:nftProduct,n:[names]}}.
+  // Mainnet only. This replaces the retracted offset-88 "era" read (which was actually the settled yuga).
+  const ERA_BASE=16;
+  function nftBoost(pk){return (window.NODE_BOOST||{})[pk]||null;}
+  function boostTotal(pk){var b=nftBoost(pk);return ERA_BASE*((b&&b.m)||1);}
+  function fmtMult(x){return (Math.round(x*100)/100)+'×';}
+  function boostCell(pk){
+    var b=nftBoost(pk);
+    if(b&&b.n&&b.n.length)return '<b style="color:var(--orange)" title="16× Deep South era base (as the official portal shows) × on-chain NFT boost: '+esc(b.n.join(' × '))+'">'+fmtMult(boostTotal(pk))+'</b>';
+    return '<span style="color:var(--mut2)" title="16× Deep South era base as applied by the official Xandeum portal. Per-node era is not published on-chain; any assigned boost NFTs (read live) would multiply this.">16×</span>';
+  }
   function renderRoster(){
     const S=SETS[active], pods=S.pods, ref=S.ref;
     const isOn=p=>(ref-ts(p))<=900;
@@ -871,10 +881,11 @@
     const stoOf=p=>{const c=CXN[p.pubkey];return c&&c.storage!=null?c.storage:-1;};
     const stoCell=p=>{const c=CXN[p.pubkey];return (c&&c.storage!=null)?'<b>'+fmtBytes(c.storage)+'</b>':'<span style="color:var(--mut2)">—</span>';};
     try{document.getElementById('network').classList.toggle('has-storage',Object.keys(CXN).length>0);}catch(e){}
+    try{document.getElementById('network').classList.toggle('has-boost',active==='mainnet');}catch(e){}
     const UP=window['NODE_UPTIME'+(active==='mainnet'?'_MAINNET':'')]||{};
     const upOf=p=>UP[p.pubkey]==null?-1:UP[p.pubkey];
     const upCell=p=>{const u=UP[p.pubkey];if(u==null)return '<span style="color:var(--mut2)">—</span>';const c=u>=99?'var(--good)':u>=95?'var(--teal)':u>=80?'var(--warn)':'var(--bad)';return '<b style="color:'+c+'">'+u+'%</b>';};
-    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0),storage:(a,b)=>stoOf(a)-stoOf(b),health:(a,b)=>{const ha=healthOf(a.pubkey,active),hb=healthOf(b.pubkey,active);return (ha==null?-1:ha)-(hb==null?-1:hb);}};
+    const cmps={seen:(a,b)=>ts(a)-ts(b),address:(a,b)=>(a.address||'').localeCompare(b.address||''),loc:(a,b)=>(a.city||'').localeCompare(b.city||''),version:(a,b)=>shortver(a.version).localeCompare(shortver(b.version),undefined,{numeric:true}),stake:(a,b)=>stakeOf(a)-stakeOf(b),boost:(a,b)=>(active==='mainnet'?boostTotal(a.pubkey):0)-(active==='mainnet'?boostTotal(b.pubkey):0),uptime:(a,b)=>upOf(a)-upOf(b),status:(a,b)=>(isOn(a)?1:0)-(isOn(b)?1:0),storage:(a,b)=>stoOf(a)-stoOf(b),health:(a,b)=>{const ha=healthOf(a.pubkey,active),hb=healthOf(b.pubkey,active);return (ha==null?-1:ha)-(hb==null?-1:hb);}};
     const cmp=cmps[window.sortK]||cmps.seen;
     rows.sort((a,b)=>window.sortD*cmp(a,b)||ts(b)-ts(a));
     const isMobile=window.matchMedia&&window.matchMedia('(max-width:600px)').matches;
@@ -886,12 +897,13 @@
       <td data-label="Location">${p.cc?flag(p.cc)+' ':''}${p.city?esc(p.city):'<span style="color:var(--mut2)">—</span>'}</td>
       <td class="hide-sm" data-label="Version"><span class="pill" title="${esc(p.version||'')}">${esc(shortver(p.version))}</span></td>
       <td class="snum" data-label="Staked">${(window.STAKE&&window.STAKE[p.pubkey]&&window.STAKE[p.pubkey].stake>0)?'<b title="'+(window.STAKE[p.pubkey].comm/100)+'% commission">'+fmt(window.STAKE[p.pubkey].stake)+'</b>':'<span style="color:var(--mut2)">—</span>'}</td>
+      <td class="snum" data-label="Boost">${boostCell(p.pubkey)}</td>
       <td class="snum hide-sm" data-label="Storage">${stoCell(p)}</td>
       <td class="snum" data-label="Uptime">${upCell(p)}</td>
       <td class="snum" data-label="Health">${healthCell(p.pubkey,active)}</td>
       <td class="hide-xs" data-label="Last seen">${rel(ts(p))}</td>
       <td class="${isOn(p)?'on':'off'}" data-label="Status">${isOn(p)?'● online':'● stale'}</td></tr>`;}).join('')
-      ||`<tr><td colspan="11" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
+      ||`<tr><td colspan="12" style="color:var(--mut);text-align:center;padding:26px">${pods.length?'No matches.':'No data yet.'}</td></tr>`;
     // Mobile: show ~5 cards then scroll within the list (replaces the old 10-cap + broken "show all")
     const sc=document.querySelector('#network .scroll');
     if(sc){
@@ -1433,6 +1445,7 @@
         +row('Last settled yuga',st.settledYuga>0?st.settledYuga:'—');
     }else if(window.STAKE){h+='<div class="mnote">No on-chain stake record - staking is on mainnet; devnet &amp; unstaked nodes have none.</div>';}
     else{h+='<div class="mnote">Loading on-chain data…</div>';}
+    if(inMain){var _bn=nftBoost(pk);h+=row('Boost',_bn&&_bn.n&&_bn.n.length?('<b style="color:var(--orange)">'+fmtMult(boostTotal(pk))+'</b> <span style="color:var(--mut2);font-size:12px">16× base × '+esc(_bn.n.join(' × '))+' NFT</span>'):'<b style="color:var(--orange)">16×</b> <span style="color:var(--mut2);font-size:12px">Deep South base (per-node era isn\'t on-chain)</span>');}
     var cxset=(window.CX&&window.CX[inMain?'mainnet':'devnet'])||{};var cxd=cxset[pk];
     if(cxd&&cxd.storage!=null){h+='<div class="msec">Storage</div>'+row('Committed',fmtBytes(cxd.storage))+(cxd.health!=null?row('Network health',cxd.health+'%'):'');}
     var stt=(window.NODE_STATS||{})[pk];

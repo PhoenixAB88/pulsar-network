@@ -207,8 +207,12 @@
   function pcMap(){return (window.PODCREDITS&&window.PODCREDITS.creds)||{};}
   function uptimeOf(pk,net){var U=window['NODE_UPTIME'+(net==='mainnet'?'_MAINNET':'')]||{};return U[pk]==null?null:U[pk];}
   function healthOf(pk,net){var up=uptimeOf(pk,net);var mx=pcMax(),c=pcMap()[pk],cr=(mx&&c!=null)?c/mx*100:null;if(up!=null&&cr!=null)return Math.round(0.7*up+0.3*cr);if(up!=null)return Math.round(up);if(cr!=null)return Math.round(cr);return null;}
-  // NOTE (2026-07-08): the on-chain "Boost era" row was removed — registration offset 88 is the settled yuga,
-  // not the purchase-era code (see Pulsar_Network.html for the full reasoning). Per-node boost is not on-chain here.
+  // Per-node boost = 16x Deep South ERA base (NOT on-chain; official portal hardcodes it too) × on-chain NFT
+  // multipliers from window.NODE_BOOST (generator reads pNode registry CZ9bXL6D… nft slots). Mainnet only.
+  var ERA_BASE=16;
+  function nftBoost(pk){return (window.NODE_BOOST||{})[pk]||null;}
+  function boostTotal(pk){var b=nftBoost(pk);return ERA_BASE*((b&&b.m)||1);}
+  function fmtMult(x){return (Math.round(x*100)/100)+'×';}
   function histOf(pk,net){return (window['NODE_HIST'+(net==='mainnet'?'_MAINNET':'')]||{})[pk];}
   function spark(vals,opts){opts=opts||{};var w=opts.w||150,h=opts.h||30,pad=2,col=opts.color||'#46e6ef';if(!vals||vals.length<2)return '<span style="color:var(--mut2);font-size:12px">building history…</span>';var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=(mx-mn)||1,n=vals.length;var pts=vals.map(function(v,i){var x=pad+i/(n-1)*(w-2*pad);var y=h-pad-((v-mn)/rng)*(h-2*pad);return x.toFixed(1)+','+y.toFixed(1);});var line=pts.join(' '),area=pad+','+(h-pad)+' '+line+' '+(w-pad).toFixed(1)+','+(h-pad);return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" style="display:block;width:100%;max-width:220px"><polygon points="'+area+'" fill="'+col+'" opacity="0.13"/><polyline points="'+line+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';}
   function cmpVer(a,b){if(a===b)return 0;return String(a).localeCompare(String(b),undefined,{numeric:true})<0?-1:1;}
@@ -415,6 +419,7 @@
     h+='<div class="mn-sec">On-chain · Xandeum staking</div>';
     if(st)h+=dRow('Staked','<b>'+fmt(st.stake)+' XAND</b>')+dRow('Commission',(st.comm/100)+'%')+dRow('Operator',rg?('<span class="addr">'+esc(shortAddr(rg.owner))+'</span> <a href="'+sol(b58(rg.owner))+'" target="_blank" rel="noopener">↗</a>'):'—')+dRow('Registered',rg?(fmtDate(rg.ts)+' · '+ago(rg.ts)):'—')+dRow('Current yuga',window.CUR_YUGA||'—')+dRow('Last settled yuga',(st.settledYuga>0)?st.settledYuga:'—');
     else h+='<div class="mn-note">No on-chain stake record. Staking is on mainnet; devnet and unstaked nodes have none.</div>';
+    if(inMain){var _bn=nftBoost(pk);h+=dRow('Boost',_bn&&_bn.n&&_bn.n.length?('<b style="color:var(--orange)">'+fmtMult(boostTotal(pk))+'</b> <span style="color:var(--mut2);font-size:12px">16× base × '+esc(_bn.n.join(' × '))+' NFT</span>'):'<b style="color:var(--orange)">16×</b> <span style="color:var(--mut2);font-size:12px">Deep South base (per-node era isn\'t on-chain)</span>');}
     var cx=((window.CX&&window.CX[net])||{})[pk];
     if(cx&&cx.storage!=null)h+='<div class="mn-sec">Storage</div>'+dRow('Committed',fmtBytes(cx.storage))+(cx.health!=null?dRow('Network health',cx.health+'%'):'');
     var stt=(window.NODE_STATS||{})[pk];
