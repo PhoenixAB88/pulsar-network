@@ -8,7 +8,7 @@
 ## ⚠️ Open operator tasks (read these FIRST, before any fleet/site work)
 Task briefs live in the working folder `Xandeum Nodes/`. Read in order:
 1. `claude-code-task-correct-fleet-model.md` — a STALE fleet model ("all devnet", "HA pair = 2 machines") was recently in play and may have leaked into this file / shared context. This brief has the VERIFIED topology; trust it over any older summary.
-2. `claude-code-task-backup-node-keys.md` — HIGHEST PRIORITY: only 1 of 12 pNode private keys has an off-server copy. Back up all 12.
+2. `claude-code-task-backup-node-keys.md` — ✅ **DONE 2026-06-26**: all 12 pNode identity keys are backed up off-server and verified (declared pubkey + the pubkey derived from each private seed both match the tracker, all 12 ✓). Canonical record: `Xandeum Nodes/Node_Credentials_Tracker.md` § Key backups. Only owner action left: re-zip into the encrypted `Xandeum_Critical_Backup`, store offline. Do NOT re-raise this as an open gap.
 3. `claude-code-task-fleet-audit.md` — read-only version + cluster audit per machine.
 4. `claude-code-task-data-pull.md` — remaining gap is storage; stake/yuga are already decoded on-chain.
 
@@ -37,7 +37,7 @@ ssh -i ~/.ssh/xandeum root@62.171.187.91 'cd /root/pulsar-network && git add -A 
 
 ## Cron generators (Python; live in `Xandeum Nodes/`, scp'd to the nodes)
 - `pulsar_build.py` → `network_data*.js` (get-pods roster, geolocated).
-- `pulsar_stake.py` → `stake_data.js` (on-chain stake via Helius, server-side; devnet node).
+- `pulsar_stake.py` → `stake_data.js` (on-chain stake, server-side, devnet node). Also computes per-node **NFT boost** (`window.NODE_BOOST`) from the pNode registry program `CZ9bXL6D…` (nft slots → Metaplex name → tier); the frontend Boost column = `16× Deep South era base × NODE_BOOST[node].m`. NOTE: the 16× era base is NOT on-chain (the official portal hardcodes it too); do NOT read registration offset 88 for a "boost" — that's the settled yuga (retracted 2026-07-08).
 - `pulsar_history.py` → `network_history*.js` (rolling uptime; state file kept OUTSIDE the repo).
 - `pulsar_alerts.py` → Telegram down-node alerts (mainnet node + sibling watchers).
 - `pulsar_addself.py` → injects the generator's own node into get-pods (a node omits itself).

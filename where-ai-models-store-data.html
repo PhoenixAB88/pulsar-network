@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Where Do Frontier AI Models Actually Keep Their Data? | Pulsar</title>
+<meta name="description" content="Frontier AI data storage explained: petabyte training corpora, terabyte model weights, retained chat logs, and the data centers holding them. What custody, verifiability and decentralized storage actually change.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/where-ai-models-store-data.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Where Do Frontier AI Models Actually Keep Their Data?">
+<meta property="og:description" content="Petabyte corpora, terabyte weights, retained chat logs. Who physically holds the data behind frontier AI, and what verifiable storage changes.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/where-ai-models-store-data.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-ai-data.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Where Do Frontier AI Models Actually Keep Their Data?">
+<meta name="twitter:description" content="Petabyte corpora, terabyte weights, retained chat logs. Who physically holds the data behind frontier AI, and what verifiable storage changes.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-ai-data.jpg">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  .hero-img{display:block;width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--hairline);margin:4px 0 26px}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .bignum{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0}
+  .bn{flex:1 1 200px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:16px 18px;text-align:center}
+  .bn b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--teal)}
+  .bn span{font-size:12.5px;color:var(--mut2)}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+  th{color:var(--mut2);font-weight:600;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 10px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px;border-bottom:1px solid var(--hairline);color:var(--mut);vertical-align:top}
+  td b{color:var(--ink)}
+  .yes{color:var(--good);font-weight:600}.no{color:var(--bad);font-weight:600}.part{color:var(--orange);font-weight:600}
+  code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px;font-size:14px;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Where Do Frontier AI Models Actually Keep Their Data?","description":"Petabyte training corpora, terabyte model weights, retained chat logs, and the data centers holding them. What custody, verifiability and decentralized storage actually change.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-08","dateModified":"2026-07-08","mainEntityOfPage":"https://pulsarnetwork.xyz/where-ai-models-store-data.html","image":"https://pulsarnetwork.xyz/og-ai-data.jpg"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"Where AI Models Store Data","item":"https://pulsarnetwork.xyz/where-ai-models-store-data.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Where is AI training data stored?","acceptedAnswer":{"@type":"Answer","text":"In private object storage inside the labs' own data centers or their cloud providers'. A frontier pre-training run starts from a petabyte-scale web crawl that is filtered down to a corpus of trillions of tokens. Llama 3.1 was trained on roughly 15 trillion tokens. None of that raw corpus is published, so outsiders cannot inspect or verify what went into a model."}},
+{"@type":"Question","name":"How big is a frontier model's weights file?","acceptedAnswer":{"@type":"Answer","text":"Large but smaller than most people expect. Meta's Llama 3.1 405B occupies roughly 750 GB on disk in its released precision, and about 2 TB at full FP32 precision. Quantized versions shrink to a few hundred gigabytes. The corpus a model was trained on is thousands of times larger than the model itself."}},
+{"@type":"Question","name":"Do AI companies keep your chat logs?","acceptedAnswer":{"@type":"Answer","text":"Often longer than their published retention policy suggests. In May 2025 a federal court in the copyright litigation brought by The New York Times ordered OpenAI to preserve ChatGPT output logs, including conversations users had deleted. In January 2026 the Southern District of New York upheld orders requiring OpenAI to produce a sample of 20 million de-identified chat logs. Enterprise and zero-data-retention API customers were treated differently."}},
+{"@type":"Question","name":"Why are AI data centers controversial?","acceptedAnswer":{"@type":"Answer","text":"Because of their physical footprint and their financing. Local opposition has produced more than 100 municipal moratoriums and a handful of outright bans in the United States, and a Gallup poll in March 2026 found roughly seven in ten Americans would oppose a nearby AI data center. Separately, the Bank for International Settlements warned in June 2026 that the debt-financed AI capital expenditure boom has become a financial stability concern."}},
+{"@type":"Question","name":"Does decentralized storage train AI models?","acceptedAnswer":{"@type":"Answer","text":"No. Decentralized storage networks do not train anything. What they change is custody and verifiability of the artifacts around a model: datasets, checkpoints, provenance records and audit logs can be held across many independent operators and proven to still exist, rather than sitting in one company's bucket under one company's word."}},
+{"@type":"Question","name":"What does the EU AI Act require about training data?","acceptedAnswer":{"@type":"Answer","text":"Article 53(1)(d) requires providers of general-purpose AI models to publish a sufficiently detailed public summary of the content used to train the model, using a template the European Commission published on 24 July 2025. It applied to new models from 2 August 2025, the AI Office gains enforcement powers from 2 August 2026, and existing models have until 2 August 2027."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Explainer &middot; July 2026</span>
+  <h1>Where do frontier AI models actually keep their data?</h1>
+  <p class="lead">Everyone argues about what the models can do. Almost nobody asks the plainer question underneath: <strong>where are the bytes, and who is holding them?</strong> The answer runs through petabyte corpora nobody outside the lab has seen, terabyte weight files, chat logs that courts can order preserved, and a small number of very large buildings that towns are now voting to keep out.</p>
+  <p class="byline">By Pulsar Network. We operate decentralized storage infrastructure and monitor it live; disclosure at the end.</p>
+
+  <img class="hero-img" src="ai-data-hero.jpg" width="1600" height="893" alt="Streams of data flowing from a vast data center into a distributed field of independent storage nodes" fetchpriority="high">
+
+  <div class="tldr"><b>TL;DR:</b> A frontier model touches four very different piles of data: the training corpus (petabytes, private), the weights (hundreds of gigabytes to a couple of terabytes), the inference trail (your prompts, retained longer than you think), and the retrieval data enterprises feed it. Almost all of it sits in private storage inside a handful of hyperscale data centers, financed increasingly by debt, and increasingly unwelcome as a neighbor. Regulators are starting to ask for receipts. Decentralized storage does not train models, but it changes who holds the artifacts and whether anyone can prove they are intact.</div>
+
+  <h2>Four piles of data, not one</h2>
+  <p>"AI data" gets used as if it were a single thing. It is not. A frontier system touches at least four categories, each with a different size, a different owner, and a very different risk profile when it goes missing or gets copied.</p>
+  <ol>
+    <li><strong>The training corpus.</strong> The raw material. Petabyte scale, private, never published.</li>
+    <li><strong>The weights and checkpoints.</strong> The model itself. Hundreds of gigabytes, occasionally terabytes.</li>
+    <li><strong>The inference trail.</strong> Prompts, outputs, context windows, logs. Small per item, enormous in aggregate, and legally interesting.</li>
+    <li><strong>The retrieval layer.</strong> The private documents enterprises point the model at, which is where the sovereignty argument really begins.</li>
+  </ol>
+
+  <h2>The training corpus: petabytes you will never see</h2>
+  <p>A pre-training run starts with a crawl at petabyte scale, then passes it through an enormous filtering and deduplication pipeline to arrive at a corpus measured in trillions of tokens. Llama 3.1 was trained on roughly <strong>15 trillion tokens</strong>, and the current generation of frontier models is reported to use comparable or larger corpora. The bottleneck of the 2024 to 2026 model generation has not been raw compute so much as data: how much high-quality text exists at all, how to source it without exhausting the public reserve, and how to verify its quality at scale.</p>
+  <p>Physically, that corpus lives in high-throughput object and parallel file storage inside the lab's own cluster or its cloud provider's. These are not exotic systems, just very large ones: Google Cloud's managed Lustre offering, for instance, now scales to <strong>80 petabytes</strong> per deployment.</p>
+  <p>What matters for our purposes is not the plumbing. It is that <strong>nobody outside the organization can inspect it</strong>. When a model is accused of memorizing a newspaper archive or a codebase, the corpus that would settle the question is a private asset held by the accused party. There is no independent copy, no fixed hash anyone published in advance, no way for a third party to check that what is being described in a compliance document is what actually went into the run.</p>
+
+  <h2>The weights: smaller than you would guess</h2>
+  <p>The model is the compressed residue of all that data, and it is comparatively tiny. Meta's Llama 3.1 405B, one of the largest openly released models, occupies roughly <strong>750 GB</strong> on disk in its released precision and around <strong>2 TB</strong> at full FP32 precision. Quantized down, it fits in a few hundred gigabytes.</p>
+  <div class="bignum">
+    <div class="bn"><b>~15T tokens</b><span>reported Llama 3.1 pre-training corpus</span></div>
+    <div class="bn"><b>~750 GB</b><span>Llama 3.1 405B weights, released precision</span></div>
+    <div class="bn"><b>&gt;$1T</b><span>hyperscaler AI capex, 2025 to 2026 (BIS)</span></div>
+  </div>
+  <p>Think about that ratio. The thing everyone wants to govern, audit and secure, the weights, is small enough to fit on a few consumer drives. The thing that determines what the weights learned, the corpus, is thousands of times larger and effectively unauditable. Governance attaches itself to the small artifact because the large one is out of reach.</p>
+  <p>For closed frontier models, the weights never leave the lab's infrastructure at all. They are the crown jewels, replicated across the training cluster and the inference fleet, and they exist as a single organization's asset in a single organization's buildings.</p>
+
+  <h2>The inference trail: your prompts are durable</h2>
+  <p>This is the pile most people underestimate, because the interface implies impermanence. You type, you read, you close the tab, maybe you press delete.</p>
+  <p>In May 2025, in the copyright litigation brought by The New York Times and other publishers, a federal court ordered OpenAI to <strong>preserve ChatGPT output logs</strong>, including conversations that users believed they had permanently deleted under the standard thirty-day policy. In January 2026, the Southern District of New York upheld discovery orders requiring the company to produce a sample of <strong>20 million de-identified chat logs</strong>. Enterprise and zero-data-retention API customers sat on a different footing. Everyone else did not.</p>
+  <p>You do not have to take a position on the underlying lawsuit to notice the structural point. A retention policy is a promise made by a company about data that company physically holds. A court, a regulator, an acquirer, or a breach can override that promise, and the user finds out afterwards. Commentators also flagged the obvious tension with the right to erasure under Article 17 of the GDPR, which is the kind of collision that happens when custody and policy live in different jurisdictions.</p>
+  <div class="honest"><b>Worth being precise:</b> preservation is not publication. The logs were ordered retained and, later, a de-identified sample produced under court supervision, not released to the public. The lesson is about who controls the switch, not about a leak.</div>
+
+  <h2>Why it all sits in a few very large buildings</h2>
+  <p>Storage of this kind concentrates, because the compute it feeds concentrates. And the compute concentrates because of how it is being paid for.</p>
+  <p>In its Annual Economic Report published on 28 June 2026, the Bank for International Settlements, the institution central banks bank with, warned that the AI investment boom has become a financial stability concern. The five largest hyperscalers are set to spend <strong>more than a trillion dollars</strong> on AI-related capital expenditure across 2025 and 2026, commitments that outpace their earnings and free cash flow, pushing some toward debt issuance. The BIS flagged three things in particular: financing structures that move leverage off the balance sheet, where it does not disappear so much as become harder to see; circular arrangements in which hyperscalers take equity stakes in labs that then commit to buying compute; and the growth of private credit, which originated more than <strong>$40 billion</strong> in loans to AI-related companies in 2025 alone, a fivefold jump, in a market with far less disclosure than public bonds. The report compares the episode to canal mania and the dotcom build-out, both of which ended with an investment reversal.</p>
+  <p>That is the financial layer. There is also a physical one, and it is where the abstraction becomes a neighbor.</p>
+
+  <h2>The buildings are losing their welcome</h2>
+  <p>Data centers used to be invisible infrastructure. In 2026 they are a ballot issue. By the end of June 2026, more than one hundred United States municipalities had imposed local moratoriums on new data centers, with a handful of permanent bans. Denver's city council approved a one-year pause. Monterey Park voters in California approved an outright ban with <strong>86.3%</strong> of the vote. San Marcos became the first city in Texas to effectively ban new data centers through its zoning code, on a four to three council vote. A Gallup poll in March 2026 found roughly <strong>seven in ten Americans</strong> would oppose the construction of an AI data center near them, and industry trackers counted at least <strong>75 projects worth a cumulative $130 billion</strong> delayed or blocked by local opposition in the first quarter of 2026 alone.</p>
+  <p>Reasonable people disagree about whether that opposition is good policy. Critics note that moratoriums push investment elsewhere, and at least one county rescinded its pause after being sued by a developer. Supporters point to water, electricity prices and land use. Either way, the design implication is the same and it is not ideological: <strong>an architecture whose unit of expansion is a 460,000 square foot building has a permitting problem that an architecture made of thousands of ordinary machines does not.</strong></p>
+
+  <h2>Regulators are asking where the data came from</h2>
+  <p>The other pressure is documentary. Article 53(1)(d) of the EU AI Act requires providers of general-purpose AI models to publish a "sufficiently detailed summary" of the content used to train the model, following a mandatory template the European Commission published on <strong>24 July 2025</strong>. The template asks for the main data source categories: public datasets, licensed data, crawled and scraped content, user data, synthetic data. The obligation applied to new models from 2 August 2025, the AI Office gains supervisory and enforcement powers from <strong>2 August 2026</strong>, existing models have until 2 August 2027, and summaries must be refreshed at least every six months.</p>
+  <p>Read that alongside the first section of this article and the gap is obvious. The law asks a provider to describe a corpus that only the provider can see, in a document the provider writes, about data the provider can modify. Every part of that chain rests on the same word: trust. Nothing in the current stack lets an auditor, a copyright holder or a downstream deployer <strong>verify</strong> that the described corpus is the corpus, that a checkpoint is the checkpoint, or that a log has not been quietly rewritten.</p>
+
+  <h2>What decentralized storage does, and what it does not</h2>
+  <p>Here is where we have to be careful, because this is the part of the argument that usually gets oversold. <strong>Decentralized storage networks do not train models.</strong> They will not host a hot training cluster, they do not compete with a GPU fabric, and no serious operator claims otherwise. Nothing about spreading bytes across independent machines makes a pre-training run cheaper.</p>
+  <p>What they change is <strong>custody and verifiability of the artifacts</strong> that surround a model. That is a narrower claim, and a defensible one:</p>
+  <ul>
+    <li><strong>Filecoin</strong> makes providers repeatedly prove they still hold your bytes, through Proof of Replication and Proof of Spacetime. Reported network capacity is on the order of 7.6 exbibytes raw, with roughly 2.1 exbibytes actually stored and utilization around 31%. It is the natural home for large cold datasets that must be provably retained.</li>
+    <li><strong>Arweave</strong> is designed for permanence: pay once, and an endowment funds replication indefinitely, with miners rewarded for proving fast access to random historical chunks. Total stored data was reported at roughly 347 tebibytes in early 2026. It is the reference choice for provenance records that must outlive their author.</li>
+    <li><strong>Walrus</strong> targets hot blob storage, applying erasure coding across nodes with on-chain certification on Sui, which is closer to what a live application actually needs.</li>
+  </ul>
+  <p>Put a training-data manifest, a dataset snapshot hash, a model checkpoint, or an immutable audit log on infrastructure like that, and the compliance summary the EU AI Act asks for stops being a claim and starts being a receipt anyone can check. The bytes are held by many independent operators who are each cryptographically obliged to prove they still have them. No single company can silently revise history, and no single court order lands on a single custodian.</p>
+
+  <h2>The comparison, honestly</h2>
+  <table>
+    <thead><tr><th>Data pile</th><th>Typical size</th><th>Where it lives today</th><th>Who can verify it</th><th>What a decentralized substrate changes</th></tr></thead>
+    <tbody>
+      <tr><td><b>Training corpus</b></td><td>Petabytes</td><td>Private object storage in the lab or its cloud</td><td class="no">Nobody outside</td><td>Publishable hashes and snapshots that outsiders can check against claims</td></tr>
+      <tr><td><b>Weights and checkpoints</b></td><td>~0.75 to 2 TB</td><td>Training and inference clusters, closed for frontier models</td><td class="part">Only if openly released</td><td>Provable retention and integrity of the exact artifact that was audited</td></tr>
+      <tr><td><b>Inference logs</b></td><td>Enormous in aggregate</td><td>Provider infrastructure, retention set by policy and courts</td><td class="no">Nobody outside</td><td>Tamper-evident logs; custody split from the party being audited</td></tr>
+      <tr><td><b>Enterprise retrieval data</b></td><td>Varies</td><td>Vendor cloud, or the customer's own systems</td><td class="part">Contractually, not cryptographically</td><td>Custody stays with the data owner rather than the model vendor</td></tr>
+      <tr><td><b>Provenance records</b></td><td>Small</td><td>PDFs and web pages on a company server</td><td class="no">Trust the publisher</td><td>Permanent, addressable, independently retrievable receipts</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The gap still open: storage a program can actually use</h2>
+  <p>There is one more limitation shared by every option above, and it is the one we spend our days on. Data on Arweave, IPFS or Filecoin is <strong>invisible to on-chain logic</strong>. A smart contract cannot read the contents of a stored file during a transaction, branch on it, or update it. Applications glue the pieces together off-chain, which works, and which also means the data layer sits outside the trust boundary that made the contract worth writing.</p>
+  <p>That is the specific bet <a href="what-is-xandeum.html">Xandeum</a> makes: a storage layer designed to be read and written directly from smart contracts, blockchain-agnostic by design and integrated first with Solana. If AI agents are going to transact, hold budgets, and act on data with economic consequences, the data they act on eventually needs to live somewhere a contract can verify rather than somewhere an API promises.</p>
+  <p>We should state the stage plainly, because we monitor the network live and have no interest in pretending. Xandeum's mainnet today runs on the order of <strong>110 storage nodes with roughly 355 TB of committed capacity, of which well under 1% is used</strong>. The supply side is real. The demand side, meaning applications actually paying to store data, is early. Anyone can watch that used-storage number move on <a href="/">our live dashboard</a>, and that number, not anyone's roadmap, is the honest measure of whether this thesis is working.</p>
+
+  <h2>So what should you actually take away?</h2>
+  <ul>
+    <li><strong>The corpus is the unaudited part.</strong> Debates about model behavior keep hitting a wall because the evidence is a private asset. Verifiable snapshots would move that wall.</li>
+    <li><strong>Your prompts are records.</strong> Retention policies describe intent, not capability. Whoever holds the bytes decides, and courts can decide for them.</li>
+    <li><strong>Concentration is a design choice with a bill attached.</strong> The BIS is worried about how the buildings are financed; a hundred municipalities are worried about the buildings. Both pressures point the same direction: distribute what can be distributed.</li>
+    <li><strong>Decentralized storage is a custody and verifiability tool, not an AI accelerator.</strong> Anyone selling it as the latter is selling something else.</li>
+    <li><strong>Watch usage, not narrative.</strong> That applies to us too. Storage networks are judged by bytes actually stored and paid for, which is exactly why we publish ours.</li>
+  </ul>
+
+  <div class="cta">
+    <a class="btn" href="what-is-xandeum.html">What is Xandeum? &rarr;</a>
+    <a class="btn ghost" href="solana-storage-explained.html">Where data on Solana lives</a>
+    <a class="btn ghost" href="/">Live storage network data</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>Where is AI training data stored?</summary><p>In private object storage inside the labs' own data centers or their cloud providers'. A pre-training run filters a petabyte-scale crawl down to trillions of tokens (Llama 3.1 used roughly 15 trillion). None of that raw corpus is published, so outsiders cannot inspect or verify what went into a model.</p></details>
+    <details><summary>How big is a frontier model's weights file?</summary><p>Smaller than most people expect. Llama 3.1 405B is roughly 750 GB on disk in its released precision, about 2 TB at full precision, and a few hundred gigabytes quantized. The corpus behind it is thousands of times larger.</p></details>
+    <details><summary>Do AI companies keep your chat logs?</summary><p>Often longer than the published policy implies. A federal court ordered OpenAI in May 2025 to preserve ChatGPT logs, including deleted conversations, and in January 2026 the Southern District of New York upheld orders to produce a sample of 20 million de-identified logs. Enterprise and zero-data-retention customers were treated differently.</p></details>
+    <details><summary>Why are AI data centers controversial?</summary><p>Physical footprint and financing. More than a hundred US municipalities had moratoriums by mid-2026 and Gallup found roughly seven in ten Americans oppose one being built nearby. Separately, the BIS warned in June 2026 that debt-financed AI capex has become a financial stability risk.</p></details>
+    <details><summary>Does decentralized storage train AI models?</summary><p>No, and nobody credible claims it does. It changes custody and verifiability of the artifacts around a model: datasets, checkpoints, provenance and audit logs held across independent operators who must keep proving they still hold them.</p></details>
+    <details><summary>What does the EU AI Act require about training data?</summary><p>Article 53(1)(d) requires a sufficiently detailed public summary of training content, using the Commission's template from 24 July 2025. It applied to new models from 2 August 2025, AI Office enforcement powers begin 2 August 2026, existing models have until 2 August 2027, and summaries refresh at least every six months.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://www.bis.org/publ/arpdf/ar2026e1.htm" target="_blank" rel="noopener">BIS Annual Economic Report 2026</a> &middot; <a href="https://www.bis.org/publ/bisbull120.pdf" target="_blank" rel="noopener">BIS Bulletin 120: Financing the AI boom</a> &middot; <a href="https://openai.com/index/response-to-nyt-data-demands/" target="_blank" rel="noopener">OpenAI on the NYT data demands</a> &middot; <a href="https://natlawreview.com/article/when-chats-become-evidence-court-affirms-order-requiring-openai-produce-20-million" target="_blank" rel="noopener">Court affirms order on 20M ChatGPT logs</a> &middot; <a href="https://stateline.org/2026/05/28/more-cities-are-pressing-pause-on-data-centers-as-local-backlash-grows/" target="_blank" rel="noopener">Stateline: data center moratoriums</a> &middot; <a href="https://www.texastribune.org/2026/06/30/texas-san-marcos-data-center-ban-zoning-laws/" target="_blank" rel="noopener">Texas Tribune: San Marcos ban</a> &middot; <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener">EU AI Act</a> &middot; <a href="https://www.wilmerhale.com/en/insights/blogs/wilmerhale-privacy-and-cybersecurity-law/european-commission-releases-mandatory-template-for-public-disclosure-of-ai-training-data" target="_blank" rel="noopener">Training-data disclosure template</a> &middot; <a href="https://huggingface.co/blog/llama31" target="_blank" rel="noopener">Llama 3.1 model card</a> &middot; <a href="https://docs.filecoin.io/" target="_blank" rel="noopener">Filecoin Docs</a> &middot; <a href="https://docs.arweave.org/" target="_blank" rel="noopener">Arweave Docs</a> &middot; <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a> &middot; live network data on <a href="/">our dashboard</a>.
+    <br><br>Disclosure: Pulsar Network operates 12 Xandeum pNodes and accepts XAND delegation, so we benefit if Xandeum succeeds. That is why the Xandeum section above states its early stage with live numbers instead of hiding them. Figures cited from third parties are point-in-time and linked above. Not financial advice.
+  </div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+</body>
+</html>
