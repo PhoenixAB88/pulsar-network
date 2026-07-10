@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum Use Cases: What You Can Actually Build (2026) | Pulsar</title>
+<meta name="description" content="Real Xandeum use cases: NFTs and games that outlive their makers, AI agent memory, RWA documents. What decentralized storage unlocks that AWS cannot, and what it does not.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/xandeum-use-cases.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum Use Cases: What You Can Actually Build (2026)">
+<meta property="og:description" content="The honest map: NFTs and games that outlive their makers, AI agents that remember, tokenized assets with their paperwork attached. And what does not need decentralized storage at all.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/xandeum-use-cases.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-xandeum-use-cases.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum Use Cases: What You Can Actually Build (2026)">
+<meta name="twitter:description" content="The honest map: NFTs and games that outlive their makers, AI agents that remember, tokenized assets with paperwork attached. And what does not need decentralized storage.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-xandeum-use-cases.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .livebar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:11px 15px;margin:18px 0;font-size:13.5px;color:var(--mut)}
+  .livebar b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:lvp 1.8s ease-in-out infinite;flex-shrink:0}
+  @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
+  @media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
+  .formula{background:var(--surface-2);border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:16px 20px;margin:18px 0;text-align:center;font-size:15.5px;color:var(--ink);font-weight:600;letter-spacing:.01em}
+  .formula small{display:block;font-weight:400;color:var(--mut2);font-size:12.5px;margin-top:6px;letter-spacing:0}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+  th{color:var(--mut2);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px 12px;border-bottom:1px solid var(--hairline);color:var(--mut)}
+  td b{color:var(--ink);font-variant-numeric:tabular-nums}
+  tr.hl td{background:rgba(70,230,239,.05)}
+  .num{font-variant-numeric:tabular-nums}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Xandeum Use Cases: What You Can Actually Build (2026)","description":"Real Xandeum use cases: NFTs and games that outlive their makers, AI agent memory and provenance, tokenized real-world assets with their documents attached. And what does not need decentralized storage.","author":{"@type":"Person","name":"Abdennour T Bada","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-10","dateModified":"2026-07-10","mainEntityOfPage":"https://pulsarnetwork.xyz/xandeum-use-cases.html","image":"https://pulsarnetwork.xyz/og-xandeum-use-cases.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"Xandeum Use Cases","item":"https://pulsarnetwork.xyz/xandeum-use-cases.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is Xandeum used for?","acceptedAnswer":{"@type":"Answer","text":"Xandeum is a decentralized storage layer that blockchain programs can read, write and verify directly. The strongest use cases are NFT and game data that must outlive any company, persistent verifiable memory for AI agents, provenance records for AI training data, and tokenized real-world assets with their legal documents attached."}},
+{"@type":"Question","name":"Why use Xandeum instead of AWS or Google Cloud?","acceptedAnswer":{"@type":"Answer","text":"For ordinary websites and backups, AWS is cheaper and faster and you should use it. Decentralized storage matters when the app itself is the trust model: when a smart contract needs to access the data without a human, when the data must survive any single company disappearing, or when someone needs to prove the data is intact and unchanged. With a centralized cloud, the company you are trusting is the cloud provider."}},
+{"@type":"Question","name":"Are there apps running on Xandeum today?","acceptedAnswer":{"@type":"Answer","text":"It is early. Mainnet stores well under 1 percent of its committed capacity and the developer toolkit is young, so the use cases described are what the architecture enables, not products you can download today. The metric to watch is real storage usage, which is published live on the Pulsar dashboard."}},
+{"@type":"Question","name":"Does decentralized storage automatically make an app better?","acceptedAnswer":{"@type":"Answer","text":"No. Users choose apps that solve real problems, not apps with a particular backend. Decentralized storage adds value only when programs must access the data directly, when the data must outlive companies, or when integrity must be provable. If none of those apply, a normal cloud is the better tool."}},
+{"@type":"Question","name":"What is the strongest Xandeum use case right now?","acceptedAnswer":{"@type":"Answer","text":"Our view as node operators: AI agent memory and training-data provenance, because the pain is documented and growing fast, and truly on-chain NFTs and games, because link rot in NFT collections is already measured in studies and marketplace shutdowns keep proving the point."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Use cases &middot; updated July 2026</span>
+  <h1>What can you actually build on Xandeum?</h1>
+  <p class="lead">Nobody uses an app because its storage is decentralized. <strong>People use apps that solve a problem.</strong> So the right question is not what Xandeum is, but what it lets you build that you could not build before. Here is the honest map: the use cases that pass that test, the receipts behind them, and the ones that do not need decentralized storage at all.</p>
+  <p class="byline">By Abdennour T Bada, Pulsar Network, operators of 12 pNodes across devnet and mainnet. We monitor the network live and publish what we see.</p>
+
+  <div class="tldr"><b>TL;DR:</b> decentralized storage earns its keep in exactly one situation: when the app itself is the trust model and no single company can be allowed to hold the off switch. That points to three strong lanes: NFTs and games that outlive their makers, AI agents with provable memory and auditable training data, and tokenized real-world assets with their paperwork actually attached. For everything else, normal cloud is fine, and we say so. (Nothing ships on Xandeum yet; we get to that below.)</div>
+
+  <div class="livebar" id="livebar">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span>Live network:</span>
+    <span><b id="lvNodes">&mdash;</b> pNodes</span>
+    <span><b id="lvSto">&mdash;</b> committed</span>
+    <span><b id="lvUsed">&mdash;</b> used</span>
+    <span><b id="lvStake">&mdash;</b> XAND staked</span>
+  </div>
+
+  <h2>Why not just use AWS?</h2>
+  <p>It is the right first question, and it deserves a one-breath answer. If you are hosting a website, an internal tool or a plain backup, AWS wins: cheaper, faster, more mature. Decentralized storage becomes interesting when the application itself is the trust model, because then the storage cannot belong to one company. <strong>With AWS, the company you are trusting is AWS.</strong></p>
+  <p>That is mechanics, not ideology. A smart contract cannot open a support ticket, sign a new terms of service, or migrate a bucket when a provider changes its mind. A blockchain app that parks its data on one company's servers is decentralized in name only: the chain settles the money while a server somewhere holds everything the money is about. Every guarantee the chain makes stops at the edge of that server.</p>
+  <p>There is also a practical squeeze. On Solana, bytes a program can actually touch are scarce and expensive: rent exemption means locking roughly <a href="https://solana.com/docs/core/accounts" target="_blank" rel="noopener">6.96 SOL per megabyte</a> as a refundable deposit that stays locked while the data exists, which is why nearly every app stores a link on-chain and the real data somewhere else. We walked through that gap in <a href="solana-storage-explained.html">Where does data on Solana actually live?</a> Xandeum's reason to exist is closing it: <a href="what-is-xandeum.html">a storage layer</a> that programs can read, write and verify at file scale, on a network no single company owns.</p>
+
+  <h2>The three-question test</h2>
+  <p>A quick filter we use before calling anything a real use case:</p>
+  <ul>
+    <li><strong>Does a program need to touch the data?</strong> A smart contract or an autonomous agent reading and writing it directly, with no human in the loop.</li>
+    <li><strong>Must the data outlive any single company?</strong> Including the company that built the app.</li>
+    <li><strong>Does anyone need to prove the data is intact?</strong> Unchanged, uncensored, and still there.</li>
+  </ul>
+  <p>Zero out of three: use a normal cloud. One: maybe. Two or three: this is exactly what a decentralized storage layer is for. The three lanes below score two or three.</p>
+
+  <h2>1. NFTs and games that outlive their makers</h2>
+  <p>The receipts here are not hypothetical. An academic study of 12,353 Ethereum NFT contracts covering 6.2 million tokens found that the off-chain assets of <a href="https://arxiv.org/abs/2212.11181" target="_blank" rel="noopener">25 percent of contracts were already unreachable</a>. A <a href="https://arxiv.org/abs/2408.13281" target="_blank" rel="noopener">2024 study of top-selling OpenSea collections</a> found a substantial share of metadata sitting on centralized servers, open to tampering and takedowns. And when the Foundation marketplace <a href="https://thedefiant.io/news/nfts-and-web3/foundation-nft-marketplace-shuts-down-permanently-after-failed-sale" target="_blank" rel="noopener">shut down</a>, it committed to keep collectors' media pinned for just one more year and told users to start pinning their own files.</p>
+  <p>That is what owning an NFT often means today: you own a receipt that points at a file someone else is paying to keep alive. Games sharpen the same problem: world state, items, maps and player inventories are far too big for on-chain accounts, so they live on studio servers, and the studio's lifespan becomes the game's lifespan.</p>
+  <p><strong>What changes with program-accessible storage:</strong> the artwork, the metadata and the game state live on the same decentralized layer the contract can read and write. The asset and the thing it represents become one object with one lifetime. Who this is for: NFT platforms, on-chain games, and anyone who sells "forever" but currently rents it by the month.</p>
+
+  <h2>2. AI that remembers, and AI you can audit</h2>
+  <p>AI agents are stateless by default: every session starts from zero. The industry is treating that as a core problem now. Anthropic launched a <a href="https://claude.com/blog/context-management" target="_blank" rel="noopener">memory tool</a> so agents can keep project state across sessions, and LangChain's docs call memory <a href="https://docs.langchain.com/oss/python/langgraph/memory" target="_blank" rel="noopener">crucial for agents to learn and adapt</a>. For an ordinary chatbot, a normal database solves this. For an agent holding a wallet, executing trades or acting for a DAO, it does not, because the memory itself has to be trustworthy: the mandate the agent follows, the log of what it decided, the data it acted on. That calls for storage that is persistent, program-readable and <a href="articles/verifiable-storage-101.html">provably intact</a>, which is precisely the shape of the <a href="articles/ai-agents-onchain.html">on-chain agent economy</a>.</p>
+  <p>The audit side is moving even faster. The EU AI Act now requires providers of new general-purpose models to publish <a href="https://www.wilmerhale.com/en/insights/blogs/wilmerhale-privacy-and-cybersecurity-law/european-commission-releases-mandatory-template-for-public-disclosure-of-ai-training-data" target="_blank" rel="noopener">summaries of their training data</a> (older models are phased in by 2027). The C2PA content-credentials coalition passed <a href="https://c2pa.org/the-c2pa-launches-content-credentials-2-3-and-celebrates-5-years-of-impact-across-the-digital-ecosystem/" target="_blank" rel="noopener">6,000 members and affiliates</a>, and Canon is rolling out <a href="https://global.canon/en/news/2026/20260511.html" target="_blank" rel="noopener">provenance signing</a> for its newsroom cameras. All of it amounts to receipts for data, and receipts need somewhere tamper-evident to live. We covered the storage half of that story in <a href="articles/training-data-provenance.html">AI training data provenance</a>.</p>
+
+  <h2>3. Real-world assets with the paperwork attached</h2>
+  <p>Tokenized U.S. Treasuries alone now hold about <a href="https://app.rwa.xyz/treasuries" target="_blank" rel="noopener">$15 billion across 84 products</a>. But a token without its documents is just a pointer: the deed, the invoice, the appraisal, the audit trail are what make the on-chain asset mean something, and today they mostly sit in PDFs on somebody's server, exactly the arrangement tokenization was supposed to retire.</p>
+  <p><strong>What changes:</strong> the legal paper travels with the asset, stored on a layer the settlement contract can reference and anyone can verify, durable past any single custodian. Who this is for: RWA issuers, compliance teams, and anyone whose token is only as credible as its most fragile document link.</p>
+
+  <h2>The quieter candidates</h2>
+  <ul>
+    <li><strong>Social you own:</strong> posts, media and follower graphs that belong to the user, not to a platform that can ban or fold.</li>
+    <li><strong>Personal data vaults:</strong> encrypted records (medical, identity, credentials) where apps request access and you hold the keys.</li>
+    <li><strong>DAO archives:</strong> proposals, treasury history and governance records, permanent and independently checkable.</li>
+    <li><strong>Data availability:</strong> rollups need cheap, verifiable places to publish data blobs. An adjacent lane with different requirements, but storage networks keep getting pulled into it.</li>
+  </ul>
+
+  <h2>What does not need Xandeum</h2>
+  <p>Honesty is the differentiator, so: your static website does not need decentralized storage. Neither do your company backups if you already trust your vendor, nor hot video delivery, which is a CDN's job. If no program needs to touch the data and nobody needs to prove anything about it, a normal cloud is cheaper and faster, and pretending otherwise would make everything above less believable.</p>
+
+  <div class="honest"><b>Where this stands today:</b> Xandeum is early. Mainnet stores well under 1% of committed capacity, the developer toolkit (sedApps, with peek and poke primitives) is young, and none of the use cases above exist yet as shipped products on Xandeum. These are the doors the architecture opens, not apps you can download today. We run 12 pNodes because we think some of these doors get walked through, and we publish the live usage numbers either way.</div>
+
+  <div class="cta">
+    <a class="btn" href="what-is-xandeum.html">Start here: What is Xandeum? &rarr;</a>
+    <a class="btn ghost" href="xandeum-vs-filecoin-arweave-walrus.html">Xandeum vs Filecoin, Arweave &amp; Walrus</a>
+    <a class="btn ghost" href="/">Live network dashboard</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>What is Xandeum used for?</summary><p>It is a storage layer blockchain programs can read, write and verify directly. The strongest lanes: NFT and game data that must outlive any company, verifiable memory for AI agents, provenance for AI training data, and tokenized real-world assets with their documents attached. Definitions live in the <a href="glossary.html">glossary</a>.</p></details>
+    <details><summary>Why use Xandeum instead of AWS?</summary><p>For websites and backups, use AWS. Decentralized storage matters when a contract must access the data without a human, when data must survive any company disappearing, or when integrity must be provable. With a centralized cloud, the company you are trusting is the cloud provider.</p></details>
+    <details><summary>Are apps running on Xandeum today?</summary><p>It is early: mainnet usage is under 1% of committed capacity and the tooling is young. These use cases are what the architecture enables, not products you can download today. Watch real usage on <a href="/">our live dashboard</a>.</p></details>
+    <details><summary>Does decentralized storage automatically make an app better?</summary><p>No. Users pick apps that solve problems, not backends. It adds value only when program access, survivability or verifiability genuinely matter. Otherwise normal cloud is the better tool.</p></details>
+    <details><summary>Which use case is strongest right now?</summary><p>Our operator's view: AI agent memory and provenance, where the pain is documented and growing, and truly on-chain NFTs and games, where link rot is already measured in studies.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://arxiv.org/abs/2212.11181" target="_blank" rel="noopener">arXiv: Do NFTs' Owners Really Possess their Assets?</a> &middot; <a href="https://arxiv.org/abs/2408.13281" target="_blank" rel="noopener">arXiv: The Centralization of NFT Metadata</a> &middot; <a href="https://thedefiant.io/news/nfts-and-web3/foundation-nft-marketplace-shuts-down-permanently-after-failed-sale" target="_blank" rel="noopener">The Defiant: Foundation shutdown</a> &middot; <a href="https://claude.com/blog/context-management" target="_blank" rel="noopener">Anthropic: memory &amp; context management</a> &middot; <a href="https://docs.langchain.com/oss/python/langgraph/memory" target="_blank" rel="noopener">LangChain: agent memory</a> &middot; <a href="https://www.wilmerhale.com/en/insights/blogs/wilmerhale-privacy-and-cybersecurity-law/european-commission-releases-mandatory-template-for-public-disclosure-of-ai-training-data" target="_blank" rel="noopener">EU AI Act training-data template</a> &middot; <a href="https://c2pa.org/the-c2pa-launches-content-credentials-2-3-and-celebrates-5-years-of-impact-across-the-digital-ecosystem/" target="_blank" rel="noopener">C2PA: Content Credentials 2.3</a> &middot; <a href="https://global.canon/en/news/2026/20260511.html" target="_blank" rel="noopener">Canon: authenticity imaging</a> &middot; <a href="https://app.rwa.xyz/treasuries" target="_blank" rel="noopener">RWA.xyz: tokenized treasuries</a> &middot; <a href="https://solana.com/docs/core/accounts" target="_blank" rel="noopener">Solana docs: accounts &amp; rent</a> &middot; <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a>.
+    <br><br>Disclosure: Pulsar Network operates 12 pNodes and accepts XAND delegation at 10% commission, so we benefit if you stake with us. We are independent and not affiliated with the Xandeum Foundation. Nothing here is financial advice; scenario figures are formula-based estimates, not promises.
+  </div>
+
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+
+<script src="net_storage_mainnet.js"></script>
+<script src="stake_data.js"></script>
+<script>
+(function(){
+  function fmt(n){return n==null?null:n.toLocaleString('en-US');}
+  function fmtBytes(b){if(b==null)return null;var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
+  try{
+    var NS=(window.__NS&&window.__NS.mainnet)||null;
+    if(NS){
+      if(NS.nodes)document.getElementById('lvNodes').textContent=fmt(NS.nodes);
+      if(NS.committed)document.getElementById('lvSto').textContent=fmtBytes(NS.committed);
+      if(NS.committed){var pr=(NS.used||0)/NS.committed*100;document.getElementById('lvUsed').textContent=(NS.used?fmtBytes(NS.used):'0')+' ('+(pr>=1?Math.round(pr)+'%':'<1%')+')';}
+    }
+    if(window.STAKE_TOTAL)document.getElementById('lvStake').textContent=new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(window.STAKE_TOTAL);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

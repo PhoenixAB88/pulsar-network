@@ -87,7 +87,7 @@
   footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"TechArticle","headline":"How Xandeum Works: Pods, Gossip and pRPC Under the Hood","description":"Xandeum architecture from operators who run it: pNodes and the pod service, gossip, the pRPC interface, buckets and peek/poke, Atlas, and what is decentralized today.","author":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/how-xandeum-works.html","image":"https://pulsarnetwork.xyz/og-image.png"}
+{"@context":"https://schema.org","@type":"TechArticle","headline":"How Xandeum Works: Pods, Gossip and pRPC Under the Hood","description":"Xandeum architecture from operators who run it: pNodes and the pod service, gossip, the pRPC interface, buckets and peek/poke, Atlas, and what is decentralized today.","author":{"@type":"Person","name":"Abdennour T Bada","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-02","dateModified":"2026-07-02","mainEntityOfPage":"https://pulsarnetwork.xyz/how-xandeum-works.html","image":"https://pulsarnetwork.xyz/og-image.png"}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"How Xandeum Works","item":"https://pulsarnetwork.xyz/how-xandeum-works.html"}]}
@@ -112,7 +112,7 @@
   <span class="eyebrow">Technical deep dive &middot; updated July 2026</span>
   <h1>How Xandeum works under the hood: pods, gossip and pRPC</h1>
   <p class="lead">Most Xandeum explainers stop at the whiteboard. We run <strong>12 pNodes</strong> and built a <a href="/">live monitor</a> on the network's own interfaces, so this is the machine-room tour: what actually runs on a pNode, how nodes find each other, what the pRPC interface returns, and what is genuinely decentralized today versus not yet.</p>
-  <p class="byline">By Pulsar Network. Everything below is public protocol behavior, reproducible on any pNode you run yourself.</p>
+  <p class="byline">By Abdennour T Bada, Pulsar Network. Everything below is public protocol behavior, reproducible on any pNode you run yourself.</p>
 
   <div class="tldr"><b>TL;DR:</b> Xandeum splits the job in two: a blockchain (Solana today) handles trust, staking and reward settlement, while a network of pNodes handles bytes. Each pNode runs the pod service with an Ed25519 keypair identity, gossips a peer roster, and serves pRPC on port 6000, where one call (get-pods-with-stats) returns the whole network's roster with per-node storage, uptime and version. Apps get buckets with peek/poke (read/write) access designed for smart contracts. Coordination via Atlas and the credits feed are still centralized, Foundation-run pieces; storage, gossip and settlement are not.</div>
 
