@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026) | Pulsar</title>
+<meta name="description" content="Oxorro is Xandeum's enterprise product: a file manager on decentralized storage, aimed at operational data that must survive any vendor. What is verified, what is marketing, and who it is really for.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/what-is-oxorro.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026)">
+<meta property="og:description" content="A file manager on decentralized storage, aimed at data that must survive its own provider. A deep dive from outside the project team: what is verified, what is marketing, and who Oxorro is really for, from node operators who disclose their interest.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/what-is-oxorro.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-what-is-oxorro.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026)">
+<meta name="twitter:description" content="A file manager on decentralized storage, aimed at data that must survive its own provider. A deep dive on Xandeum's enterprise product from node operators who disclose their interest.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-what-is-oxorro.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,40px);font-weight:700;letter-spacing:-.03em;margin:0 0 14px;line-height:1.12}
+  .lead{font-size:18.5px;color:var(--mut);margin:0 0 10px}
+  .byline{font-size:13px;color:var(--mut2);margin:0 0 26px}
+  .hero-img{display:block;width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--hairline);margin:4px 0 26px}
+  .body-img{display:block;width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--hairline);margin:22px 0}
+  h2{font-size:23px;font-weight:600;letter-spacing:-.02em;margin:40px 0 12px;line-height:1.25}
+  h3{font-size:17px;font-weight:600;margin:26px 0 8px}
+  p{color:var(--mut);margin:0 0 16px}
+  strong{color:var(--ink)}
+  ul,ol{color:var(--mut);margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:7px}
+  .tldr{background:var(--surface-1);border:1px solid var(--hairline-2);border-left:3px solid var(--teal);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15.5px;color:var(--mut)}
+  .tldr b{color:var(--ink)}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut)}
+  .honest b{color:var(--orange)}
+  .livebar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-md);padding:11px 15px;margin:18px 0;font-size:13.5px;color:var(--mut)}
+  .livebar b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good);animation:lvp 1.8s ease-in-out infinite;flex-shrink:0}
+  @keyframes lvp{0%,100%{opacity:1}50%{opacity:.35}}
+  @media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14.5px}
+  th{color:var(--mut2);font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;text-align:left;padding:9px 12px;border-bottom:1px solid var(--hairline-2)}
+  td{padding:10px 12px;border-bottom:1px solid var(--hairline);color:var(--mut)}
+  td b{color:var(--ink);font-variant-numeric:tabular-nums}
+  tr.hl td{background:rgba(70,230,239,.05)}
+  .num{font-variant-numeric:tabular-nums}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  .faq{margin-top:44px}
+  details{border-top:1px solid var(--hairline);padding:14px 0}
+  details summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;font-size:16px}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ ";color:var(--teal)}
+  details[open] summary::before{content:"- "}
+  details p{margin:10px 0 0;font-size:15px}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:44px;padding-top:18px;line-height:1.7}
+  .src a{color:var(--mut)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026)","description":"Oxorro is Xandeum's enterprise product: a file manager on decentralized storage, aimed at operational data that must survive any vendor. What is verified, what is marketing, and who it is really for.","author":{"@type":"Person","name":"Abdennour T Bada","url":"https://pulsarnetwork.xyz/"},"publisher":{"@type":"Organization","name":"Pulsar Network","logo":{"@type":"ImageObject","url":"https://pulsarnetwork.xyz/logo.png"}},"datePublished":"2026-07-13","dateModified":"2026-07-13","mainEntityOfPage":"https://pulsarnetwork.xyz/what-is-oxorro.html","image":"https://pulsarnetwork.xyz/og-what-is-oxorro.png"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Insights","item":"https://pulsarnetwork.xyz/insights.html"},{"@type":"ListItem","position":3,"name":"What Is Oxorro?","item":"https://pulsarnetwork.xyz/what-is-oxorro.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is Oxorro?","acceptedAnswer":{"@type":"Answer","text":"Oxorro is the first enterprise application built by the Xandeum team on their own decentralized storage layer. It looks like a normal cloud file manager, with folders, uploads, previews and access controls, but the files live on Xandeum's network of independent storage nodes instead of one company's servers. Its pitch is Unstoppable Operational Data: business records that survive vendor failures, policy changes and account terminations."}},
+{"@type":"Question","name":"Is Oxorro available today?","acceptedAnswer":{"@type":"Answer","text":"Partly. A working wallet-based app is publicly reachable at app.oxorro.com, and a press release declared Oxorro live in May 2026. But the official site still describes an early-access phase where selected organizations request access and go through a sales conversation. There is no self-serve signup, no published pricing and no announced general-availability date."}},
+{"@type":"Question","name":"How is Oxorro different from Dropbox or SharePoint?","acceptedAnswer":{"@type":"Answer","text":"The interface is similar on purpose. The difference is underneath: with Dropbox or SharePoint, one company holds your files and can suspend the account, change terms or suffer an outage. Oxorro spreads files across independent Xandeum storage nodes with a replication factor the customer chooses, so no single provider can delete or lock the data. Whether that guarantee holds under real enterprise conditions is exactly what the early-access phase has to prove."}},
+{"@type":"Question","name":"How is Oxorro different from Filecoin or Arweave products?","acceptedAnswer":{"@type":"Answer","text":"Most decentralized storage behaves like an archive: upload once, retrieve later. Oxorro is built to behave like a live file system where files can be organized, updated, moved and deleted, and it is integrated with Solana so programs can interact with the data. That is the random-access design Xandeum claims as its protocol-level differentiator from Filecoin and Arweave."}},
+{"@type":"Question","name":"What does Oxorro cost?","acceptedAnswer":{"@type":"Answer","text":"No pricing has been published anywhere as of July 2026. The current app pays for storage in SOL on the Xandeum network, and enterprise onboarding runs through a sales conversation. For comparison, enterprise-friendly decentralized rivals charge around 7 dollars per terabyte per month, hyperscalers around 23 dollars plus egress fees."}},
+{"@type":"Question","name":"What does Oxorro mean for XAND and pNode operators?","acceptedAnswer":{"@type":"Answer","text":"Oxorro is the demand side of the Xandeum economy. Files stored through it consume network capacity, and storage fees flow through Xandeum's usage-based system to the pNode operators who provide the space. Xandeum's own announcement says growth of Oxorro increases network activity, storage demand and the importance of pNodes. That is why node operators like us watch it closely, and also why you should read operator commentary, including ours, with that interest in mind."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="insights.html">&larr; All insights</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Explainer &middot; Oxorro &middot; updated July 2026</span>
+  <h1>What is Oxorro? Xandeum's enterprise storage play, explained</h1>
+  <p class="lead">In May 2026 the Xandeum team launched what they bill as the first live application on their own storage layer, and it is not aimed at crypto users at all. <strong>Oxorro is a file manager for businesses, built on storage designed to survive its own provider.</strong> Almost nobody has covered it from outside the project. So we did what we do: read everything, opened the app, checked the claims, and wrote down what is real, what is marketing, and who this is actually for.</p>
+  <p class="byline">By Abdennour T Bada, Pulsar Network, operators of 12 pNodes across devnet and mainnet. We monitor the network live and publish what we see.</p>
+
+  <img class="hero-img" src="oxorro-hero.jpg" width="1600" height="893" alt="A glowing archive of enterprise files dissolving into streams of light toward a horizon of distributed storage nodes" fetchpriority="high">
+
+  <div class="tldr"><b>TL;DR:</b> Oxorro is Xandeum's first-party enterprise product: a familiar cloud-style file manager whose files live on the decentralized Xandeum network instead of one vendor's servers. The pitch is "Unstoppable Operational Data" for six industries where records must outlive any provider. A working app exists and we verified it, but the product is in gated early access: no public pricing, no published security documentation, no named customers yet. For the Xandeum network and its node operators, Oxorro is the single most important demand-side experiment to watch. (We run nodes, so read us with that in mind.)</div>
+
+  <div class="livebar" id="livebar">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span>Live network:</span>
+    <span><b id="lvNodes">&mdash;</b> pNodes</span>
+    <span><b id="lvSto">&mdash;</b> committed</span>
+    <span><b id="lvUsed">&mdash;</b> used</span>
+    <span><b id="lvStake">&mdash;</b> XAND staked</span>
+  </div>
+
+  <h2>The problem Oxorro wants to own</h2>
+  <p>In May 2024, a misconfiguration at Google Cloud <a href="https://cloud.google.com/blog/products/infrastructure/details-of-google-cloud-gcve-incident" target="_blank" rel="noopener">accidentally deleted the private cloud</a> of UniSuper, an Australian pension fund with more than half a million members: an internal provisioning tool left one parameter blank, and the system quietly set the environment to expire a year later. The fund's services were knocked offline, and Google's own account says teams worked around the clock over several days to restore them, aided by backups held outside the deleted environment, including third-party backup software. Nobody hacked anything. A configuration error at one vendor took down a customer that had done everything right.</p>
+  <p>That incident is the anchor story on <a href="https://www.oxorro.com/" target="_blank" rel="noopener">oxorro.com</a>, and it is a well-chosen one, because it reframes a debate that decentralized storage usually loses. The question is not whether AWS or Google is reliable. They are, overwhelmingly. The question is what happens on the day the provider itself is the failure: a deletion, a policy change, an account termination clause exercised with 30 days notice, a jurisdiction shift. Founder Bernie Blume put the positioning in one line in the launch announcement: when something goes wrong, "the data is still there, still accessible, and still under the customer's control."</p>
+  <p>If that argument sounds familiar, it is the enterprise version of the case we made in <a href="xandeum-use-cases.html">our use-cases deep dive</a>: decentralized storage earns its keep exactly when no single company can be allowed to hold the off switch. Oxorro is Xandeum's first attempt to sell that property as a product, and one of the first anywhere to package it as a live file manager rather than an S3 bucket or an archive.</p>
+
+  <h2>What Oxorro actually is</h2>
+  <p>Strip away the branding and Oxorro is three layers:</p>
+  <ul>
+    <li><strong>A familiar surface.</strong> A web file manager: file systems, folders and subfolders, uploads, search, previews, moving and deleting files, and access you can delegate to others. The deliberate design goal is that it feels like the cloud drive your team already uses.</li>
+    <li><strong>A decentralized engine.</strong> Files are stored on <a href="what-is-xandeum.html">Xandeum</a>, the Solana-connected storage network whose nodes we operate and monitor. Storage on Xandeum is random-access: programs and apps can read, write, update and delete data in place, which is what lets Oxorro behave like a live file system rather than an upload-once archive.</li>
+    <li><strong>A blockchain connection.</strong> Oxorro is integrated with Solana, so stored operational data can participate in on-chain workflows instead of sitting in a disconnected silo.</li>
+  </ul>
+  <p>We did not take the website's word for the engine. The application at <a href="https://app.oxorro.com/" target="_blank" rel="noopener">app.oxorro.com</a> is publicly reachable, and its code tells you how it really works today: you connect a Solana wallet, create a file system with its own on-chain identity, choose a <strong>replication factor between 2 and 17</strong> that controls how many independent nodes hold copies of your data, and fund uploads with SOL. Reads and writes travel over Xandeum's peek and poke primitives, the same low-level operations we explain in our <a href="glossary.html">glossary</a>. Access to a file system can be delegated to another wallet address. There is even a devnet and mainnet toggle, and the app speaks to Xandeum's public mainnet RPC endpoints.</p>
+  <p>That replication dial is worth pausing on, because it is the concrete version of the durability story. Two copies is cheaper and thinner; seventeen copies means seventeen machines, assuming the protocol spreads replicas across genuinely independent operators and locations, which we have not verified, would all have to fail before your file did. Instead of trusting one company's promise of eleven nines, the customer picks a redundancy level and pays for that much redundancy. (Redundancy is not the whole of durability: a shared software bug or an economic collapse of the network can still defeat many copies at once.)</p>
+  <p>One more thing the code makes clear: today's app is wallet-first, while the marketing promises that businesses will not need to think about wallets or blockchain infrastructure at all. That gap between the current developer-shaped product and the intended enterprise experience is the distance Oxorro still has to cover, and it is normal for this stage. It is the distance most crypto products that reached real businesses had to walk, and the stretch where most of the ones that never reached them died.</p>
+
+  <h2>How it fits the Xandeum economy</h2>
+  <p>Oxorro is not a third-party app that happens to use Xandeum. It is Xandeum's own flagship, and the two are designed to feed each other. Xandeum's announcement states it plainly: Oxorro is built on Xandeum's storage infrastructure, and as Oxorro grows, <a href="https://www.xandeum.network/blog/introducing-oxorro" target="_blank" rel="noopener">it increases demand for the network itself</a>: more network activity, more storage demand, more importance for pNodes.</p>
+  <p>Follow the loop: an enterprise stores files through Oxorro, the files consume capacity on pNodes, storage fees flow through Xandeum's usage-based reward system to the operators providing that capacity, and usage becomes the metric that matters. This is why we call Oxorro the first genuine test of whether committed storage becomes used storage. Xandeum's mainnet today has hundreds of terabytes committed by operators like us and uses well under 1 percent of it, a gap we have published live on <a href="/">our dashboard</a> since day one. Committed supply was never the hard part. Paying demand is. Oxorro is the first serious attempt to create it, and you can watch whether it works in our usage numbers, in public, either way.</p>
+
+  <h2>The story so far, with dates</h2>
+  <p>The public record is short, so here is all of it. The concept came first: in a January 2026 livestream, Blume was already describing "Unstoppable Operational Data" and pilot customer onboarding on mainnet. The name Oxorro surfaced quietly in an April 28 blog post about Bitcoin anchoring, as "the user-facing storage interface" under development. The formal <a href="https://www.xandeum.network/blog/introducing-oxorro" target="_blank" rel="noopener">announcement</a> landed May 7, 2026, the same day Blume published a 37-minute <a href="https://www.youtube.com/watch?v=t1MbZ1_nveY" target="_blank" rel="noopener">demo video</a> walking through file uploads, directories and replication, billed as the first live application on the Xandeum storage layer. A <a href="https://beincrypto.com/storage-layer-designed-to-survive-provider-now-live/" target="_blank" rel="noopener">press release</a> followed on May 13, headlined as a storage layer designed to survive its own provider, now live.</p>
+  <p>And that is it. No independent journalism, no third-party reviews, no named customers, no case studies. The demo video had a few hundred views when we checked. For a product this ambitious, the silence is striking, and it cuts both ways: there is no independent validation yet, and there is also a wide-open lane for anyone doing serious homework on it. This article exists partly because that lane was empty.</p>
+
+  <div class="honest"><b>What is verified, and what is not:</b> Verified by us in July 2026: the app exists, is publicly reachable, and implements wallet login, file systems, replication choice from 2 to 17, delegated access and SOL-funded uploads on Xandeum's mainnet endpoints. Announced but not verifiable from outside: pilot customers being onboarded. Not published anywhere: pricing, encryption and security documentation, compliance certifications, service-level commitments, a general-availability date, and the legal entity behind the product. The official site describes an early-access phase for selected organizations, and its own terms say a request creates no obligation to provide anything. Some of that is normal for this stage, but each item is a hard blocker for production use, and the unnamed legal entity is close to disqualifying on its own: it is the first question any procurement team asks, because there is no one named to sign a contract with or hold accountable. All of it belongs on the checklist below.</div>
+
+  <h2>Who it is aimed at</h2>
+  <p>Oxorro names six industries, and the pattern behind them is retention: each one is legally or existentially required to keep records intact for longer than any vendor contract lasts.</p>
+  <ul>
+    <li><strong>Media and entertainment:</strong> broadcast archives and irreplaceable masters, where decades of catalog can sit one outage away from loss.</li>
+    <li><strong>Biotech and pharma:</strong> clinical trial data and regulatory submissions, where immutable record-keeping is a legal requirement that outlives vendor relationships.</li>
+    <li><strong>Financial services:</strong> trading records and audit trails that regulators expect to exist for decades, longer than the current cloud contract.</li>
+    <li><strong>Legal:</strong> discovery archives and client files spanning decades of privilege, which must remain intact regardless of what happens to the infrastructure provider.</li>
+    <li><strong>Government and sovereign infrastructure:</strong> national data that cannot depend on a foreign corporation's servers. The site's own framing: sovereignty is a requirement, not a feature request.</li>
+    <li><strong>Industrial and energy:</strong> telemetry, plant logs and operational records tied to physical systems, where losing records means downtime and liability, not inconvenience.</li>
+  </ul>
+  <p>These are the right doors to knock on, because they are the industries where the three-question test from our use-cases article scores highest: the data must outlive companies, and someone must be able to prove it is intact. The last two verticals deserve a closer look, because they are bigger than they sound, and because one of them is our region's home turf.</p>
+
+  <img class="body-img" src="oxorro-industrial.jpg" width="1600" height="893" alt="An industrial energy facility at dusk with sensor data rising as teal light streams toward a mesh of distributed nodes" loading="lazy">
+
+  <h2>The deep dive: operational data in heavy industry</h2>
+  <p>Take the industrial and energy vertical seriously for a moment, because the numbers are startling. A modern offshore platform carries up to <a href="https://www.mckinsey.com/industries/oil-and-gas/our-insights/why-oil-and-gas-companies-must-act-on-analytics" target="_blank" rel="noopener">30,000 sensors</a>, and McKinsey found that less than 1 percent of the data they generate is ever used for decision-making. Process equipment on a single platform produces on the order of <a href="https://gblogs.cisco.com/ca/2018/06/07/beyond-the-barrel-how-data-and-analytics-will-become-the-new-currency-in-oil-and-gas/" target="_blank" rel="noopener">1 to 2 terabytes per day</a>. Seismic surveys are the petabyte anchor: a single Gulf of Mexico survey <a href="https://www.rigzone.com/news/oil_gas/a/140418/big_data_growth_continues_in_seismic_surveys/" target="_blank" rel="noopener">gathered more than 1.5 petabytes</a>, Norway's national repository Diskos manages <a href="https://www.halliburton.com/en/about-us/press-release/repsol-upgrades-norwegian-petroleum-directorates-national-data-repository" target="_blank" rel="noopener">over 28 petabytes</a> for 79 member organizations, and seismic library owner TGS hired specialists to migrate <a href="https://itbrief.com.au/story/tgs-taps-tape-ark-for-40-pb-seismic-cloud-migration" target="_blank" rel="noopener">40 petabytes off legacy tape</a>. Millions of old survey tapes still sit in climate-controlled vaults, readable only by drives that <a href="https://www.tapeark.com/9-21-track-tape-transcription-1/" target="_blank" rel="noopener">are no longer manufactured</a>.</p>
+  <p>Two structural pain points make this data a genuine candidate for what Oxorro sells. First, retention is law, not preference: US federal rules require operators to keep lease records for <a href="https://www.law.cornell.edu/cfr/text/43/3162.4-1" target="_blank" rel="noopener">at least six to seven years</a>, and longer whenever an audit or litigation is pending, Texas requires well logs to be filed with the state within <a href="https://www.law.cornell.edu/regulations/texas/16-Tex-Admin-Code-SS-3-16" target="_blank" rel="noopener">90 days of completing drilling operations</a>, and the UK obliges offshore licensees and infrastructure owners to <a href="https://www.legislation.gov.uk/uksi/2018/514/made" target="_blank" rel="noopener">preserve petroleum data with no fixed end date</a>, with disposal allowed only through plans agreed with the regulator. A well drilled today may need its records intact decades after the drilling contractor, the software vendor and the storage provider have all changed or vanished. Second, the industry already knows its data custody is broken: the Society of Petroleum Engineers' journal describes subsurface data <a href="https://jpt.spe.org/gaining-competitive-edge-digitalizing-subsurface-operations" target="_blank" rel="noopener">locked in proprietary formats and silos</a>, with organizations spending more than half their data-science time just finding and reformatting what they already own. The 200-plus-member <a href="https://osduforum.org/membership/" target="_blank" rel="noopener">OSDU consortium</a>, backed by Shell, Aramco, ExxonMobil and the hyperscalers, exists precisely to unlock that data, and it standardizes the data model while still leaving the storage itself on conventional clouds.</p>
+  <p>We are not claiming oil majors are about to move seismic libraries onto a young decentralized network. They are not. The realistic near-term fit is narrower and more interesting: the long-retention, low-churn, must-survive-everything slice. Compliance archives of well logs and inspection records, a tamper-evident copy of telemetry that could prove what the sensors said (if Xandeum's anchoring and proof mechanisms ship as described), the escrow layer beneath whichever vendor platform is fashionable this decade. That is a real niche with real budgets, and it is exactly the shape of data that decentralized storage is structurally good at.</p>
+
+  <h2>Where Oxorro lands in the market</h2>
+  <p>Oxorro does not enter an empty field. The map of enterprise-facing decentralized storage in 2026 looks like this:</p>
+  <table>
+    <tr><th>Player</th><th>Model</th><th>Where it stands</th></tr>
+    <tr><td><b>Storj</b></td><td>S3-compatible object storage, ~$7 per TB/month</td><td>The most enterprise-shaped survivor: named customers in backup and media, SOC 2 tiers. Acquired by Inveniam in late 2025.</td></tr>
+    <tr><td><b>Impossible Cloud</b></td><td>S3 storage from ~€8 per TB/month, zero egress</td><td>EU enterprise play, ISO 27001, sells through resellers; claims thousands of customers (company-reported).</td></tr>
+    <tr><td><b>Filecoin</b></td><td>Deal-based archival network</td><td>Its own 2026 strategy pivots from growing supply to finding paid demand; flagship users are archives and universities.</td></tr>
+    <tr><td><b>Arweave</b></td><td>Pay once, store permanently</td><td>Strong permanence niche, but permanent-by-design fits poorly with mutable files and deletion-based compliance.</td></tr>
+    <tr class="hl"><td><b>Oxorro</b></td><td>File-manager app on Xandeum, replication you choose</td><td>Early access. Differentiator: live random-access file system plus Solana integration, not an archive.</td></tr>
+  </table>
+  <p>Three lessons from that table shape how we judge Oxorro. First, the survivors won by looking boring: S3 compatibility, certifications, predictable per-terabyte pricing, and beachheads in backup and archive rather than primary storage. Storj charges <a href="https://www.storj.io/pricing" target="_blank" rel="noopener">$7 per terabyte per month</a> against roughly <a href="https://www.s3compare.io/" target="_blank" rel="noopener">$23 plus steep egress fees at AWS S3</a>, and that price gap, not ideology, is what opens enterprise doors. Second, the failures died of exactly what Oxorro has not yet published: missing SLAs, missing compliance paperwork, crypto-shaped procurement. The objection we hear most often from enterprise buyers, and the one industry write-ups on decentralized storage <a href="https://www.beigemedia.org/article/ipfs-enterprise-compliance-gap" target="_blank" rel="noopener">keep returning to</a>, is the missing enforceable guarantee. Third, nobody in the table offers what Oxorro is actually attempting: a live, random-access file system a blockchain can touch, sold as a product. If it ships that with boring enterprise packaging, it is genuinely differentiated. If it ships vibes with a wallet login, the market has seen that movie.</p>
+
+  <h2>The sovereignty question, and why we care about it from the Gulf</h2>
+  <p>One of Oxorro's six verticals says the quiet part out loud: government and sovereign infrastructure, national data that cannot live on a foreign corporation's servers. We watch this angle closely, because we operate from Saudi Arabia, and the Gulf is currently the world's most aggressive buyer of exactly this idea. Saudi Arabia's cloud rules require providers handling government and critical-infrastructure workloads to <a href="https://nca.gov.sa/ccc-en.pdf" target="_blank" rel="noopener">deliver those services from inside the Kingdom</a>, including storage and disaster recovery. That single requirement is why AWS is building a <a href="https://press.aboutamazon.com/2024/3/aws-to-launch-an-infrastructure-region-in-the-kingdom-of-saudi-arabia" target="_blank" rel="noopener">$5.3 billion Saudi region</a>, Microsoft's Saudi region <a href="https://news.microsoft.com/source/emea/2026/02/microsoft-confirms-saudi-arabia-datacenter-region-available-for-customers-to-run-cloud-workloads-from-q4-2026/" target="_blank" rel="noopener">opens for workloads in late 2026</a>, Google runs a Dammam region sold through an <a href="https://www.googlecloudpresscorner.com/2023-11-15-Google-Cloud-Expands-Regional-Presence-with-Opening-of-Dammam-Cloud-Region-Forecast-to-Boost-Economy-by-USD-109-Billion-by-2030" target="_blank" rel="noopener">Aramco joint venture</a>, and the state's PIF launched <a href="https://www.pif.gov.sa/en/news-and-insights/press-releases/2025/hrh-crown-prince-launches-humain-as-global-ai-powerhouse/" target="_blank" rel="noopener">HUMAIN</a> to build sovereign AI and data infrastructure outright.</p>
+  <p>Here is the tension: a decentralized network whose nodes span the globe is the opposite of data localization. If a regulator says the bytes must stay in the country, spreading them across seventeen nodes on four continents is not compliance, it is seventeen violations. But the same architecture could contain the answer, because Xandeum's storage is provided by independent operators who can be anywhere, including entirely inside one jurisdiction. A replication policy that pinned data to in-country nodes would offer something the hyperscalers find structurally hard: sovereignty from a network rather than from a single company, where no one firm, foreign or local, holds the off switch, and integrity is designed to be provable rather than promised.</p>
+  <p>To be clear, no such policy exists today. The current app lets a customer choose how many nodes hold the data, not where those nodes sit. Geographic pinning is a capability someone would have to build, and until it ships, nothing stored on Xandeum satisfies any localization rule. And node location alone would not create compliance: even with in-Kingdom nodes, someone, Oxorro or a local partner, would still have to stand up as the accountable, CST-registered cloud provider under Saudi Arabia's cloud rules, with government workloads isolated from the rest of the network. In-country pinning also concentrates legal exposure rather than removing it, because every node then answers to the same courts, and the Oxorro application itself remains a company that can be compelled.</p>
+  <p>So the honest framing is narrow. Sovereign clouds answer where the data lives. What they cannot answer is who else can be forced to delete or lock it, because with one company running the cloud, the answer is always that company. A network flips that one property: the customer can keep the delete switch while no third party holds one. That is a real and unusual thing to offer a government buyer, but it is a thesis, not a product, and building it is a business we might pursue ourselves. Read this section as an interested operator's argument, not neutral analysis.</p>
+
+  <h2>What would make us believers</h2>
+  <p>We want Oxorro to succeed, for transparent reasons: we operate the nodes its files would live on. Which is exactly why we hold it to the boring standard. Here is our operator's checklist, the things that would move Oxorro from promising to proven:</p>
+  <ul>
+    <li><strong>Published pricing.</strong> A number per terabyte per month, comparable against $7 at the decentralized incumbents and $23 at S3. Enterprises do not buy from a quote-only page forever.</li>
+    <li><strong>A security and encryption story in writing.</strong> Today the site makes no encryption claims at all. Regulated verticals will require client-side encryption, key management and eventually certifications like SOC 2 or ISO 27001 before storing anything real.</li>
+    <li><strong>Service commitments.</strong> The top documented enterprise objection to decentralized storage is the missing SLA. Someone must be contractually accountable for availability, even if durability comes from the network.</li>
+    <li><strong>The wallet disappearing.</strong> The promised experience where a business never touches SOL, keys or blockchain plumbing. The current app is not that yet.</li>
+    <li><strong>A named customer.</strong> One logo, one case study, one workload with numbers. Pilot customers were mentioned as far back as January; naming one changes everything.</li>
+    <li><strong>Usage on the chart.</strong> The hardest metric to fake, though even usage can be inflated by insiders storing their own data, so what counts is sustained, paying usage. Xandeum mainnet uses under 1 percent of committed capacity today, and we publish that number live. If Oxorro lands real customers, you will see it move on <a href="/">our dashboard</a> before you read it in a press release.</li>
+  </ul>
+
+  <div class="honest"><b>Where this stands today:</b> Oxorro is an early-access product from a young network, evaluated here at the earliest possible moment, from public evidence plus our own inspection of the live app. Nothing in this article is a recommendation to store production data on it today. For the network we help run, though, it is the experiment that matters most, and we will keep scoring it against the checklist above as facts change.</div>
+
+  <div class="cta">
+    <a class="btn" href="what-is-xandeum.html">Start here: What is Xandeum? &rarr;</a>
+    <a class="btn ghost" href="xandeum-use-cases.html">What can you build on Xandeum?</a>
+    <a class="btn ghost" href="/">Live network dashboard</a>
+  </div>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details open><summary>What is Oxorro in one sentence?</summary><p>A cloud-style file manager for businesses whose files live on Xandeum's decentralized storage network instead of one company's servers, designed so the data survives vendor failures, policy changes and account terminations, which is the pitch the product still has to prove.</p></details>
+    <details><summary>Is Oxorro available now?</summary><p>Partly. A working wallet-based app is publicly reachable at app.oxorro.com and a May 2026 press release declared it live, but the official site still gates access behind an early-access request for selected organizations. No self-serve signup, pricing or general-availability date has been published.</p></details>
+    <details><summary>How is it different from Dropbox or SharePoint?</summary><p>The surface is deliberately similar. Underneath, files are spread across storage nodes with a replication factor you choose between 2 and 17, so no single storage provider can unilaterally delete or lock the data. With a conventional drive, the company you are trusting is the provider itself. The catch: Oxorro's own app layer is still a provider, and whether the survival guarantee holds under real enterprise conditions is exactly what the early-access phase has to prove.</p></details>
+    <details><summary>How is it different from Filecoin or Arweave?</summary><p>Those networks behave mostly like archives: upload once, retrieve later. Oxorro is built on Xandeum's random-access storage, so it works like a live file system where files are updated, moved and deleted, and Solana programs can interact with the data. See our <a href="xandeum-vs-filecoin-arweave-walrus.html">full comparison</a> of the underlying networks.</p></details>
+    <details><summary>What does it cost?</summary><p>Unknown. No pricing has been published as of July 2026. The current app funds storage in SOL, and enterprise onboarding runs through a sales conversation. Decentralized rivals anchor around $7 per TB per month, hyperscalers around $23 plus egress.</p></details>
+    <details><summary>What does Oxorro mean for XAND and pNode operators?</summary><p>It is the demand side of the network: files stored through Oxorro consume pNode capacity and route storage fees to operators. Xandeum says its growth increases network activity, storage demand and the importance of pNodes, which is why operators like us track it, and why our view carries a disclosed interest.</p></details>
+  </section>
+
+  <div class="src">
+    Sources: <a href="https://www.oxorro.com/" target="_blank" rel="noopener">Oxorro official site</a> &middot; <a href="https://app.oxorro.com/" target="_blank" rel="noopener">Oxorro app</a> &middot; <a href="https://www.xandeum.network/blog/introducing-oxorro" target="_blank" rel="noopener">Xandeum: Introducing Oxorro</a> &middot; <a href="https://beincrypto.com/storage-layer-designed-to-survive-provider-now-live/" target="_blank" rel="noopener">Launch press release (BeInCrypto)</a> &middot; <a href="https://www.youtube.com/watch?v=t1MbZ1_nveY" target="_blank" rel="noopener">Oxorro demo video (Ep 434)</a> &middot; <a href="https://cloud.google.com/blog/products/infrastructure/details-of-google-cloud-gcve-incident" target="_blank" rel="noopener">Google Cloud: UniSuper incident statement</a> &middot; <a href="https://www.mckinsey.com/industries/oil-and-gas/our-insights/why-oil-and-gas-companies-must-act-on-analytics" target="_blank" rel="noopener">McKinsey: oil &amp; gas analytics</a> &middot; <a href="https://gblogs.cisco.com/ca/2018/06/07/beyond-the-barrel-how-data-and-analytics-will-become-the-new-currency-in-oil-and-gas/" target="_blank" rel="noopener">Cisco: offshore platform data</a> &middot; <a href="https://www.rigzone.com/news/oil_gas/a/140418/big_data_growth_continues_in_seismic_surveys/" target="_blank" rel="noopener">Rigzone: seismic data growth</a> &middot; <a href="https://www.halliburton.com/en/about-us/press-release/repsol-upgrades-norwegian-petroleum-directorates-national-data-repository" target="_blank" rel="noopener">Halliburton: Diskos 2.0</a> &middot; <a href="https://itbrief.com.au/story/tgs-taps-tape-ark-for-40-pb-seismic-cloud-migration" target="_blank" rel="noopener">TGS 40 PB tape migration</a> &middot; <a href="https://www.tapeark.com/9-21-track-tape-transcription-1/" target="_blank" rel="noopener">Tape Ark: legacy seismic tapes</a> &middot; <a href="https://jpt.spe.org/gaining-competitive-edge-digitalizing-subsurface-operations" target="_blank" rel="noopener">JPT/SPE: subsurface data silos</a> &middot; <a href="https://osduforum.org/membership/" target="_blank" rel="noopener">OSDU Forum membership</a> &middot; <a href="https://www.law.cornell.edu/cfr/text/43/3162.4-1" target="_blank" rel="noopener">43 CFR 3162.4-1</a> &middot; <a href="https://www.law.cornell.edu/regulations/texas/16-Tex-Admin-Code-SS-3-16" target="_blank" rel="noopener">Texas RRC Rule 16</a> &middot; <a href="https://www.legislation.gov.uk/uksi/2018/514/made" target="_blank" rel="noopener">UK Retention of Information and Samples Regulations 2018</a> &middot; <a href="https://nca.gov.sa/ccc-en.pdf" target="_blank" rel="noopener">Saudi NCA Cloud Cybersecurity Controls</a> &middot; <a href="https://press.aboutamazon.com/2024/3/aws-to-launch-an-infrastructure-region-in-the-kingdom-of-saudi-arabia" target="_blank" rel="noopener">AWS Saudi region</a> &middot; <a href="https://news.microsoft.com/source/emea/2026/02/microsoft-confirms-saudi-arabia-datacenter-region-available-for-customers-to-run-cloud-workloads-from-q4-2026/" target="_blank" rel="noopener">Microsoft Saudi region</a> &middot; <a href="https://www.googlecloudpresscorner.com/2023-11-15-Google-Cloud-Expands-Regional-Presence-with-Opening-of-Dammam-Cloud-Region-Forecast-to-Boost-Economy-by-USD-109-Billion-by-2030" target="_blank" rel="noopener">Google Cloud Dammam region</a> &middot; <a href="https://www.pif.gov.sa/en/news-and-insights/press-releases/2025/hrh-crown-prince-launches-humain-as-global-ai-powerhouse/" target="_blank" rel="noopener">PIF: HUMAIN launch</a> &middot; <a href="https://www.storj.io/pricing" target="_blank" rel="noopener">Storj pricing</a> &middot; <a href="https://www.impossiblecloud.com/" target="_blank" rel="noopener">Impossible Cloud</a> &middot; <a href="https://www.filecoin.io/blog/the-2026-filecoin-network-strategy" target="_blank" rel="noopener">Filecoin 2026 strategy</a> &middot; <a href="https://www.s3compare.io/" target="_blank" rel="noopener">S3 pricing comparison</a> &middot; <a href="https://docs.xandeum.network/" target="_blank" rel="noopener">Xandeum Docs</a>.
+    <br><br>Disclosure: Pulsar Network operates 12 pNodes and accepts XAND delegation at 10% commission, so we benefit if the Xandeum network and products built on it, including Oxorro, succeed. We are independent and not affiliated with the Xandeum Foundation or the Oxorro team. Nothing here is financial advice.
+  </div>
+
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+
+<script src="net_storage_mainnet.js"></script>
+<script src="stake_data.js"></script>
+<script>
+(function(){
+  function fmt(n){return n==null?null:n.toLocaleString('en-US');}
+  function fmtBytes(b){if(b==null)return null;var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1024&&i<u.length-1){n/=1024;i++;}return (n<10?n.toFixed(2):n.toFixed(1))+' '+u[i];}
+  try{
+    var NS=(window.__NS&&window.__NS.mainnet)||null;
+    if(NS){
+      if(NS.nodes)document.getElementById('lvNodes').textContent=fmt(NS.nodes);
+      if(NS.committed)document.getElementById('lvSto').textContent=fmtBytes(NS.committed);
+      if(NS.committed){var pr=(NS.used||0)/NS.committed*100;document.getElementById('lvUsed').textContent=(NS.used?fmtBytes(NS.used):'0')+' ('+(pr>=1?Math.round(pr)+'%':'<1%')+')';}
+    }
+    if(window.STAKE_TOTAL)document.getElementById('lvStake').textContent=new Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(window.STAKE_TOTAL);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

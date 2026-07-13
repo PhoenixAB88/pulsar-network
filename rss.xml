@@ -6,7 +6,14 @@
   <atom:link href="https://pulsarnetwork.xyz/rss.xml" rel="self" type="application/rss+xml"/>
   <description>Independent analysis on decentralized storage, DePIN, Solana, node economics, and crypto markets, from the Pulsar Network team.</description>
   <language>en-us</language>
-  <lastBuildDate>Thu, 02 Jul 2026 09:00:00 GMT</lastBuildDate>
+  <lastBuildDate>Mon, 13 Jul 2026 18:00:00 GMT</lastBuildDate>
+  <item>
+    <title>What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026)</title>
+    <link>https://pulsarnetwork.xyz/what-is-oxorro.html</link>
+    <guid>https://pulsarnetwork.xyz/what-is-oxorro.html</guid>
+    <pubDate>Mon, 13 Jul 2026 18:00:00 GMT</pubDate>
+    <description>Xandeum's first real application: a cloud-style file manager on decentralized storage, aimed at data that must survive its own provider. The first independent deep dive: what is verified, what is marketing, and who Oxorro is really for.</description>
+  </item>
   <item>
     <title>Xandeum Use Cases: What You Can Actually Build (2026)</title>
     <link>https://pulsarnetwork.xyz/xandeum-use-cases.html</link>
