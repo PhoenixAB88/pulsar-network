@@ -1,1 +1,1 @@
-window.__NS=window.__NS||{};window.__NS["devnet"]={"committed":35279425627136,"used":46928434219,"nodes":180,"active":179,"src":"gossip","updated":1784030457690};
+window.__NS=window.__NS||{};window.__NS["devnet"]={"committed":35279425627136,"used":46928434219,"nodes":180,"active":179,"src":"gossip","updated":1784031389366};
