@@ -262,6 +262,18 @@
   .mynodes-card::after{content:"";position:absolute;top:-25%;left:-45%;width:45%;height:150%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.13),transparent);transform:skewX(-16deg);animation:ccSheen 5.2s ease-in-out infinite;pointer-events:none}
   @keyframes ccSheen{0%{left:-45%}62%,100%{left:135%}}
   @media(prefers-reduced-motion:reduce){.calc-card::after,.mynodes-card::after{display:none}}
+  .tools-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;padding:26px 0 0}
+  .tool-card{display:flex;align-items:center;gap:14px;background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-lg);padding:16px 18px;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .15s,box-shadow .2s}
+  .tool-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(70,230,239,.5);text-decoration:none}
+  .tool-card .tc-ic{font-size:26px;flex-shrink:0}
+  .tool-card .tc-k{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);font-weight:600}
+  .tool-card .tc-t{font-weight:600;font-size:15.5px;margin-top:2px}
+  .tool-card .tc-s{font-size:12.5px;color:var(--mut2);margin-top:2px}
+  .tool-card .tc-num{margin-left:auto;text-align:right;flex-shrink:0}
+  .tool-card .tc-num b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+  .tool-card .tc-num span{font-size:11px;color:var(--mut2)}
+  .tool-card.st .tc-k{color:var(--good)}
+  .tool-card.st:hover{border-color:var(--good);box-shadow:0 12px 30px -14px rgba(52,224,168,.5)}
   .qlink{display:inline-block;margin-top:10px;font-size:14px;font-weight:500;color:var(--teal);transition:color .15s,text-shadow .15s;animation:qglow 2.4s ease-in-out infinite}
   .qlink:hover{color:#eafdff;text-shadow:0 0 14px rgba(70,230,239,.85)}
   @keyframes qglow{0%,100%{text-shadow:0 0 5px rgba(70,230,239,.30)}50%{text-shadow:0 0 13px rgba(70,230,239,.70)}}
@@ -506,7 +518,7 @@
       <span class="name"><b>PULSAR</b><span>NETWORK</span></span>
     </a>
     <nav class="links">
-      <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+      <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="xandeum-usage.html">Usage Watch</a><a href="status.html">Status</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
     </nav>
     <div class="right">
       <div class="navsearch" id="navSearch">
@@ -527,7 +539,7 @@
   </div>
 </header>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
+  <a href="#network">Network</a><a href="my-nodes.html">My Nodes</a><a href="xandeum-usage.html">Usage Watch</a><a href="status.html">Status</a><a href="#why">Why storage</a><a href="run-a-pnode.html">Run a node</a><a href="pnode-tips.html">Tips</a><a href="#about">About</a><a href="#community">Community</a><a href="insights.html">Insights</a><a href="trust.html">Trust</a><a href="#" onclick="openContact();return false;">Contact</a><a href="https://www.xandeum.network/" target="_blank" rel="noopener">Xandeum ↗</a>
   <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">Follow on X ↗</a>
 </div>
 
@@ -554,6 +566,21 @@
       </span>
       <span class="mnw-stats" id="mnwStats"></span>
       <span class="mnw-go">Open <span class="mnw-arw">&rarr;</span></span>
+    </a>
+  </div>
+</section>
+
+<section id="livetools" style="padding:0 0 8px">
+  <div class="wrap tools-strip">
+    <a class="tool-card" href="xandeum-usage.html" aria-label="Open the Xandeum Usage Watch">
+      <span class="tc-ic" aria-hidden="true">📈</span>
+      <span><span class="tc-k">Usage Watch &middot; live</span><span class="tc-t" style="display:block">Is anyone using Xandeum?</span><span class="tc-s" style="display:block">Real demand vs committed storage, charted daily</span></span>
+      <span class="tc-num"><b id="tcUtil">&mdash;</b><span>utilization</span></span>
+    </a>
+    <a class="tool-card st" href="status.html" aria-label="Open the Xandeum status page">
+      <span class="tc-ic" aria-hidden="true">🟢</span>
+      <span><span class="tc-k">Status &middot; live</span><span class="tc-t" style="display:block">Is Xandeum up right now?</span><span class="tc-s" style="display:block">Uptime bars and auto-detected incidents</span></span>
+      <span class="tc-num"><b id="tcOnline">&mdash;</b><span>nodes online</span></span>
     </a>
   </div>
 </section>
@@ -1651,5 +1678,13 @@
   setTimeout(startfx,60);
 </script>
 <script type="text/javascript" async src="https://subscribe-forms.beehiiv.com/attribution.js"></script>
+<script>
+window.addEventListener('load',function(){try{
+  var ns=(window.__NS||{}).mainnet;
+  if(ns&&ns.committed){var p=(ns.used||0)/ns.committed*100;var t=p>=0.01?p.toFixed(2)+'%':(p>0?'<0.01%':'0%');document.getElementById('tcUtil').textContent=t;}
+  var h=window.NET_HISTORY_MAINNET;var l=h&&h[h.length-1];
+  if(l)document.getElementById('tcOnline').textContent=l.on+' / '+l.tot;
+}catch(e){}});
+</script>
 </body>
 </html>
