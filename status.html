@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum Status: Is Xandeum Up? Live Network Health | Pulsar</title>
+<meta name="description" content="Is Xandeum up right now? Live health of the Xandeum pNode network: nodes online, hourly uptime history, and automatically detected incidents on mainnet and devnet. Community-run by Pulsar Network.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/status.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum Status: is the network up right now?">
+<meta property="og:description" content="Live nodes online, hourly uptime bars, and auto-detected incidents for Xandeum mainnet and devnet. Self-sourced from our own pNodes, refreshed every minute.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/status.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-xandeum-status.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum Status: is the network up right now?">
+<meta name="twitter:description" content="Live nodes online, hourly uptime bars, and auto-detected incidents for Xandeum mainnet and devnet.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-xandeum-status.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,38px);font-weight:700;letter-spacing:-.03em;margin:0 0 12px;line-height:1.15}
+  p{color:var(--mut);margin:0 0 15px;max-width:760px}
+  strong{color:var(--ink)}
+  h2{font-size:21px;font-weight:600;letter-spacing:-.02em;margin:38px 0 12px}
+  .banner{display:flex;align-items:center;gap:14px;border-radius:var(--r-lg);padding:18px 22px;margin:20px 0;border:1px solid var(--hairline-2);background:var(--surface-1);font-weight:600;font-size:18px}
+  .banner .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+  .banner small{display:block;font-weight:400;font-size:13px;color:var(--mut2)}
+  .ok .dot{background:var(--good);box-shadow:0 0 12px var(--good)}
+  .warn .dot{background:var(--orange);box-shadow:0 0 12px var(--orange)}
+  .down .dot{background:var(--bad);box-shadow:0 0 12px var(--bad)}
+  .clusters{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:18px 0}
+  .cl{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px}
+  .cl h3{margin:0 0 10px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .cl h3 .dot{width:10px;height:10px;border-radius:50%}
+  .cl .big{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+  .cl .row{display:flex;justify-content:space-between;font-size:13.5px;color:var(--mut);padding:5px 0;border-top:1px solid var(--hairline)}
+  .cl .row b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .bars{display:flex;gap:3px;margin:12px 0 4px;height:34px;align-items:flex-end}
+  .bars span{flex:1;border-radius:2px;min-width:4px;height:100%;background:var(--surface-2)}
+  .bars span.g{background:var(--good)}
+  .bars span.a{background:var(--orange)}
+  .bars span.r{background:var(--bad)}
+  .bars span.e{background:var(--surface-2)}
+  .barlbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut2)}
+  .inc{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:4px 18px;margin:14px 0}
+  .inc .it{display:flex;gap:12px;align-items:baseline;padding:12px 0;border-top:1px solid var(--hairline);font-size:14px;color:var(--mut)}
+  .inc .it:first-child{border-top:none}
+  .inc .when{color:var(--mut2);font-size:12.5px;white-space:nowrap}
+  .inc b{color:var(--ink)}
+  .allclear{color:var(--good);font-weight:600}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut);max-width:760px}
+  .honest b{color:var(--orange)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:16px;max-width:760px}
+  .stamp{font-size:12.5px;color:var(--mut2)}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Xandeum Status","description":"Live health of the Xandeum pNode network: nodes online, hourly uptime history and automatically detected incidents, on mainnet and devnet.","url":"https://pulsarnetwork.xyz/status.html","isPartOf":{"@type":"WebSite","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Status","item":"https://pulsarnetwork.xyz/status.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is Xandeum up right now?","acceptedAnswer":{"@type":"Answer","text":"This page shows the live answer: the share of Xandeum pNodes currently online on mainnet and devnet, hour-by-hour uptime history, and any automatically detected incidents. It refreshes itself every minute from data collected by Pulsar Network's own nodes inside the network."}},
+{"@type":"Question","name":"Is this the official Xandeum status page?","acceptedAnswer":{"@type":"Answer","text":"No. It is a community-run monitor operated by Pulsar Network, independent of the Xandeum Foundation. The data is self-sourced from our own pNodes participating in the network's gossip, which means it reflects what the network actually reports rather than what anyone announces."}},
+{"@type":"Question","name":"How are incidents detected?","acceptedAnswer":{"@type":"Answer","text":"Automatically. Roughly every 15 minutes our generator nodes record how many pNodes are reachable through gossip. If the online share drops below 90 percent, the dip is recorded as an incident with its duration and depth. Gaps in our own monitoring are shown separately and honestly."}}
+]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Live status &middot; auto-refreshes every minute</span>
+  <h1>Is Xandeum up?</h1>
+  <p>The live answer, measured from inside the network. Our pNodes record how many peers are reachable through gossip roughly every 15 minutes, on both clusters. No announcements, just measurements.</p>
+
+  <div class="banner ok" id="banner"><span class="dot"></span><span id="bannerTxt">Checking&hellip;<small id="bannerSub"></small></span></div>
+
+  <div class="clusters" id="clusters"></div>
+
+  <h2>Recent incidents</h2>
+  <div class="inc" id="incidents"><div class="it">Loading&hellip;</div></div>
+
+  <div class="honest"><b>What counts as an incident, honestly:</b> we flag any 15-minute sample where fewer than 90% of known pNodes were reachable via gossip, and we merge consecutive samples into one incident with duration and depth. Interruptions of our own monitoring are listed separately as monitoring gaps rather than pretending nothing happened. This is a community page by <a href="/">Pulsar Network</a>, not an official Foundation service; we run 12 pNodes and publish what the network itself reports.</div>
+
+  <div class="cta">
+    <a class="btn" href="/">Full live dashboard &rarr;</a>
+    <a class="btn ghost" href="xandeum-usage.html">Usage Watch</a>
+    <a class="btn ghost" href="what-is-xandeum.html">What is Xandeum?</a>
+  </div>
+
+  <div class="src">Method: samples of reachable pods per cluster recorded ~every 15 minutes by Pulsar generator nodes via pRPC gossip since late June 2026; hour bars color by the worst sample of each UTC hour (green &ge;90%, amber &ge;70%, red below); the visible window is what the rolling history file currently holds. Data freshness is checked against the generator timestamps. Disclosure: Pulsar Network operates 12 pNodes and accepts XAND delegation at 10% commission. Not affiliated with the Xandeum Foundation.</div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+
+<script src="network_data_mainnet.js"></script>
+<script src="network_data.js"></script>
+<script src="network_history_mainnet.js"></script>
+<script src="network_history.js"></script>
+<script src="net_storage_mainnet.js"></script>
+<script src="net_storage_devnet.js"></script>
+<script>
+(function(){
+  var THRESH=0.9, AMBER=0.7, STALE_MIN=45;
+
+  function fmtBytes(b){if(b==null)return"—";var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1000&&i<u.length-1){n/=1000;i++;}return (n<10?n.toFixed(2):n<100?n.toFixed(1):Math.round(n))+' '+u[i];}
+  function ago(ts){if(!ts)return"unknown";var s=Math.max(0,Date.now()/1000-ts);if(s<90)return Math.round(s)+"s ago";if(s<5400)return Math.round(s/60)+" min ago";return (s/3600).toFixed(1)+" h ago";}
+  function dayStr(t){var d=new Date(t*1000);return d.toISOString().slice(0,10);}
+  function hourStr(t){var d=new Date(t*1000);return d.toISOString().slice(0,13).replace("T"," ")+":00";}
+  function fmtDur(s){if(s<3600)return Math.max(15,Math.round(s/60))+" min";return (s/3600).toFixed(1)+" h";}
+
+  function analyse(hist){
+    if(!hist||!hist.length)return null;
+    var days={}, incidents=[], gaps=[], cur=null;
+    for(var i=0;i<hist.length;i++){
+      var s=hist[i], r=s.tot? s.on/s.tot : 1, d=hourStr(s.t);
+      (days[d]=days[d]||[]).push(r);
+      if(i>0 && s.t-hist[i-1].t>2700) gaps.push({start:hist[i-1].t,end:s.t});
+      if(r<THRESH){
+        if(cur && s.t-cur.end<=1800){cur.end=s.t;cur.min=Math.min(cur.min,r);}
+        else{cur={start:s.t,end:s.t,min:r};incidents.push(cur);}
+      } else cur=null;
+    }
+    var last=hist[hist.length-1];
+    var dayList=Object.keys(days).sort();
+    var spanDays=Math.max(1,(last.t-hist[0].t)/86400);
+    var h24=hist.filter(function(s){return s.t>last.t-86400;});
+    var h7=hist.filter(function(s){return s.t>last.t-7*86400;});
+    function avg(a){if(!a.length)return null;var s=0;a.forEach(function(x){s+=x.tot?x.on/x.tot:1;});return s/a.length;}
+    return {last:last, ratio:last.tot?last.on/last.tot:1, days:days, dayList:dayList, spanDays:spanDays,
+            up24:avg(h24), up7:avg(h7), incidents:incidents, gaps:gaps};
+  }
+
+  function clusterCard(name,a,ns,genTs){
+    var stale=genTs? (Date.now()/1000-genTs)>STALE_MIN*60 : true;
+    var state = !a ? 'warn' : (a.ratio<AMBER?'down':(a.ratio<THRESH||stale?'warn':'ok'));
+    var col = state==='ok'?'var(--good)':(state==='warn'?'var(--orange)':'var(--bad)');
+    var html='<div class="cl"><h3><span class="dot" style="background:'+col+'"></span>'+name+'</h3>';
+    if(!a){return html+'<div class="big">no data</div></div>';}
+    html+='<div class="big">'+a.last.on+' / '+a.last.tot+'</div><div class="stamp">nodes online &middot; data '+(genTs?ago(genTs):'age unknown')+(stale?' &middot; <span style="color:var(--orange)">delayed</span>':'')+'</div>';
+    var bars='<div class="bars">';
+    var hrs=a.dayList.slice(-48);
+    hrs.forEach(function(d){
+      var mn=Math.min.apply(null,a.days[d]);
+      var cls=mn>=THRESH?'g':(mn>=AMBER?'a':'r');
+      bars+='<span class="'+cls+'" title="'+d+' UTC: worst sample '+Math.round(mn*100)+'% online ('+a.days[d].length+' samples)"></span>';
+    });
+    bars+='</div><div class="barlbl"><span>'+(hrs[0]?hrs[0].slice(5):'')+'</span><span>hour by hour, UTC</span><span>'+(hrs[hrs.length-1]?hrs[hrs.length-1].slice(5):'')+'</span></div>';
+    html+=bars;
+    html+='<div class="row"><span>Uptime, last 24 h</span><b>'+(a.up24!=null?(a.up24*100).toFixed(2)+'%':'—')+'</b></div>';
+    html+='<div class="row"><span>Uptime, recorded window ('+a.spanDays.toFixed(1)+' d)</span><b>'+(a.up7!=null?(a.up7*100).toFixed(2)+'%':'—')+'</b></div>';
+    if(ns) html+='<div class="row"><span>Storage committed / used</span><b>'+fmtBytes(ns.committed)+' / '+fmtBytes(ns.used)+'</b></div>';
+    html+='</div>';
+    return {html:html,state:state};
+  }
+
+  function render(){
+    var aM=analyse(window.NET_HISTORY_MAINNET), aD=analyse(window.NET_HISTORY);
+    var nsM=(window.__NS||{}).mainnet, nsD=(window.__NS||{}).devnet;
+    var cM=clusterCard('Mainnet',aM,nsM,window.NETWORK_MAINNET_GENERATED_TS);
+    var cD=clusterCard('Devnet',aD,nsD,window.NETWORK_GENERATED_TS);
+    document.getElementById('clusters').innerHTML=(cM.html||cM)+(cD.html||cD);
+    var states=[cM.state,cD.state];
+    var banner=document.getElementById('banner'), txt=document.getElementById('bannerTxt');
+    var overall = states.indexOf('down')>=0?'down':(states.indexOf('warn')>=0?'warn':'ok');
+    banner.className='banner '+overall;
+    var msg = overall==='ok'?'All systems operational':(overall==='warn'?'Partial degradation or delayed data':'Major disruption detected');
+    txt.innerHTML=msg+'<small id="bannerSub">Mainnet '+(aM?Math.round(aM.ratio*100)+'% online':'no data')+' &middot; Devnet '+(aD?Math.round(aD.ratio*100)+'% online':'no data')+' &middot; checked '+new Date().toUTCString().slice(17,25)+' UTC</small>';
+
+    var items=[];
+    [['Mainnet',aM],['Devnet',aD]].forEach(function(pair){
+      var nm=pair[0],a=pair[1]; if(!a)return;
+      a.incidents.slice(-5).reverse().forEach(function(inc){
+        items.push({t:inc.start,html:'<div class="it"><span class="when">'+dayStr(inc.start)+'</span><span><b>'+nm+'</b>: online share dipped to <b>'+Math.round(inc.min*100)+'%</b> for '+fmtDur(inc.end-inc.start+900)+'</span></div>'});
+      });
+      a.gaps.slice(-3).reverse().forEach(function(g){
+        items.push({t:g.start,html:'<div class="it"><span class="when">'+dayStr(g.start)+'</span><span>'+nm+': monitoring gap of '+fmtDur(g.end-g.start)+' (our collector, not necessarily the network)</span></div>'});
+      });
+    });
+    items.sort(function(x,y){return y.t-x.t;});
+    document.getElementById('incidents').innerHTML = items.length? items.slice(0,8).map(function(i){return i.html;}).join('') : '<div class="it"><span class="allclear">No incidents detected in the recorded period.</span></div>';
+  }
+
+  function refresh(){
+    var files=['network_data_mainnet.js','network_data.js','network_history_mainnet.js','network_history.js','net_storage_mainnet.js','net_storage_devnet.js'];
+    var left=files.length;
+    files.forEach(function(f){
+      var s=document.createElement('script');
+      s.src=f+'?t='+Date.now();
+      s.onload=s.onerror=function(){if(--left===0)render();};
+      document.body.appendChild(s);
+    });
+  }
+  render();
+  setInterval(refresh,60000);
+})();
+</script>
+</body>
+</html>

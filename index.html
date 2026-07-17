@@ -379,6 +379,14 @@
   .modal .share-btn{width:auto;height:34px;padding:0 13px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;white-space:nowrap}
   .modal .share-btn:hover{border-color:var(--teal);color:var(--teal)}
   .modal .x:hover{color:var(--teal)}
+  .cardmodal-overlay{position:fixed;inset:0;z-index:130;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,8,18,.78)}
+  .cardmodal-overlay.open{display:flex}
+  .cardmodal{background:var(--surface-1);border:1px solid var(--hairline-2);border-radius:var(--r-xl);max-width:640px;width:100%;padding:16px;box-shadow:0 24px 70px rgba(0,0,0,.55)}
+  .cardmodal canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--hairline)}
+  .cardmodal .acts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
+  .cardmodal .acts button{background:var(--orange);border:none;color:#1a1205;font:600 14px 'Inter',sans-serif;padding:10px 16px;border-radius:8px;cursor:pointer}
+  .cardmodal .acts button.ghost{background:transparent;border:1px solid var(--hairline-2);color:var(--mut)}
+  .cardmodal .acts .hint{font-size:12px;color:var(--mut2)}
   .mbody{padding:4px 26px 26px}
   .mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
   .mtitle{font-size:21px;font-weight:600;letter-spacing:-.01em}
@@ -748,7 +756,7 @@
       <div>
         <h5>Pulsar</h5>
         <a href="#network">Live network</a><a href="#stake">Stake with Pulsar</a><a href="#why">Why storage</a><a href="#about">About</a><a href="trust.html">Trust</a><a href="insights.html">Insights</a><a href="what-is-xandeum.html">What is Xandeum?</a><a href="xandeum-use-cases.html">Use Cases</a><a href="what-is-oxorro.html">Oxorro</a><a href="solana-storage-explained.html">Solana Storage</a>
-<a href="where-ai-models-store-data.html">AI Data Storage</a><a href="xandeum-pnode-earnings.html">pNode Earnings</a><a href="pnode-tips.html">pNode Tips</a><a href="glossary.html">Glossary</a><a href="network-stats.html">Stats</a><a href="xandeum-usage.html">Usage Watch</a>
+<a href="where-ai-models-store-data.html">AI Data Storage</a><a href="xandeum-pnode-earnings.html">pNode Earnings</a><a href="pnode-tips.html">pNode Tips</a><a href="glossary.html">Glossary</a><a href="network-stats.html">Stats</a><a href="xandeum-usage.html">Usage Watch</a><a href="status.html">Status</a>
         <a href="https://x.com/PulsarNodes" target="_blank" rel="noopener">X / Twitter</a>
         <a href="https://github.com/PhoenixAB88/pulsar-network" target="_blank" rel="noopener">GitHub</a>
         <a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a>
@@ -784,8 +792,20 @@
 
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" role="dialog" aria-modal="true" aria-label="pNode details">
-    <div class="top"><button class="x share-btn" id="modalShare" title="Copy a link to this node" aria-label="Copy a shareable link to this node">🔗 Share node</button><button class="x" id="modalClose" aria-label="Close">✕</button></div>
+    <div class="top"><button class="x share-btn" id="modalShare" title="Copy a link to this node" aria-label="Copy a shareable link to this node">🔗 Share node</button><button class="x share-btn" id="modalCard" title="Create a shareable report card image" aria-label="Create a shareable report card image">📸 Report card</button><button class="x" id="modalClose" aria-label="Close">✕</button></div>
     <div class="mbody" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="cardmodal-overlay" id="cardOverlay" role="dialog" aria-modal="true" aria-label="Node report card">
+  <div class="cardmodal">
+    <canvas id="cardCanvas" width="1200" height="630" aria-label="Rendered node report card"></canvas>
+    <div class="acts">
+      <button id="cardPng">⬇ Download PNG</button>
+      <button class="ghost" id="cardSvg">⬇ SVG badge</button>
+      <button class="ghost" id="cardClose">Close</button>
+      <span class="hint">Rendered locally in your browser. Share it anywhere.</span>
+    </div>
   </div>
 </div>
 
@@ -1466,6 +1486,95 @@
   function closeNode(){const _ov=document.getElementById('modalOverlay');CUR_NODE=null;_ov.classList.remove('open');modalClose(_ov);if(location.hash.indexOf('#node=')===0){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}}
   document.getElementById('modalClose').onclick=closeNode;
   document.getElementById('modalShare').onclick=()=>{if(!CUR_NODE)return;copyTxt(location.origin+location.pathname+'#node='+CUR_NODE);const b=document.getElementById('modalShare');b.textContent='✓ Link copied';setTimeout(()=>b.textContent='🔗 Share node',1400);};
+  // ---- Node report card (client-side canvas render; no data leaves the browser) ----
+  function cardData(pk){
+    const inMain=(SETS.mainnet.pods||[]).some(x=>x.pubkey===pk);
+    const all=(SETS.devnet.pods||[]).concat(SETS.mainnet.pods||[]);
+    const p=all.find(x=>x.pubkey===pk)||{};
+    const U=window['NODE_UPTIME'+(inMain?'_MAINNET':'')]||{};
+    const hist=(window['NODE_HIST'+(inMain?'_MAINNET':'')]||{})[pk]||null;
+    const st=(window.STAKE||{})[pk];
+    const cxd=((window.CX&&window.CX[inMain?'mainnet':'devnet'])||{})[pk];
+    return {pk,inMain,city:p.city||'',cc:p.cc||'',ver:shortver(p.version||''),up:U[pk],hist,
+      credits:pcMap()[pk],health:healthOf(pk,inMain?'mainnet':'devnet'),
+      stake:st?st.stake:null,boost:inMain?boostTotal(pk):null,stor:cxd&&cxd.storage!=null?cxd.storage:null};
+  }
+  function drawCard(d){
+    const cv=document.getElementById('cardCanvas'),c=cv.getContext('2d'),W=1200,H=630;
+    const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0d1830');g.addColorStop(1,'#070d1a');
+    c.fillStyle=g;c.fillRect(0,0,W,H);
+    c.strokeStyle='rgba(70,230,239,.05)';c.lineWidth=1;
+    for(let gx=0;gx<W;gx+=60){c.beginPath();c.moveTo(gx,0);c.lineTo(gx,H);c.stroke();}
+    for(let gy=0;gy<H;gy+=60){c.beginPath();c.moveTo(0,gy);c.lineTo(W,gy);c.stroke();}
+    c.fillStyle='#46e6ef';c.font='600 22px Inter,sans-serif';c.textAlign='left';
+    c.fillText('P U L S A R   N E T W O R K',64,80);
+    c.fillStyle='#94a2bd';c.font='500 20px Inter,sans-serif';c.textAlign='right';
+    c.fillText('pNODE REPORT CARD',W-64,80);
+    c.strokeStyle='#46e6ef';c.lineWidth=3;c.beginPath();c.moveTo(64,100);c.lineTo(194,100);c.stroke();
+    c.textAlign='left';c.fillStyle='#eef3fb';c.font='700 44px Inter,sans-serif';
+    c.fillText((d.city?d.city+'  ·  ':'')+(d.inMain?'Mainnet':'Devnet'),64,168);
+    c.fillStyle='#94a2bd';c.font='400 22px ui-monospace,Menlo,monospace';
+    c.fillText(d.pk.slice(0,10)+'…'+d.pk.slice(-10),64,204);
+    const on=d.up!=null&&d.up>=99;
+    c.fillStyle=on?'#34e0a8':'#f7a93b';c.beginPath();c.arc(W-90,160,9,0,7);c.fill();
+    c.font='600 20px Inter,sans-serif';c.textAlign='right';
+    c.fillText(d.up!=null?(d.up>=99?'ONLINE':'TRACKED'):'', W-110,167);
+    const stats=[];
+    if(d.up!=null)stats.push(['Uptime',d.up+'%']);
+    if(d.credits!=null)stats.push(['Credits',fmt(d.credits)]);
+    if(d.health!=null)stats.push(['Health',d.health+' / 100']);
+    if(d.boost!=null)stats.push(['Boost',fmtMult(d.boost)]);
+    if(d.stake!=null)stats.push(['Staked',new Intl.NumberFormat('en-US',{notation:'compact'}).format(d.stake)+' XAND']);
+    if(d.stor!=null)stats.push(['Storage',fmtBytes(d.stor)]);
+    const cols=Math.min(3,Math.max(1,stats.length)),bw=(W-128-(cols-1)*20)/cols,bh=110;
+    stats.slice(0,6).forEach((sd,i)=>{
+      const x=64+(i%cols)*(bw+20),y=250+Math.floor(i/cols)*(bh+18);
+      c.fillStyle='rgba(16,30,56,.92)';c.strokeStyle='rgba(140,176,226,.30)';c.lineWidth=1.5;
+      c.beginPath();c.roundRect(x,y,bw,bh,14);c.fill();c.stroke();
+      c.fillStyle='#94a2bd';c.font='600 15px Inter,sans-serif';c.textAlign='left';
+      c.fillText(sd[0].toUpperCase(),x+20,y+34);
+      c.fillStyle=sd[0]==='Boost'?'#f7a93b':'#eef3fb';c.font='700 34px Inter,sans-serif';
+      c.fillText(sd[1],x+20,y+80);
+    });
+    if(d.hist&&d.hist.length>1){
+      const sx=64,sw=W-128,sy=530,sh=40,arr=d.hist.slice(-60);
+      const mx=Math.max.apply(null,arr)||1;
+      c.strokeStyle='#46e6ef';c.lineWidth=3;c.beginPath();
+      arr.forEach((v,i)=>{const x=sx+i/(arr.length-1)*sw,y=sy+sh-(v/mx)*sh;i?c.lineTo(x,y):c.moveTo(x,y);});
+      c.stroke();
+      c.fillStyle='#94a2bd';c.font='400 14px Inter,sans-serif';c.fillText('recent uptime trend',sx,sy-8);
+    }
+    c.fillStyle='#94a2bd';c.font='500 18px Inter,sans-serif';c.textAlign='left';
+    c.fillText('pulsarnetwork.xyz/#node='+d.pk.slice(0,8)+'…',64,H-24);
+    c.textAlign='right';c.fillText(new Date().toISOString().slice(0,10)+' · live Xandeum monitor',W-64,H-24);
+  }
+  document.getElementById('modalCard').onclick=()=>{
+    if(!CUR_NODE)return;
+    drawCard(cardData(CUR_NODE));
+    document.getElementById('cardOverlay').classList.add('open');
+  };
+  document.getElementById('cardClose').onclick=()=>document.getElementById('cardOverlay').classList.remove('open');
+  document.getElementById('cardOverlay').addEventListener('click',e=>{if(e.target.id==='cardOverlay')document.getElementById('cardOverlay').classList.remove('open');});
+  document.getElementById('cardPng').onclick=()=>{
+    if(!CUR_NODE)return;
+    document.getElementById('cardCanvas').toBlob(b=>{
+      const a=document.createElement('a');a.href=URL.createObjectURL(b);
+      a.download='pulsar-node-'+CUR_NODE.slice(0,8)+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    },'image/png');
+  };
+  document.getElementById('cardSvg').onclick=()=>{
+    if(!CUR_NODE)return;
+    const d=cardData(CUR_NODE);
+    const up=d.up!=null?d.up+'%':'n/a';
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" width="270" height="32" role="img" aria-label="Xandeum pNode uptime '+up+'">'
+      +'<rect width="270" height="32" rx="7" fill="#0a1426" stroke="#2a3f66"/>'
+      +'<circle cx="18" cy="16" r="5" fill="'+(d.up!=null&&d.up>=99?'#34e0a8':'#f7a93b')+'"/>'
+      +'<text x="32" y="21" font-family="Verdana,sans-serif" font-size="12" fill="#eef3fb">pNode '+d.pk.slice(0,6)+'… uptime '+up+'</text>'
+      +'<text x="258" y="21" text-anchor="end" font-family="Verdana,sans-serif" font-size="11" fill="#46e6ef">PULSAR</text>'
+      +'</svg>';
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+    a.download='pulsar-badge-'+CUR_NODE.slice(0,8)+'.svg';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  };
   document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeNode();});
   // ---- Contact / message box (Web3Forms -> contact@pulsarnetwork.xyz) ----
   const WEB3FORMS_KEY='c04b089b-95f7-44aa-b480-658643954b59';
