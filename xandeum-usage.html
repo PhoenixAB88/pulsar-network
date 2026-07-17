@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https:; frame-src 'self' https:; base-uri 'self'; form-action 'self' https:; object-src 'none'; frame-ancestors 'self'">
+<title>Xandeum Usage Watch: Live Demand vs Committed Storage | Pulsar</title>
+<meta name="description" content="The live Xandeum demand tracker: how much of the network's committed storage is actually used, charted daily. The honest scoreboard for Oxorro adoption, self-sourced from our own pNodes.">
+<link rel="canonical" href="https://pulsarnetwork.xyz/xandeum-usage.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pulsar Network">
+<meta property="og:title" content="Xandeum Usage Watch: the line everyone is waiting to bend">
+<meta property="og:description" content="Daily chart of real storage usage vs committed capacity on Xandeum mainnet and devnet. If Oxorro lands real customers, you will see it here first.">
+<meta property="og:url" content="https://pulsarnetwork.xyz/xandeum-usage.html">
+<meta property="og:image" content="https://pulsarnetwork.xyz/og-xandeum-usage.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@PulsarNodes">
+<meta name="twitter:title" content="Xandeum Usage Watch: the line everyone is waiting to bend">
+<meta name="twitter:description" content="Daily chart of real storage usage vs committed capacity on Xandeum. If Oxorro lands real customers, you will see it here first.">
+<meta name="twitter:image" content="https://pulsarnetwork.xyz/og-xandeum-usage.png">
+<meta name="theme-color" content="#0a1426">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{--canvas:#0a1426;--surface-1:#101e38;--surface-2:#16294a;--hairline:rgba(126,162,216,.16);--hairline-2:rgba(140,176,226,.30);--ink:#eef3fb;--mut:#b3c0d6;--mut2:#94a2bd;--teal:#46e6ef;--orange:#f7a93b;--good:#34e0a8;--bad:#ff5d6c;--r-md:8px;--r-lg:12px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:400 16.5px/1.75 'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--hairline)}
+  .nav{display:flex;align-items:center;gap:12px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .brand b{font-weight:600;font-size:15px}.brand>span{display:block}.brand span span{display:block;font-size:10px;letter-spacing:2px;color:var(--mut2);font-weight:500}
+  .back{margin-left:auto;font-size:14px;color:var(--mut)}
+  main{padding:42px 0 64px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--teal);margin-bottom:10px}
+  h1{font-size:clamp(28px,4.6vw,38px);font-weight:700;letter-spacing:-.03em;margin:0 0 12px;line-height:1.15}
+  .lead{font-size:17.5px;color:var(--mut);margin:0 0 24px;max-width:760px}
+  h2{font-size:21px;font-weight:600;letter-spacing:-.02em;margin:38px 0 12px}
+  p{color:var(--mut);margin:0 0 15px;max-width:760px}
+  strong{color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:20px 0}
+  .stat{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:14px 16px}
+  .stat .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut2);font-weight:600}
+  .stat .v{font-size:24px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .stat .s{font-size:12px;color:var(--mut2);margin-top:2px}
+  .chartcard{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:18px;margin:18px 0}
+  .chart-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+  .chart-title{font-weight:600;font-size:15px}
+  .seg{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  .seg button{background:var(--surface-2);border:1px solid var(--hairline-2);color:var(--mut);font:600 12.5px 'Inter',sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer}
+  .seg button.on{background:rgba(70,230,239,.14);border-color:var(--teal);color:var(--teal)}
+  canvas{width:100%;height:340px;display:block}
+  .chart-note{font-size:12px;color:var(--mut2);margin-top:10px}
+  .honest{background:rgba(247,169,59,.07);border:1px solid rgba(247,169,59,.32);border-radius:var(--r-lg);padding:16px 20px;margin:22px 0;font-size:15px;color:var(--mut);max-width:760px}
+  .honest b{color:var(--orange)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 8px}
+  .btn{display:inline-block;background:var(--orange);color:#1a1205;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:var(--r-md)}
+  .btn:hover{background:#ffc06b;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--mut);border:1px solid var(--hairline-2)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--teal)}
+  footer{border-top:1px solid var(--hairline);padding:24px 0;color:var(--mut2);font-size:13px;text-align:center}
+  .src{font-size:13px;color:var(--mut2);border-top:1px solid var(--hairline);margin-top:40px;padding-top:16px;max-width:760px}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Xandeum Usage Watch","description":"Live daily tracker of real storage usage vs committed capacity on the Xandeum network, self-sourced from Pulsar Network pNodes.","url":"https://pulsarnetwork.xyz/xandeum-usage.html","isPartOf":{"@type":"WebSite","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pulsarnetwork.xyz/"},{"@type":"ListItem","position":2,"name":"Usage Watch","item":"https://pulsarnetwork.xyz/xandeum-usage.html"}]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Dataset","name":"Xandeum network daily storage usage","description":"Daily time series of used bytes, committed bytes and node count on Xandeum mainnet and devnet, collected from pRPC gossip by Pulsar Network since 2026-06-28.","url":"https://pulsarnetwork.xyz/xandeum-usage.html","creator":{"@type":"Organization","name":"Pulsar Network","url":"https://pulsarnetwork.xyz/"},"license":"https://creativecommons.org/licenses/by/4.0/","distribution":[{"@type":"DataDownload","encodingFormat":"application/javascript","contentUrl":"https://pulsarnetwork.xyz/usage_history_mainnet.js"},{"@type":"DataDownload","encodingFormat":"application/javascript","contentUrl":"https://pulsarnetwork.xyz/usage_history_devnet.js"}]}
+</script>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="/"><img src="logo.png" alt="Pulsar Network"><span><b>PULSAR</b><span>NETWORK</span></span></a>
+  <a class="back" href="/">&larr; Dashboard</a>
+</div></header>
+
+<main><div class="wrap">
+  <span class="eyebrow">Live tool &middot; updates daily</span>
+  <h1>Xandeum Usage Watch: the line everyone is waiting to bend</h1>
+  <p class="lead">Xandeum's operators have committed hundreds of terabytes. The question that decides everything is how much of it gets <strong>used</strong>. This page charts that number every day, straight from the network's own gossip, no press releases involved. If <a href="what-is-oxorro.html">Oxorro</a> lands real customers, you will see it here before you read about it anywhere.</p>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="k">Used (mainnet)</div><div class="v" id="stUsed">&mdash;</div><div class="s" id="stUsedD">&nbsp;</div></div>
+    <div class="stat"><div class="k">Committed</div><div class="v" id="stCom">&mdash;</div><div class="s" id="stComD">&nbsp;</div></div>
+    <div class="stat"><div class="k">Utilization</div><div class="v" id="stUtil">&mdash;</div><div class="s">used &divide; committed</div></div>
+    <div class="stat"><div class="k">30d change (used)</div><div class="v" id="stDelta">&mdash;</div><div class="s" id="stDeltaD">&nbsp;</div></div>
+  </div>
+
+  <div class="chartcard">
+    <div class="chart-head">
+      <span class="chart-title" id="chTitle">Used storage, daily</span>
+      <div class="seg" id="segNet">
+        <button data-net="mainnet" class="on">Mainnet</button>
+        <button data-net="devnet">Devnet</button>
+      </div>
+      <div class="seg" id="segMetric">
+        <button data-m="used" class="on">Used</button>
+        <button data-m="committed">Committed</button>
+        <button data-m="nodes">Nodes</button>
+      </div>
+    </div>
+    <canvas id="chart" height="340"></canvas>
+    <div class="chart-note" id="chNote">Daily snapshots since 2026-06-28, self-sourced from our pNodes via pRPC gossip. Hover for values.</div>
+  </div>
+
+  <h2>How to read this chart</h2>
+  <p><strong>Committed</strong> is supply: space operators have pledged to the network (and it is big). <strong>Used</strong> is demand: bytes actually stored by apps and users. Today the gap between them is enormous, and we say so plainly: mainnet usage is measured in megabytes while committed capacity is measured in terabytes. That is normal for a young network, and it is also exactly why this chart matters. Supply was never the hard part. Demand is the whole game.</p>
+  <p>This is the metric that cannot be argued with. Announcements, partnerships and roadmaps all live in the future tense; this line is the present tense. When it starts bending upward and keeps bending, Xandeum will have crossed the only threshold that counts: someone paying to store real data. Watch for sustained growth rather than single jumps, since insiders storing their own files can nudge the line, but only customers can keep it climbing.</p>
+
+  <div class="honest"><b>What this measures, honestly:</b> we poll <code>get-pods-with-stats</code> on our own pNodes and record each day's network totals (the same self-sourced pipeline behind our <a href="/">live dashboard</a>, the architecture Xandeum's cofounder publicly recommended). It reflects what nodes report through gossip. It cannot distinguish paying customers from test data, and devnet numbers include developer experiments by design. History runs from 2026-06-28, reconstructed from our own archived snapshots; earlier events like Oxorro's May launch predate the series.</div>
+
+  <h2>Why we built this</h2>
+  <p>We operate 12 pNodes, so we profit if usage grows, and you should know that when reading our optimism. But that is exactly why we publish the raw number daily: our credibility is worth more than a good-looking chart. We wrote the full breakdown of the product meant to create this demand in <a href="what-is-oxorro.html">What is Oxorro?</a>, and our checklist of what would make us believers ends with this exact page: usage on the chart.</p>
+
+  <div class="cta">
+    <a class="btn" href="what-is-oxorro.html">Read: What is Oxorro? &rarr;</a>
+    <a class="btn ghost" href="xandeum-use-cases.html">What could create demand?</a>
+    <a class="btn ghost" href="/">Live dashboard</a>
+  </div>
+
+  <div class="src">Data: daily UTC snapshots recorded by Pulsar generator nodes from pRPC <code>get-pods-with-stats</code>; series began 2026-06-28. Raw series: <a href="usage_history_mainnet.js">mainnet</a> &middot; <a href="usage_history_devnet.js">devnet</a> (CC BY 4.0, cite Pulsar Network). Disclosure: Pulsar Network operates 12 pNodes and accepts XAND delegation at 10% commission; we benefit if the network grows. Not financial advice.</div>
+</div></main>
+
+<footer><div class="wrap">&copy; 2026 <a href="/">Pulsar Network</a> &middot; Built on Xandeum &middot; <a href="insights.html">More insights</a></div></footer>
+
+<script src="usage_history_mainnet.js"></script>
+<script src="usage_history_devnet.js"></script>
+<script>
+(function(){
+  var H=window.USAGE_HIST||{};
+  var EVENTS=[{d:"2026-07-13",label:"Pulsar Oxorro deep dive"}];
+  var net="mainnet", metric="used";
+  var cv=document.getElementById('chart'), tipIdx=-1;
+
+  function fmtBytes(b){if(b==null)return"—";var u=['B','KB','MB','GB','TB','PB'],i=0,n=Math.max(0,b);while(n>=1000&&i<u.length-1){n/=1000;i++;}return (n<10?n.toFixed(2):n<100?n.toFixed(1):Math.round(n))+' '+u[i];}
+  function fmtVal(v){return metric==='nodes'?String(v):fmtBytes(v);}
+  function pct(a,b){if(!b)return"—";var p=a/b*100;if(p>=1)return p.toFixed(1)+'%';if(p>=0.01)return p.toFixed(2)+'%';for(var d=3;d<=8;d++){var s=p.toFixed(d);if(parseFloat(s)>0)return s+'%';}return '<0.00000001%';}
+
+  function stats(){
+    var m=H.mainnet||[];if(!m.length)return;
+    var last=m[m.length-1];
+    document.getElementById('stUsed').textContent=fmtBytes(last.used);
+    document.getElementById('stUsedD').textContent='as of '+last.d;
+    document.getElementById('stCom').textContent=fmtBytes(last.committed);
+    document.getElementById('stComD').textContent=(last.nodes||'—')+' pNodes';
+    document.getElementById('stUtil').textContent=pct(last.used,last.committed);
+    var back=m.length>30?m[m.length-31]:m[0];
+    var dl=last.used-back.used, el=document.getElementById('stDelta');
+    el.textContent=(dl>=0?'+':'−')+fmtBytes(Math.abs(dl));
+    el.style.color=dl>0?'var(--good)':(dl<0?'var(--bad)':'var(--ink)');
+    document.getElementById('stDeltaD').textContent='since '+back.d;
+  }
+
+  function draw(){
+    var pts=H[net]||[]; if(!pts.length)return;
+    var dpr=window.devicePixelRatio||1, W=cv.clientWidth, Hh=340;
+    cv.width=W*dpr; cv.height=Hh*dpr;
+    var c=cv.getContext('2d'); c.scale(dpr,dpr); c.clearRect(0,0,W,Hh);
+    var padL=64,padR=14,padT=18,padB=30, iw=W-padL-padR, ih=Hh-padT-padB;
+    var vals=pts.map(function(p){return p[metric]||0;});
+    var vmax=Math.max.apply(null,vals), vmin=Math.min.apply(null,vals);
+    if(vmax===vmin){vmax+=1;vmin=Math.max(0,vmin-1);}
+    var span=vmax-vmin; vmin=Math.max(0,vmin-span*0.25); vmax+=span*0.15;
+    function X(i){return padL+(pts.length===1?iw/2:i/(pts.length-1)*iw);}
+    function Y(v){return padT+ih-(v-vmin)/(vmax-vmin)*ih;}
+    c.strokeStyle='rgba(126,162,216,.14)';c.fillStyle='#94a2bd';c.font='11px Inter';c.textAlign='right';c.lineWidth=1;
+    for(var g=0;g<=4;g++){var v=vmin+(vmax-vmin)*g/4,y=Y(v);
+      c.beginPath();c.moveTo(padL,y);c.lineTo(W-padR,y);c.stroke();
+      c.fillText(metric==='nodes'?Math.round(v):fmtBytes(v),padL-8,y+4);}
+    c.textAlign='center';
+    var step=Math.max(1,Math.ceil(pts.length/7));
+    for(var i=0;i<pts.length;i+=step){c.fillText(pts[i].d.slice(5),X(i),Hh-8);}
+    EVENTS.forEach(function(ev){
+      var i=pts.findIndex(function(p){return p.d===ev.d;}); if(i<0)return;
+      var x=X(i); c.save(); c.strokeStyle='rgba(247,169,59,.55)'; c.setLineDash([4,4]);
+      c.beginPath();c.moveTo(x,padT);c.lineTo(x,padT+ih);c.stroke(); c.setLineDash([]);
+      c.fillStyle='#f7a93b'; c.font='10.5px Inter'; c.fillText(ev.label,Math.min(Math.max(x,padL+70),W-padR-70),padT-6); c.restore();
+    });
+    c.beginPath();
+    pts.forEach(function(p,i){var x=X(i),y=Y(p[metric]||0); i?c.lineTo(x,y):c.moveTo(x,y);});
+    c.strokeStyle='#46e6ef'; c.lineWidth=2; c.stroke();
+    c.lineTo(X(pts.length-1),padT+ih); c.lineTo(X(0),padT+ih); c.closePath();
+    c.fillStyle='rgba(70,230,239,.08)'; c.fill();
+    var li=pts.length-1, lx=X(li), ly=Y(pts[li][metric]||0);
+    c.beginPath();c.arc(lx,ly,4,0,7);c.fillStyle='#46e6ef';c.fill();
+    if(tipIdx>=0&&tipIdx<pts.length){
+      var tx=X(tipIdx),tv=pts[tipIdx][metric]||0,ty=Y(tv);
+      c.beginPath();c.arc(tx,ty,4,0,7);c.strokeStyle='#eef3fb';c.lineWidth=1.5;c.stroke();
+      var label=pts[tipIdx].d+'  '+fmtVal(tv); c.font='12px Inter';
+      var tw=c.measureText(label).width+16, bx=Math.min(Math.max(tx-tw/2,padL),W-padR-tw), by=Math.max(padT,ty-34);
+      c.fillStyle='#16294a';c.strokeStyle='rgba(140,176,226,.30)';
+      c.beginPath();c.roundRect(bx,by,tw,24,6);c.fill();c.stroke();
+      c.fillStyle='#eef3fb';c.textAlign='center';c.fillText(label,bx+tw/2,by+16);
+    }
+  }
+
+  cv.addEventListener('mousemove',function(e){
+    var pts=H[net]||[]; if(!pts.length)return;
+    var r=cv.getBoundingClientRect(), fx=(e.clientX-r.left-64)/(r.width-78);
+    var idx=Math.round(fx*(pts.length-1));
+    idx=Math.max(0,Math.min(pts.length-1,idx));
+    if(idx!==tipIdx){tipIdx=idx;draw();}
+  });
+  cv.addEventListener('mouseleave',function(){tipIdx=-1;draw();});
+
+  function bind(segId,attr,cb){
+    document.getElementById(segId).addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b)return;
+      this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); cb(b.dataset[attr]);
+    });
+  }
+  bind('segNet','net',function(v){net=v;tipIdx=-1;update();});
+  bind('segMetric','m',function(v){metric=v;tipIdx=-1;update();});
+  function update(){
+    var names={used:'Used storage',committed:'Committed storage',nodes:'Node count'};
+    document.getElementById('chTitle').textContent=names[metric]+', daily ('+net+')';
+    draw();
+  }
+  window.addEventListener('resize',function(){draw();});
+  stats(); update();
+})();
+</script>
+</body>
+</html>
