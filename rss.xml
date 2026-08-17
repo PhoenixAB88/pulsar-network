@@ -6,7 +6,14 @@
   <atom:link href="https://pulsarnetwork.xyz/rss.xml" rel="self" type="application/rss+xml"/>
   <description>Independent analysis on decentralized storage, DePIN, Solana, node economics, and crypto markets, from the Pulsar Network team.</description>
   <language>en-us</language>
-  <lastBuildDate>Mon, 13 Jul 2026 18:00:00 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 19 Jul 2026 06:00:00 GMT</lastBuildDate>
+  <item>
+    <title>Compliance Archives in Saudi Arabia: How Long, and Where the Data Can Live (2026)</title>
+    <link>https://pulsarnetwork.xyz/compliance-archives-saudi-arabia.html</link>
+    <guid>https://pulsarnetwork.xyz/compliance-archives-saudi-arabia.html</guid>
+    <pubDate>Sun, 19 Jul 2026 06:00:00 GMT</pubDate>
+    <description>What Saudi law actually requires for keeping business records, where the data may live, and what makes an archive defensible. Primary sources throughout.</description>
+  </item>
   <item>
     <title>What Is Oxorro? Xandeum's Enterprise Storage Play, Explained (2026)</title>
     <link>https://pulsarnetwork.xyz/what-is-oxorro.html</link>
