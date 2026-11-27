@@ -1,1 +1,1 @@
-window.__NS=window.__NS||{};window.__NS["mainnet"]={"committed":98107265406464,"used":25083296,"nodes":46,"active":39,"src":"gossip","updated":1795743424832};
+window.__NS=window.__NS||{};window.__NS["mainnet"]={"committed":69555435988480,"used":24994394,"nodes":43,"active":39,"src":"gossip","updated":1795744325505};
